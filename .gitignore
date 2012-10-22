@@ -1,0 +1,12 @@
+*.swp
+*.swo
+*.swn
+*~
+*.aux
+*.log
+*.bbl
+*.toc
+*.blg
+*.slo
+*.srs
+*.pyg
