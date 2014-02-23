@@ -1,8 +1,13 @@
-\BOOKMARK [0][-]{chapter*.3}{\332vod}{}
-\BOOKMARK [0][-]{chapter.1}{Meno prvej kapitoly}{}
-\BOOKMARK [1][-]{section.1.1}{Meno sekcie/podkapitoly}{chapter.1}
-\BOOKMARK [1][-]{section.1.2}{Zakladne odrazky}{chapter.1}
-\BOOKMARK [0][-]{chapter.2}{Druha a kazda dalsia kapitola}{}
-\BOOKMARK [1][-]{section.2.1}{Moze mat aj podkapitolo....}{chapter.2}
-\BOOKMARK [0][-]{chapter*.4}{Z\341ver}{}
-\BOOKMARK [0][-]{chapter*.5}{Literat\372ra}{}
+\BOOKMARK [0][-]{chapter*.3}{Introduction}{}% 1
+\BOOKMARK [0][-]{chapter.1}{Databinding}{}% 2
+\BOOKMARK [1][-]{section.1.1}{One way databinding}{chapter.1}% 3
+\BOOKMARK [1][-]{section.1.2}{Two way databinding}{chapter.1}% 4
+\BOOKMARK [0][-]{chapter.2}{Existing solutions}{}% 5
+\BOOKMARK [1][-]{section.2.1}{AngularJS}{chapter.2}% 6
+\BOOKMARK [1][-]{section.2.2}{Ember}{chapter.2}% 7
+\BOOKMARK [0][-]{chapter.3}{Our solution}{}% 8
+\BOOKMARK [1][-]{section.3.1}{Architecture}{chapter.3}% 9
+\BOOKMARK [1][-]{section.3.2}{API}{chapter.3}% 10
+\BOOKMARK [0][-]{chapter.4}{Benchmarks}{}% 11
+\BOOKMARK [0][-]{chapter*.4}{Conclusion}{}% 12
+\BOOKMARK [0][-]{chapter*.5}{Bibliography}{}% 13

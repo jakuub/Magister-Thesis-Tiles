@@ -1,38 +1,5 @@
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-%  Template na zaverecne diplomove alebo bakalarske prace 
-%  Autor: Jakub Uhrik
-%  site: http://jakuub.uhrikovci.sk/
-%  licencia: robte s tym co chcete, len mi nenadavajte, pouzivate to na vlastne riziko :)
-%  zdroje: misofov template pre zaverecne prace
-%  Zakladne subory plus funkcia:
-%    -  main.tex                            - zakladny subor z ktoreho sa na vsetko odkazuje
-%    -  config.tex                          - subor, v ktorom nastavite zakladne veci ako meno prace....
-%    -  content/structure/                  - tu sa nachadzaju subory, v ktorych su zakladne casti struktury prace ako titulka, abstrakt ...
-%    -  content/structure/abstract.tex      - tu vyplnite abstrakty
-%    -  content/structure/obalka.tex        - tu nic nevyplnate, subor sa vyplni udajmi z config.tex
-%    -  content/structure/prehlasenie.tex   - tu vyplnite prehlasenie, ktore ale pokial viem teraz nie je povinne
-%    -  content/structure/thanks.tex        - tu je podakovanie, mozete sa inspirovat mojim alebo vytvorit originalne
-%    -  content/structure/titulka.tex       - tu nic nevyplnate, subor sa vyplni udajmi z config.tex
-%    -  content/structure/zadanie.tex       - tu nastavite, ci mate aj anglicke zadanie, alebo len slovenske a najdete pokyny ako a co...
-%    -  content/chapters/chapters.tex       - tu musite includovat vsetky kapitoly. Neda sa to jednoducho robit automaticky
-%    -  content/chapters/intro.tex          - tu napisete intro
-%    -  content/chapters/zaver.tex          - a tu zaver
-%    -  content/chapters/01.tex             - tu je prva kapitola, je vynimocna, lebo sa v nej meni pagestyle. V kazdej dalsej uz nie je nic vynimocne....
-%    -  content/chapters/02.tex             - kazda dalsia bezna kapitola, toto je len tempalte
-%
-%  V pripade, ze pouzivate make, pomocou obycajneho prikazu "make" sa vam vytvori pdf subor s pracou. Potrebujete na to ale aplikacie:
-%    - pdfcslatex
-%    - bibtex
-%  Makefile obsahuje aj dalsie moznosti, ale tie su teraz irelevantne...
-%
-%  V pripade, ze by ste chceli pouzit git, je tu vytvoreny nejaky .gitignor, v ktorom su ignorovane subory nepotrebne pre beh tohoto tu, 
-%  cize sa budu zalohovat len podstatne veci
-%
-%  To by malo byt snad vsetko, prajem prijemne pouzivanie. 
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 \documentclass[oneside, 12pt]{book}
-\usepackage[slovak]{babel}
+% \usepackage[slovak]{babel}
 \usepackage{epsfig}
 \usepackage{color}
 \usepackage{url}
@@ -40,20 +7,14 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 
-%------------------------------------------------------------------------------------------------------
-% inportujeme subor s nastaveniami vsetkych zakladnych veci
-%------------------------------------------------------------------------------------------------------
 \input{./config.tex}
 
-%------------------------------------------------------------------------------------------------------
-% odsadenie textu z bokov, zhora a z dola
-%------------------------------------------------------------------------------------------------------
 \usepackage[a4paper,vmargin={25mm,25mm},hmargin={35mm,20mm}]{geometry} 
 \usepackage{minted}
 \hyphenpenalty=10000
 \tolerance=10000
 
-\usepackage[ps2pdf,
+\usepackage[
 	bookmarks=true,
 	bookmarksnumbered=false, 	% true means bookmarks in
 								% left window are numbered
@@ -139,7 +100,7 @@
 \bibliographystyle{alpha}
 \bibliography{literatura.bib}
 
-\addcontentsline{toc}{chapter}{Literatúra}
+\addcontentsline{toc}{chapter}{Bibliography}
 
 
 \end{document}
