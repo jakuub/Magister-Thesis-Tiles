@@ -1,13 +1,26 @@
 \BOOKMARK [0][-]{chapter*.3}{Introduction}{}% 1
-\BOOKMARK [0][-]{chapter.1}{Databinding}{}% 2
-\BOOKMARK [1][-]{section.1.1}{One way databinding}{chapter.1}% 3
-\BOOKMARK [1][-]{section.1.2}{Two way databinding}{chapter.1}% 4
-\BOOKMARK [0][-]{chapter.2}{Existing solutions}{}% 5
-\BOOKMARK [1][-]{section.2.1}{AngularJS}{chapter.2}% 6
-\BOOKMARK [1][-]{section.2.2}{Ember}{chapter.2}% 7
-\BOOKMARK [0][-]{chapter.3}{Our solution}{}% 8
-\BOOKMARK [1][-]{section.3.1}{Architecture}{chapter.3}% 9
-\BOOKMARK [1][-]{section.3.2}{API}{chapter.3}% 10
-\BOOKMARK [0][-]{chapter.4}{Benchmarks}{}% 11
-\BOOKMARK [0][-]{chapter*.4}{Conclusion}{}% 12
-\BOOKMARK [0][-]{chapter*.5}{Bibliography}{}% 13
+\BOOKMARK [0][-]{chapter.1}{Motivation - why databinding}{}% 2
+\BOOKMARK [1][-]{section.1.1}{History}{chapter.1}% 3
+\BOOKMARK [2][-]{subsection.1.1.1}{Plain documents}{section.1.1}% 4
+\BOOKMARK [2][-]{subsection.1.1.2}{Simple PHP}{section.1.1}% 5
+\BOOKMARK [2][-]{subsection.1.1.3}{Server side frameworks}{section.1.1}% 6
+\BOOKMARK [2][-]{subsection.1.1.4}{Simple JavaScript/jQuery}{section.1.1}% 7
+\BOOKMARK [2][-]{subsection.1.1.5}{JavaScript MVC frameworks}{section.1.1}% 8
+\BOOKMARK [1][-]{section.1.2}{Objectives}{chapter.1}% 9
+\BOOKMARK [2][-]{subsection.1.2.1}{Server-side rendering}{section.1.2}% 10
+\BOOKMARK [2][-]{subsection.1.2.2}{Programmer friendly API}{section.1.2}% 11
+\BOOKMARK [2][-]{subsection.1.2.3}{Easy concept}{section.1.2}% 12
+\BOOKMARK [2][-]{subsection.1.2.4}{Two way databinding}{section.1.2}% 13
+\BOOKMARK [0][-]{chapter.2}{Databinding}{}% 14
+\BOOKMARK [1][-]{section.2.1}{One way databinding}{chapter.2}% 15
+\BOOKMARK [1][-]{section.2.2}{Two way databinding}{chapter.2}% 16
+\BOOKMARK [0][-]{chapter.3}{Existing solutions}{}% 17
+\BOOKMARK [1][-]{section.3.1}{Template driven}{chapter.3}% 18
+\BOOKMARK [1][-]{section.3.2}{Component driven}{chapter.3}% 19
+\BOOKMARK [0][-]{chapter.4}{Our solution}{}% 20
+\BOOKMARK [1][-]{section.4.1}{Architecture}{chapter.4}% 21
+\BOOKMARK [1][-]{section.4.2}{API}{chapter.4}% 22
+\BOOKMARK [0][-]{chapter.5}{Performance}{}% 23
+\BOOKMARK [0][-]{chapter.6}{Benchmarks}{}% 24
+\BOOKMARK [0][-]{chapter*.4}{Conclusion}{}% 25
+\BOOKMARK [0][-]{chapter*.5}{Bibliography}{}% 26
