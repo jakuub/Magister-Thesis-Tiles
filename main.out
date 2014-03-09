@@ -18,9 +18,19 @@
 \BOOKMARK [1][-]{section.3.1}{Template driven}{chapter.3}% 18
 \BOOKMARK [1][-]{section.3.2}{Component driven}{chapter.3}% 19
 \BOOKMARK [0][-]{chapter.4}{Our solution}{}% 20
-\BOOKMARK [1][-]{section.4.1}{Architecture}{chapter.4}% 21
-\BOOKMARK [1][-]{section.4.2}{API}{chapter.4}% 22
-\BOOKMARK [0][-]{chapter.5}{Performance}{}% 23
-\BOOKMARK [0][-]{chapter.6}{Benchmarks}{}% 24
-\BOOKMARK [0][-]{chapter*.4}{Conclusion}{}% 25
-\BOOKMARK [0][-]{chapter*.5}{Bibliography}{}% 26
+\BOOKMARK [1][-]{section.4.1}{Requirements}{chapter.4}% 21
+\BOOKMARK [1][-]{section.4.2}{Architecture}{chapter.4}% 22
+\BOOKMARK [2][-]{subsection.4.2.1}{High level idea}{section.4.2}% 23
+\BOOKMARK [2][-]{subsection.4.2.2}{Core}{section.4.2}% 24
+\BOOKMARK [2][-]{subsection.4.2.3}{Life-cycle}{section.4.2}% 25
+\BOOKMARK [2][-]{subsection.4.2.4}{Events}{section.4.2}% 26
+\BOOKMARK [2][-]{subsection.4.2.5}{Rendering}{section.4.2}% 27
+\BOOKMARK [2][-]{subsection.4.2.6}{Infecting}{section.4.2}% 28
+\BOOKMARK [1][-]{section.4.3}{API}{chapter.4}% 29
+\BOOKMARK [2][-]{subsection.4.3.1}{Component}{section.4.3}% 30
+\BOOKMARK [2][-]{subsection.4.3.2}{Browser specific API}{section.4.3}% 31
+\BOOKMARK [2][-]{subsection.4.3.3}{Server specific API}{section.4.3}% 32
+\BOOKMARK [0][-]{chapter.5}{Performance}{}% 33
+\BOOKMARK [0][-]{chapter.6}{Benchmarks}{}% 34
+\BOOKMARK [0][-]{chapter*.13}{Conclusion}{}% 35
+\BOOKMARK [0][-]{chapter*.14}{Bibliography}{}% 36

@@ -1,10 +1,192 @@
 \chapter{Our solution}\label{chap:oursolution}
 
-\section{Architecture}\label{sec:architecture}
+In this chapter we will introduce and deeply describe our Dart library \texttt{Tiles}.
 
-Architecture of our solution with UML diagrams and so on.
 
-\section{API}\label{sec:api}
+\section{Requirements}\label{subsec:our-architecture-requirements}
 
-Documentation of offered API of our library.
+  In this section we write down a list of requirements on our library.
 
+\section{Architecture}\label{sec:our-architecture}
+
+  We decided to stay with the idea of component, so the main class of our library is \texttt{Component}.
+
+  \subsection{High level idea}\label{subsec:our-architecture-idea}
+  \subsection{Core}\label{subsec:our-architecture-core}
+  \subsection{Life-cycle}\label{subsec:our-architecture-lifecycle}
+
+    Every instance of \texttt{Component} have own life-cycle. 
+    As every object, first it is created. 
+    Then, when component is mounting or rendering into text, it is rendered, and then it is mounted.
+    Then it lives it's own life. 
+
+    When something "higher" want to update it, it will first receive props, 
+    then it is asked, if it should be updated, and if yes, then it is rendered.
+    After that, it was updated, of course.
+
+    At the end of component's life, 
+    component should be notified about that it will be unmounted(e.g. from DOM), 
+    to be able, to do some modifications to it's refs, destroy timers and so on. 
+
+    \subsubsection{Create}\label{subsec:our-architecture-lifecycle-create}
+
+      Create part of life-cycle is implemented by constructor of \texttt{Component}. 
+      It will receive props and optionally children as arguments and 
+      it should do whatever it needs to prepare whole state of object to live.
+
+      An trivial example of constructor of \texttt{Component} is 
+      \begin{listing}[H]
+        \begin{minted}{dart}
+class MyComponent extends Component {
+  MyComponent(props, [children]): super(props, children) {}
+}
+        \end{minted}
+        \caption{Create life-cycle example of simple constructor.}
+        \label{subsec:our-architecture-lifecycle-create-example}
+      \end{listing}
+      which only call's constructor of super class \texttt{Component}
+
+      Example of more complex constructor should be e.g. component 
+      which maintain example \texttt{Todo} instance.
+      \begin{listing}[H]
+        \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  MySearchComponent(props, [children]): super(props, children) {
+    if (props != null && props.todo is Todo) {
+      this.todo = props.todo
+    } else {
+      this.todo = new Todo();
+    }
+  }
+
+  // ...
+
+}
+        \end{minted}
+        \caption{Create life-cycle example of more complex constructor.}
+        \label{subsec:our-architecture-lifecycle-create-example-complex}
+      \end{listing}
+
+    \subsubsection{Did mount}\label{subsec:our-architecture-lifecycle-didmount}
+
+      \texttt{Component} life-cycle \textbf{Did mount} is implemented by method \texttt{didMount}. 
+      It is called after component is mounted to DOM. 
+
+      This is the correct place to initialize for example timers, stream listeners and so on. 
+
+      For example, in our \texttt{MyTodoComponent} we should listen for change of todo on server, 
+      and if it was changed, we can redraw component.
+      \begin{listing}[H]
+        \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  StreamSubscription subscription;
+
+  // ...
+
+  didMount() {
+    this.subscription = this.todo.changedOnServer.listen((change) {
+      this.redraw();
+    });
+  }
+
+  // ...
+
+}
+        \end{minted}
+        \caption{Did mount life-cycle method example}
+        \label{subsec:our-architecture-lifecycle-didmount-example}
+      \end{listing}
+
+    \subsubsection{Will receive props}\label{subsec:our-architecture-lifecycle-willreceiveprops}
+
+      Will receive props life-cycle method is \texttt{willReceiveProps}. 
+      It is called every time, when component will recevie new \texttt{props}, 
+      except first time, when these \texttt{props} are passed to constructor.
+
+      This is place, where old props and new props can be compared, 
+      so this is right place to make changes based on difference in old and new props.
+
+      Example of \texttt{willReceiveProps} in our \texttt{MyTodoComponent} 
+      should compare \texttt{todo} of old and new props and there are not equal, 
+      it can update change listener.
+      \begin{listing}[H]
+        \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  StreamSubscription subscription;
+
+  // ...
+
+  willReceiveProps(dynamic newProps) {
+    if (this.todo != newProps.todo) {
+      this.subscription.cancel();
+      this.subscription = newProps.todo.changedOnServer.listen((change) {
+        this.redraw();
+      });
+    }
+  }
+
+  // ...
+}
+        \end{minted}
+        \caption{Did mount life-cycle method example}
+        \label{subsec:our-architecture-lifecycle-didmount-example}
+      \end{listing}
+      
+      
+    \subsubsection{Should update}\label{subsec:our-architecture-lifecycle-shouldupdate}
+      Should update is partly lifecycle, partly not. 
+      It is a question, if component should update on  this props-change. 
+
+      This "life-cycle" is implemented by method \texttt{shouldUpdate}. 
+      This method is used mainly for speed up performance. 
+      By default it returns true, 
+      so if it is not implemented in custom component, 
+      it will update always.
+
+      In basic scenario this method recognize, 
+      if it will be rendered differently with new props.  
+      If not, it return false, else it return true.
+
+      Example in \texttt{MyTodoComponent} should look like this:
+      \begin{listing}
+        \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  StreamSubscription subscription;
+
+  // ...
+
+  shouldUpdate (newProps, oldProps) {
+    if (newProps.todo == oldProps.todo) {
+      return false;
+    }
+    return true;
+  }
+
+  // ...
+
+}
+        \end{minted}
+        \caption{Should update example}
+        \label{subsec:our-architecture-lifecycle-shouldupdate-example}
+      \end{listing}
+
+    \subsubsection{Render}\label{subsec:our-architecture-lifecycle-render}
+    \subsubsection{Did update}\label{subsec:our-architecture-lifecycle-didupdate}
+    \subsubsection{Will unmount}\label{subsec:our-architecture-lifecycle-willunmount}
+  \subsection{Events}\label{subsec:our-architecture-events}
+  \subsection{Rendering}\label{subsec:our-architecture-rendering}
+  \subsubsection{Server side}\label{subsec:our-architecture-rendering-server}
+  \subsubsection{In browser}\label{subsec:our-architecture-rendering-browser}
+  \subsection{Infecting}\label{subsec:our-architecture-infecting}
+
+\section{API}\label{sec:our-api}
+
+  Documentation of offered API of our library.
+
+  \subsection{Component}\label{subsec:our-api-component}
+  \subsection{Browser specific API}\label{subsec:our-api-browser}
+  \subsection{Server specific API}\label{subsec:our-api-server}
