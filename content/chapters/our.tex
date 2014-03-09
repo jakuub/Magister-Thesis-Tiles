@@ -175,8 +175,71 @@ class MyTodoComponent extends Component {
       \end{listing}
 
     \subsubsection{Render}\label{subsec:our-architecture-lifecycle-render}
+
+      Render is the main part of the \texttt{Component}. 
+
+      It is implemented by method \texttt{render}, which have no attributes.
+      It should return array of component descriptions which should be considered as 
+      \textit{"this is how this component should look like"}.
+
+      For example, in our \texttt{MyTodoComponent} render will return \texttt{<div>} which contains title and description of \texttt{todo}.
+      \begin{listing}
+        \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  StreamSubscription subscription;
+
+  // ...
+
+  render () {
+    return div ({"class": "todo"}, [
+      h2 ({}, todo.title),
+      p ({}, todo.description)
+    ]);
+  }
+
+  // ...
+
+}
+        \end{minted}
+        \caption{Render example}
+        \label{subsec:our-architecture-lifecycle-render-example}
+      \end{listing}
+
     \subsubsection{Did update}\label{subsec:our-architecture-lifecycle-didupdate}
+
+      When life-cycle method \texttt{didUpdate}, 
+      by which is implemented this life-cycle event, 
+      is triggered, component, and programmer, can be sure, 
+      that component is mounted and there exist elements in DOM for each DomComponent descendant.
+
     \subsubsection{Will unmount}\label{subsec:our-architecture-lifecycle-willunmount}
+
+      This event is implemented by method \texttt{willUnmount}, which contain no arguments.
+      
+      It is called right before it is unmounted from dom. 
+
+      This is the correct place to stop all timers and listeners.
+      \begin{listing}
+        \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  StreamSubscription subscription;
+
+  // ...
+
+  willUnmount () {
+    subscription.cancel();
+  }
+
+  // ...
+
+}
+        \end{minted}
+        \caption{Will unmount example}
+        \label{subsec:our-architecture-lifecycle-willunmount-example}
+      \end{listing}
+
   \subsection{Events}\label{subsec:our-architecture-events}
   \subsection{Rendering}\label{subsec:our-architecture-rendering}
   \subsubsection{Server side}\label{subsec:our-architecture-rendering-server}
