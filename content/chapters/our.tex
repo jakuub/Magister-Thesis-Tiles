@@ -35,21 +35,16 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
       it should do whatever it needs to prepare whole state of object to live.
 
       An trivial example of constructor of \texttt{Component} is 
-      \begin{listing}[H]
-        \begin{minted}{dart}
+      \begin{minted}{dart}
 class MyComponent extends Component {
   MyComponent(props, [children]): super(props, children) {}
 }
-        \end{minted}
-        \caption{Create life-cycle example of simple constructor.}
-        \label{subsec:our-architecture-lifecycle-create-example}
-      \end{listing}
+      \end{minted}
       which only call's constructor of super class \texttt{Component}
 
       Example of more complex constructor should be e.g. component 
       which maintain example \texttt{Todo} instance.
-      \begin{listing}[H]
-        \begin{minted}{dart}
+      \begin{minted}{dart}
 class MyTodoComponent extends Component {
   Todo todo;
   MySearchComponent(props, [children]): super(props, children) {
@@ -63,10 +58,7 @@ class MyTodoComponent extends Component {
   // ...
 
 }
-        \end{minted}
-        \caption{Create life-cycle example of more complex constructor.}
-        \label{subsec:our-architecture-lifecycle-create-example-complex}
-      \end{listing}
+      \end{minted}
 
     \subsubsection{Did mount}\label{subsec:our-architecture-lifecycle-didmount}
 
@@ -77,8 +69,7 @@ class MyTodoComponent extends Component {
 
       For example, in our \texttt{MyTodoComponent} we should listen for change of todo on server, 
       and if it was changed, we can redraw component.
-      \begin{listing}[H]
-        \begin{minted}{dart}
+      \begin{minted}{dart}
 class MyTodoComponent extends Component {
   Todo todo;
   StreamSubscription subscription;
@@ -94,10 +85,7 @@ class MyTodoComponent extends Component {
   // ...
 
 }
-        \end{minted}
-        \caption{Did mount life-cycle method example}
-        \label{subsec:our-architecture-lifecycle-didmount-example}
-      \end{listing}
+      \end{minted}
 
     \subsubsection{Will receive props}\label{subsec:our-architecture-lifecycle-willreceiveprops}
 
@@ -111,8 +99,7 @@ class MyTodoComponent extends Component {
       Example of \texttt{willReceiveProps} in our \texttt{MyTodoComponent} 
       should compare \texttt{todo} of old and new props and there are not equal, 
       it can update change listener.
-      \begin{listing}[H]
-        \begin{minted}{dart}
+      \begin{minted}{dart}
 class MyTodoComponent extends Component {
   Todo todo;
   StreamSubscription subscription;
@@ -130,10 +117,7 @@ class MyTodoComponent extends Component {
 
   // ...
 }
-        \end{minted}
-        \caption{Did mount life-cycle method example}
-        \label{subsec:our-architecture-lifecycle-didmount-example}
-      \end{listing}
+      \end{minted}
       
       
     \subsubsection{Should update}\label{subsec:our-architecture-lifecycle-shouldupdate}
@@ -151,8 +135,7 @@ class MyTodoComponent extends Component {
       If not, it return false, else it return true.
 
       Example in \texttt{MyTodoComponent} should look like this:
-      \begin{listing}
-        \begin{minted}{dart}
+      \begin{minted}{dart}
 class MyTodoComponent extends Component {
   Todo todo;
   StreamSubscription subscription;
@@ -169,10 +152,7 @@ class MyTodoComponent extends Component {
   // ...
 
 }
-        \end{minted}
-        \caption{Should update example}
-        \label{subsec:our-architecture-lifecycle-shouldupdate-example}
-      \end{listing}
+      \end{minted}
 
     \subsubsection{Render}\label{subsec:our-architecture-lifecycle-render}
 
@@ -183,8 +163,7 @@ class MyTodoComponent extends Component {
       \textit{"this is how this component should look like"}.
 
       For example, in our \texttt{MyTodoComponent} render will return \texttt{<div>} which contains title and description of \texttt{todo}.
-      \begin{listing}
-        \begin{minted}{dart}
+      \begin{minted}{dart}
 class MyTodoComponent extends Component {
   Todo todo;
   StreamSubscription subscription;
@@ -201,10 +180,7 @@ class MyTodoComponent extends Component {
   // ...
 
 }
-        \end{minted}
-        \caption{Render example}
-        \label{subsec:our-architecture-lifecycle-render-example}
-      \end{listing}
+      \end{minted}
 
     \subsubsection{Did update}\label{subsec:our-architecture-lifecycle-didupdate}
 
@@ -220,8 +196,7 @@ class MyTodoComponent extends Component {
       It is called right before it is unmounted from dom. 
 
       This is the correct place to stop all timers and listeners.
-      \begin{listing}
-        \begin{minted}{dart}
+      \begin{minted}{dart}
 class MyTodoComponent extends Component {
   Todo todo;
   StreamSubscription subscription;
@@ -235,10 +210,7 @@ class MyTodoComponent extends Component {
   // ...
 
 }
-        \end{minted}
-        \caption{Will unmount example}
-        \label{subsec:our-architecture-lifecycle-willunmount-example}
-      \end{listing}
+      \end{minted}
 
   \subsection{Events}\label{subsec:our-architecture-events}
   \subsection{Rendering}\label{subsec:our-architecture-rendering}
