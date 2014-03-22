@@ -1,0 +1,20 @@
+      \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  StreamSubscription subscription;
+
+  // ...
+
+  willReceiveProps(dynamic newProps) {
+    if (this.todo != newProps.todo) {
+      this.subscription.cancel();
+      this.subscription = newProps.todo.changedOnServer.listen((change) {
+        this.redraw();
+      });
+    }
+  }
+
+  // ...
+}
+      \end{minted}
+

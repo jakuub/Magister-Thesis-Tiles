@@ -1,0 +1,15 @@
+      \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  MySearchComponent(props, [children]): super(props, children) {
+    if (props != null && props.todo is Todo) {
+      this.todo = props.todo
+    } else {
+      this.todo = new Todo();
+    }
+  }
+
+  // ...
+
+}
+      \end{minted}

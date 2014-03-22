@@ -1,0 +1,15 @@
+      \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  StreamSubscription subscription;
+
+  // ...
+
+  willUnmount () {
+    subscription.cancel();
+  }
+
+  // ...
+
+}
+      \end{minted}

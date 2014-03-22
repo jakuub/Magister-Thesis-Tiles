@@ -9,10 +9,149 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
 
 \section{Architecture}\label{sec:our-architecture}
 
-  We decided to stay with the idea of component, so the main class of our library is \texttt{Component}.
+  In this section we describe our architecture from couple points of view like \nameref{subsec:our-architecture-idea}, 
+  \nameref{subsec:our-architecture-structure}, 
+  \nameref{subsec:our-architecture-core}, 
+  \nameref{subsec:our-architecture-lifecycle}, 
+  \nameref{subsec:our-architecture-events}, 
+  \nameref{subsec:our-architecture-rendering} and
+  \nameref{subsec:our-architecture-injecting}.
+
+  We will focus on good understanding of how library works. 
+  We will not discuss API a lot, this is the focus of next section. 
+
+  But, of cause we add some examples, so wee will show some parts of api in this section too, 
+  but they don't will be so much described as in next section.
 
   \subsection{High level idea}\label{subsec:our-architecture-idea}
+    Our high level idea inherit from facebook react library. 
+    We created api, whose main class is \texttt{Component}, which represents construct very similar to react's \texttt{Component}.
+    This component is mounted to some element, where it renders itself. 
+    This relationship is shown on figure~\nameref{img:library-idea}.
+    \begin{figure}[h]
+    \centering  
+      \includegraphics[scale=0.6]{images/uml/tiles/Idea/Idea.png}
+      \caption{Idea}
+      \label{img:library-idea}
+    \end{figure}
+
+
+    These components are somehow placed into tree structure, which represents \mbox{\textbf{\nameref{img:library-idea-virtual-dom}}}, 
+    which is then translated to real DOM of client's browser or to markup rendered by server application.
+
+    \begin{figure}[h]
+    \centering  
+      \includegraphics[scale=0.6]{images/uml/tiles/Idea/IdeaObjects.png}
+      \caption{Virtual DOM}
+      \label{img:library-idea-virtual-dom}
+    \end{figure}
+    There can be event listeners attached to these components. 
+    \textbf{Events} \footnote{We work at Dart, which create browser compatibility for us, so we don't have to create synthetic events like react.}
+    are then bubbled trough virtual DOM, instead real one.
+    By this there can be listener attached to custom component, which don't have element representing it in real DOM.
+
+    As we work in Dart language, it is natural to try to reuse most of code on both, client and server.
+    So other important part of idea is \textbf{server-side rendering}, 
+    which is meant to easy rendering the same content on server as on client's browser.
+    It is very important for SEO purposes and smooth user experience. 
+
+  \subsection{Structure}\label{subsec:our-architecture-structure}
+
+    We split our library to 3 partially dependent packages. 
+    \begin{description}
+      \item[Tiles] \hfill \\
+        \textbf{Tiles} creates the core component's of library, focused to create and maintain virtual DOM and offer API for programmer.
+        This package should be included by programmer in files, where he define custom components. 
+        These components then can be used both, on server and in browser application.
+      \item[Tiles Browser] \hfill \\
+        These package is used for mounting components to real HTML elements. 
+        It maintain relationships between elements and components, 
+        simulate events bubbling and keep real DOM in sync with virtual one.
+      \item[Tiles Server] \hfill \\
+        \textbf{Tiles Server} maintain server-side rendering. It offers api to render component structure to string with markup based on DOM components.
+    \end{description}
+
+    From this it is quiet obvious what are dependences between these packages. 
+    \texttt{\textbf{Tiles}} is independent, and both of \texttt{\textbf{Tiles Browser}} and \texttt{\textbf{Tiles Server}} are dependent on \texttt{\textbf{Tiles}}.
+    These dependences are shown on figure~\nameref{img:library-packages}.
+
+    \begin{figure}[h]
+    \centering  
+      \includegraphics[scale=0.6]{images/uml/tiles/Packages.png}
+      \caption{Packages}
+      \label{img:library-packages}
+    \end{figure}
+
   \subsection{Core}\label{subsec:our-architecture-core}
+    We have 4 main classes in core of the library.
+    \begin{description}
+      \item[Component] 
+        represents closed block of user interface, which should be rendered in application.
+      \item[Node]
+        is a vertex in tree of virtual DOM. It contains instance of \texttt[Component], which represents type of this \texttt{Node}.
+      \item[ComponentDescription]
+        is, as it sound like, description of a component. It is returned from component to describe it's children. We discuss this principle later.
+      \item[NodeChange]
+        represents one change in virtual DOM, which should be applied into real DOM. By this, we achieve changing real DOM by smallest difference in virtual DOM. 
+    \end{description}
+
+    In contrast with facebook react \texttt{Component}, our component do nothing else than api offered to programmer.
+    This class is the main class for programmer which use our library, he don't need to use any other class created by our library. 
+    Just some methods.
+
+    We also got inspiration from react with idea of \textbf{virtual DOM}. 
+    This virtual DOM is not represented by tree of components, but to separate functionality, 
+    it's vertices are constructed by instances of class \texttt{Node}.
+
+    Every node contain instance of \texttt{Component}. 
+    For this \texttt{Component} instance this node is something like \textit{representer of me in virtual DOM}.
+    
+    The whole image of relationships is shown on figure~\nameref{img:library-core}. Now we will focus on the main classes separately. 
+    \begin{figure}[h]
+    \centering  
+      \includegraphics[scale=0.2]{images/uml/tiles/TilesCore/Core.png}
+      \caption{Core of the library}
+      \label{img:library-core}
+    \end{figure}
+
+    \subsubsection{Component}\label{subsubsec:our-architecture-core-component}
+      Component, as in react, is the main building brick of application(library). 
+      It offers api to the programmer with life-cycles, props and so on. 
+
+      Life-cycle methods will be discuss later, lets focus on the role of component in the whole library.
+
+      Component is a class, which represents functionality of certain part of UI\footnote{UI = User Interface} in an application.
+      It is created with some props and children and it is upon it to do what ever it wants with it. 
+      But main purpose of it is to create some structure below\footnote{From the virtual DOM tree point of view} it, 
+      add some event listeners and update itself sometimes, e.g. on some event occur.
+
+      The main method of the \texttt{Component} is \texttt{List<ComponentDescription> render()}. 
+      By this method component creates it's substructure.
+      It will return list of children of this component, represented by instance of \texttt{ComponentDescription}. 
+      \texttt{Node}, which owns this component (and called it's render method) will take care of the rest.
+      Basically, it will return something like \textit{"This is how I should look like"}.
+      
+    \subsubsection{ComponentDescription}\label{subsubsec:our-architecture-core-component-description}
+    \texttt{ComponentDescription} is description of a component. 
+    It describes what component should be rendered.
+
+    For this purpose, it's need 3 types of information:
+    \begin{description}
+      \item[Type of the component] \hfill \\
+        To create instance of some component, we need to know, what type (class) of the component it should be. 
+        This information is represented by \texttt{ComponentFactory}, 
+        which is function with 2 parameters, \texttt{props} and \texttt{children}, 
+        which returns instance of a subclass of a \texttt{Component}.
+      \item[Properties] \hfill \\
+        Data which should be passed to the factory, to be new component created with them.
+      \item[Children] \hfill \\
+        Children of described component.  
+        This is useful mainly when programmer want to render more complex structure of \texttt{DOMComponent}s.
+    \end{description}
+    \subsubsection{Node}\label{subsubsec:our-architecture-core-node}
+    \subsubsection{NodeChange}\label{subsubsec:our-architecture-core-node-change}
+
+
   \subsection{Life-cycle}\label{subsec:our-architecture-lifecycle}
 
     Every instance of \texttt{Component} have own life-cycle. 
@@ -35,30 +174,12 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
       it should do whatever it needs to prepare whole state of object to live.
 
       An trivial example of constructor of \texttt{Component} is 
-      \begin{minted}{dart}
-class MyComponent extends Component {
-  MyComponent(props, [children]): super(props, children) {}
-}
-      \end{minted}
+      \input content/examples/my_component_constructor.tex
       which only call's constructor of super class \texttt{Component}
 
       Example of more complex constructor should be e.g. component 
       which maintain example \texttt{Todo} instance.
-      \begin{minted}{dart}
-class MyTodoComponent extends Component {
-  Todo todo;
-  MySearchComponent(props, [children]): super(props, children) {
-    if (props != null && props.todo is Todo) {
-      this.todo = props.todo
-    } else {
-      this.todo = new Todo();
-    }
-  }
-
-  // ...
-
-}
-      \end{minted}
+      \input content/examples/my_todo_component_constructor.tex
 
     \subsubsection{Did mount}\label{subsec:our-architecture-lifecycle-didmount}
 
@@ -69,23 +190,7 @@ class MyTodoComponent extends Component {
 
       For example, in our \texttt{MyTodoComponent} we should listen for change of todo on server, 
       and if it was changed, we can redraw component.
-      \begin{minted}{dart}
-class MyTodoComponent extends Component {
-  Todo todo;
-  StreamSubscription subscription;
-
-  // ...
-
-  didMount() {
-    this.subscription = this.todo.changedOnServer.listen((change) {
-      this.redraw();
-    });
-  }
-
-  // ...
-
-}
-      \end{minted}
+      \input content/examples/my_todo_component_didmount.tex
 
     \subsubsection{Will receive props}\label{subsec:our-architecture-lifecycle-willreceiveprops}
 
@@ -99,25 +204,7 @@ class MyTodoComponent extends Component {
       Example of \texttt{willReceiveProps} in our \texttt{MyTodoComponent} 
       should compare \texttt{todo} of old and new props and there are not equal, 
       it can update change listener.
-      \begin{minted}{dart}
-class MyTodoComponent extends Component {
-  Todo todo;
-  StreamSubscription subscription;
-
-  // ...
-
-  willReceiveProps(dynamic newProps) {
-    if (this.todo != newProps.todo) {
-      this.subscription.cancel();
-      this.subscription = newProps.todo.changedOnServer.listen((change) {
-        this.redraw();
-      });
-    }
-  }
-
-  // ...
-}
-      \end{minted}
+      \input content/examples/my_todo_component_willreceiveprops.tex
       
       
     \subsubsection{Should update}\label{subsec:our-architecture-lifecycle-shouldupdate}
@@ -135,24 +222,7 @@ class MyTodoComponent extends Component {
       If not, it return false, else it return true.
 
       Example in \texttt{MyTodoComponent} should look like this:
-      \begin{minted}{dart}
-class MyTodoComponent extends Component {
-  Todo todo;
-  StreamSubscription subscription;
-
-  // ...
-
-  shouldUpdate (newProps, oldProps) {
-    if (newProps.todo == oldProps.todo) {
-      return false;
-    }
-    return true;
-  }
-
-  // ...
-
-}
-      \end{minted}
+      \input content/examples/my_todo_component_shouldupdate.tex
 
     \subsubsection{Render}\label{subsec:our-architecture-lifecycle-render}
 
@@ -163,24 +233,7 @@ class MyTodoComponent extends Component {
       \textit{"this is how this component should look like"}.
 
       For example, in our \texttt{MyTodoComponent} render will return \texttt{<div>} which contains title and description of \texttt{todo}.
-      \begin{minted}{dart}
-class MyTodoComponent extends Component {
-  Todo todo;
-  StreamSubscription subscription;
-
-  // ...
-
-  render () {
-    return div ({"class": "todo"}, [
-      h2 ({}, todo.title),
-      p ({}, todo.description)
-    ]);
-  }
-
-  // ...
-
-}
-      \end{minted}
+      \input content/examples/my_todo_component_render.tex
 
     \subsubsection{Did update}\label{subsec:our-architecture-lifecycle-didupdate}
 
@@ -196,27 +249,13 @@ class MyTodoComponent extends Component {
       It is called right before it is unmounted from dom. 
 
       This is the correct place to stop all timers and listeners.
-      \begin{minted}{dart}
-class MyTodoComponent extends Component {
-  Todo todo;
-  StreamSubscription subscription;
-
-  // ...
-
-  willUnmount () {
-    subscription.cancel();
-  }
-
-  // ...
-
-}
-      \end{minted}
+      \input content/examples/my_todo_component_willunmount.tex
 
   \subsection{Events}\label{subsec:our-architecture-events}
   \subsection{Rendering}\label{subsec:our-architecture-rendering}
   \subsubsection{Server side}\label{subsec:our-architecture-rendering-server}
   \subsubsection{In browser}\label{subsec:our-architecture-rendering-browser}
-  \subsection{Infecting}\label{subsec:our-architecture-infecting}
+  \subsection{Injecting}\label{subsec:our-architecture-injecting}
 
 \section{API}\label{sec:our-api}
 

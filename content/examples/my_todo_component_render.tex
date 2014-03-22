@@ -1,0 +1,19 @@
+      \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  StreamSubscription subscription;
+
+  // ...
+
+  render () {
+    return div ({"class": "todo"}, [
+      h2 ({}, todo.title),
+      p ({}, todo.description)
+    ]);
+  }
+
+  // ...
+
+}
+      \end{minted}
+

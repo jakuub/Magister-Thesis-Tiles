@@ -1,3 +1,6 @@
 [submodule "tiles"]
 	path = tiles
 	url = git@github.com:cleandart/tiles.git
+[submodule "images/uml"]
+	path = images/uml
+	url = git@github.com:jakuub/tiles-uml.git

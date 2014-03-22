@@ -1,0 +1,17 @@
+      \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  StreamSubscription subscription;
+
+  // ...
+
+  didMount() {
+    this.subscription = this.todo.changedOnServer.listen((change) {
+      this.redraw();
+    });
+  }
+
+  // ...
+
+}
+      \end{minted}

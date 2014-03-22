@@ -1,0 +1,19 @@
+      \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  StreamSubscription subscription;
+
+  // ...
+
+  shouldUpdate (newProps, oldProps) {
+    if (newProps.todo == oldProps.todo) {
+      return false;
+    }
+    return true;
+  }
+
+  // ...
+
+}
+      \end{minted}
+
