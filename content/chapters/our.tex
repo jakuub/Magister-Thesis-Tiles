@@ -86,13 +86,19 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
     We have 4 main classes in core of the library.
     \begin{description}
       \item[Component] 
-        represents closed block of user interface, which should be rendered in application.
+        represents closed block of user interface, 
+        which should be rendered in application.
       \item[Node]
-        is a vertex in tree of virtual DOM. It contains instance of \texttt[Component], which represents type of this \texttt{Node}.
+        is a vertex in tree of virtual DOM. 
+        It contains instance of \texttt[Component], which represents type of this \texttt{Node}.
       \item[ComponentDescription]
-        is, as it sound like, description of a component. It is returned from component to describe it's children. We discuss this principle later.
+        is, as it sound like, description of a component. 
+        It is returned from component to describe it's children. 
+        We discuss this principle later.
       \item[NodeChange]
-        represents one change in virtual DOM, which should be applied into real DOM. By this, we achieve changing real DOM by smallest difference in virtual DOM. 
+        represents one change in virtual DOM, which should be applied into real DOM. 
+        By this, we achieve changing real DOM by smallest difference in virtual DOM. 
+        Types of change are \texttt{CREATED, UPDATED, MOVED, DELETED}
     \end{description}
 
     In contrast with facebook react \texttt{Component}, our component do nothing else than api offered to programmer.
@@ -398,6 +404,92 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
       \end{algorithm}
 
     \subsubsection{In browser}\label{subsec:our-architecture-rendering-browser}
+      Rendering in browser is quiet more difficult than rendering to string. 
+      We can use same render to string method, but we will need some connections between nodes and elements, 
+      so we can't do it this simply.
+
+      \paragraph{Initial mount}\label{par:our-architecture-rendering-browser-init} 
+        First the user of the library need to do is to mount component to the HTML element. 
+        Of cause, he will mount component description, not component directly.
+        When component is mounting, it is created, placed into the node and after this, node is "updated". 
+        It is initial update which creates virtual DOM. 
+
+        When virtual DOM is created, we need to construct real DOM under the root element 
+        (element, which was component mounted to) from "virtual image".
+
+        For now, we describe case, that root element is empty (has no child element or node).
+        Case, when it is not empty we discussed in the subsection~\nameref{subsec:our-architecture-injecting}.
+        The mount is easily described by next algorithm:
+        \begin{algorithm}[H]
+          \KwData{node in virtual DOM and HTML element, to mount node to (mountRoot)}
+          \KwResult{Mounted node into element}
+          % initialization\;
+          % \While{not at end of this document}{
+          % read current\;
+          \eIf{node.component is DomComponent}{
+            \eIf{node.component is not pair}{
+              create element representing component\;
+              add created element to mountRoot\;
+            }{
+              create element representing component\;
+              add created element to mountRoot\;
+              \For{child in node.children} {
+                run recursively with created element as mountRoot and child as node\;
+              }
+            }
+            save relations between created element and node;
+          }{
+            \eIf{node.component is tex component}{
+              create HTML text node with text from component\;
+              add text node to mountRoot\;
+              save relations between created text node and node;
+            }{
+              \For{child in node.children} {
+                run recursively with mountRoot and child as node\;
+              }
+            }
+          }
+          % }
+          \caption{Write node into string.}
+        \end{algorithm}
+
+        As we can see, algorithm is recursive and skips custom components. 
+        Also it creates relations between created elements and nodes. 
+        Which are these relations we discuss later, when we need them.
+
+        By this algorithm, it is obvious, that we have real DOM with the same structure, 
+        if we can obtain from virtual DOM by removing nodes with custom components 
+        and connect their children with their parent.
+
+      \paragraph{Update}\label{par:our-architecture-rendering-browser-update} 
+        Later, there can be situation, that virtual DOM want to be updated. 
+        This is when some node was marked as \textit{dirty}.
+        Then framework perform update of this node, 
+        which triggers update of the subtrees with roots in dirty nodes.
+        This updates return lists of changes in virtual DOM, 
+        which should be applied to browser element structure.
+
+        These updates should be processed by it's type. 
+        But for every type we need the information about which HTML element represents some node. 
+        This is first relation, which we need to remember, when we initialize mounted relation, 
+        relation \mbox{\texttt{Node $\rightarrow$ Element}}. 
+        This relation is stored by map \texttt{Map<Node, Element>}.
+
+        But what happened when we want to apply node change into real DOM structure?
+        For each type of change something different of cause:
+        \begin{description}
+          \item[CREATED]
+            when new node is created, it should be mounted into the DOM. 
+            If it has \texttt{DomComponent} inside, HTML element will be created and placed at the correct place. 
+            If it has some custom component, this change will be ignored. 
+          \item[UPDATED]
+            If node was updated, then if it has \texttt{DomComponent}, it's element is updated with setted props.
+          \item[MOVED]
+            Node or it's children(if it is node with custom component) is moved to new position.
+          \item[DELETED]
+            Element of node or elements of its descendants(if it is node with custom component) are removed from DOM.
+        \end{description}
+
   \subsection{Events}\label{subsec:our-architecture-events}
     As we were created dart library which creates virtual DOM, composed from nodes, which contains components, 
     it is obvious that we can "simulate" event bubbling trough this virtual DOM. 
