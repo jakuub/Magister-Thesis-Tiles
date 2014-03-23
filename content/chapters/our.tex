@@ -130,27 +130,111 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
       It will return list of children of this component, represented by instance of \texttt{ComponentDescription}. 
       \texttt{Node}, which owns this component (and called it's render method) will take care of the rest.
       Basically, it will return something like \textit{"This is how I should look like"}.
+
+      Second important method is \texttt{void redraw()}, which trigger redraw of the component. 
+      This redraw will be executed on the first next animation frame. 
+
+      Redraw is powered by \texttt{needUpdate} stream offered by \texttt{Component}, 
+      which is automatically created in default constructor of class \texttt{Component}, 
+      so it is very important, to call superclass constructor in each custom component class.
+
+      \texttt{ComponentDescriptionFactory registerComponent(ComponentFactory factory)} is also very helpful method. 
+      By passing it it gets \texttt{ComponentFactory} as an argument and from it, create \texttt{ComponentDescriptionFactory}. 
+      This is mainly created for easy use of the library, we will show why these factories exists and how are they used in section~\nameref{sec:our-api}
       
+    \subsubsection{DomComponent}\label{subsubsec:our-architecture-core-dom-component}
+      \texttt{DomComponent} is a subclass of class \texttt{Component}. 
+      This is specialized class, which represents HTML elements in the component structure.
+
+      It has \texttt{props} saved as \texttt{Map}, because HTML element have attributes saved in \texttt{Map},
+      \texttt{render} method, which return \texttt{children} member variable and \texttt{svg} and \texttt{pair} flags.
+
+      Specific HTML elements are then created as with different \texttt{ComponentFactory} and also different \texttt{ComponentDescriptionFactory}, 
+      which is used to easily create \texttt{ComponentDescription}s of \texttt{DomComponent} in custom component render method. 
+
     \subsubsection{ComponentDescription}\label{subsubsec:our-architecture-core-component-description}
-    \texttt{ComponentDescription} is description of a component. 
-    It describes what component should be rendered.
+      \texttt{ComponentDescription} is description of a component. 
+      It describes what component should be rendered.
 
-    For this purpose, it's need 3 types of information:
-    \begin{description}
-      \item[Type of the component] \hfill \\
-        To create instance of some component, we need to know, what type (class) of the component it should be. 
-        This information is represented by \texttt{ComponentFactory}, 
-        which is function with 2 parameters, \texttt{props} and \texttt{children}, 
-        which returns instance of a subclass of a \texttt{Component}.
-      \item[Properties] \hfill \\
-        Data which should be passed to the factory, to be new component created with them.
-      \item[Children] \hfill \\
-        Children of described component.  
-        This is useful mainly when programmer want to render more complex structure of \texttt{DOMComponent}s.
-    \end{description}
+      For this purpose, it's need 4 types of information:
+      \begin{itemize}
+        \item \textbf{Type of the component} \hfill \\
+          To create instance of some component, we need to know, what type (class) of the component it should be. 
+          This information is represented by \texttt{ComponentFactory}, 
+          which is function with 2 parameters, \texttt{props} and \texttt{children}, 
+          which returns instance of a subclass of a \texttt{Component}.
+        \item \textbf{Properties} \hfill \\
+          Data which should be passed to the factory, to be new component created with them.
+        \item \textbf{Children} \hfill \\
+          Children of described component.  
+          This is useful mainly when programmer want to render more complex structure of \texttt{DOMComponent}s.
+        \item \textbf{Key} \hfill \\
+          Key is an identifier of a child. If component's function render returns list of children with keys, 
+          and after update it returns the same children but in different positions, 
+          tiles only reorder this children and not remove, add them or change their properties. 
+      \end{itemize}
+
+      It has all these information as final. Description is once created, 
+      with all informations and then these information can't be changed. 
+      All these information is setted up bu constructor. 
+
+      \texttt{ComponentDescription} have one important method, which is\texttt{Component createComponent()}, 
+      which creates \texttt{Component} instance with props and children from the description.
+
     \subsubsection{Node}\label{subsubsec:our-architecture-core-node}
-    \subsubsection{NodeChange}\label{subsubsec:our-architecture-core-node-change}
+      \texttt{Node} is the most important and complex class in the library.
+      It creates virtual DOM tree, maintain creating and updating of it based on results of component's \texttt{render} method, 
+      listen to component's \texttt{needUpdate} stream and mark self as \textit{"dirty"} when it's component need update 
+      and handle process of updating which rearrange children of the \texttt{Node}.
 
+      Children are stored trough class \texttt{NodeChild}, which represents all information about child (node, component's factory and key). 
+      By this encapsulation, when update is triggered, we can compare factory of a component description and factory of a child 
+      and decide, if we need to replace this child or it is enough to update it. 
+
+      As the key is also stored in \texttt{NodeChild}, we also compare old children with next one when doing update, 
+      and if there exists child in old children with the same key as in the next one, this child "step out of the line" 
+      and only move around without replacing.
+      
+      Node have two important flags: \texttt{isDirty} and \texttt{hasDirtyDescendant}. 
+      These flags represents information, if some node need to be redrawn.
+      If \texttt{isDirty} is true, this node need to be updated, 
+      because component of this node called \texttt{redraw}.
+      If \texttt{hasDirtyDescendant} is true, that means, 
+      that there exist a descendant of this node, which want to be updated.
+      When \texttt{hasDirtyDescendant} is true and \texttt{isDirty} is false, 
+      component don't have to update itself, it is enough to call update on child nodes.
+
+      Method \texttt{List<NodeChange> update()} is doing this update process. 
+      It returns list of changes, which was needed to put node in new state.
+      This update is mainly called by browser part of a library and this list is used to translate changes in virtual DOM to real one. 
+      Method consists of several main steps.
+      \begin{enumerate}
+        \item check, if update is needed by flags \texttt{isDirty} and \texttt{hasDirtyDescendant}, if no, return,
+        \item if component of this node need update (\texttt{isDirty == true}), update this node with rearrangement of children,
+        \item add results of update calls on children to result,
+        \item set this node as not dirty and not have dirty descendant and return.
+      \end{enumerate}
+
+      Rearrangement of children by calling \texttt{render} method of this component 
+      and adapting node's children to returned descriptions 
+      has not so difficult as complex algorithm, which we will not describe here. 
+      It is fully documented in the source code related to this work, 
+      extracted to specific method private to the library which is in own file:
+      \url{https://github.com/cleandart/tiles/blob/master/lib/src/core/node_update_children.dart}
+
+    \subsubsection{NodeChange}\label{subsubsec:our-architecture-core-node-change}
+      \texttt{NodeChange} take place as a record of a change in the virtual DOM. 
+      It is used to mirror changes in the virtual DOM with real DOM. 
+
+      When some node in the virtual DOM is updated by method \texttt{update}, list of changes is returned. 
+      This list is then processed by browser part of a library, which mirror these changes to real DOM.
+
+      \texttt{NodeChange} class has no methods (except constructor) and act just as a data chunk specialized for it's purpose. 
+      It contains node, type of change, old and next properties. 
+
+      Type is stored as instance of \texttt{NodeChangeType} enum and can be one of \texttt{CREATED}, \texttt{UPDATED}, 
+      \texttt{MOVED} and \texttt{DELETED}, whom meaning is obvious. 
+      When type is \texttt{UPDATED}, old props and new pros take effect. 
 
   \subsection{Life-cycle}\label{subsec:our-architecture-lifecycle}
 
