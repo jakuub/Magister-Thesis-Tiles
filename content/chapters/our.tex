@@ -247,9 +247,21 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
     then it is asked, if it should be updated, and if yes, then it is rendered.
     After that, it was updated, of course.
 
+    Sometimes component want to update itself (e.g. because some event occurs).
+    It calls redraw, then, it will be asked if really should update, and if yes, it is rendered and update.
+
     At the end of component's life, 
     component should be notified about that it will be unmounted(e.g. from DOM), 
     to be able, to do some modifications to it's refs, destroy timers and so on. 
+
+    This whole life-cycle is shown on the figure~\nameref{img:our-life-cycle}.
+
+    \begin{figure}[h]
+    \centering  
+      \includegraphics[scale=0.6]{images/uml/tiles/TilesCore/LifeCycle.png}
+      \caption{Life cycle of a \texttt{Component}}
+      \label{img:our-life-cycle}
+    \end{figure}
 
     \subsubsection{Create}\label{subsec:our-architecture-lifecycle-create}
 
