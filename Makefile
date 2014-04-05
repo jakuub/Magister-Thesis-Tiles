@@ -34,3 +34,8 @@ dist-clean:
 booklet: main.ps
 	cat main.ps | psbook | psnup -2 >main-booklet.ps
 
+flat: main.flt.tex
+
+main.flt.tex: */*/*.tex *.tex *.bib Makefile
+	flatex main.tex
+	mv main.flt main.flt.tex

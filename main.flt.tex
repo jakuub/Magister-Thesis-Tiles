@@ -1,3 +1,382 @@
+% flatex input: [main.tex]
+\documentclass[oneside, 12pt]{book}
+% \usepackage[slovak]{babel}
+\usepackage{epsfig}
+\usepackage{color}
+\usepackage{url}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{todonotes}
+\reversemarginpar
+\usepackage[]{algorithm2e}
+
+% flatex input: [./config.tex]
+
+%------------------------------------------------------------------------------------------------------
+% pekne pokope definujeme potrebne udaje
+%------------------------------------------------------------------------------------------------------
+\def\mftitle{Two-way databinding of models and views in Dart}          % nazov diplomovky/bakalarky
+\def\mfthesistype{Diploma thesis}             % typ prace
+\def\mfkeywords{Databinding, Dart, Facebook React, AngularJS, ... }        % proste klucove slova idealne oddelene ciarkou
+\def\mfkeywordsen{Databinding, Dart, Facebook React, AngularJS, ... }      % klucove slova v anglictine EN
+\def\mfkeywordssk{Databinding, Dart, Facebook React, AngularJS, ... }      % klucove slova v slovencine SK
+\def\mfauthor{Bc. Jakub Uhrík}                            % vase meno a priezvysko
+\def\mfadvisor{RNDr. Tomáš Kulich, PhD.}                                  % cele meno skolitela
+\def\mfplacedate{Bratislava, 2014}                        % mesto a rok
+\def\mfdate{2014}                                         % Rok
+\def\mfuniversity{Comenius University in Bratislava}      % Univerzita
+\def\mffakulta{Faculty of Mathematics, Physics and Informatics}  % Katedra
+\def\mffakultafull{Faculty of Mathematics, Physics and Informatics, Comenius University in Bratislava}  
+                                                          % Katedra v plnom zneni aj s univerzitou
+\def\mfprogram{Computer Science}                               % studijny program
+\def\mfodbor{9.2.1. Computer Science, Informatics}                            % studijny odbor
+\def\mfpracovisko{FMFI.KI - Department of Computer Science}                    % skoliace pracovisko
+
+
+% flatex input end: [./config.tex]
+
+% \usepackage[slovak]{babel}
+
+\usepackage[a4paper,vmargin={25mm,25mm},hmargin={35mm,20mm}]{geometry} 
+\usepackage{minted}
+\usepackage{caption}
+\hyphenpenalty=10000
+\tolerance=10000
+
+\usepackage[
+	bookmarks=true,
+	bookmarksnumbered=false, 	% true means bookmarks in
+								% left window are numbered
+	bookmarksopen=false,
+								% true means only level 1
+								% are displayed.
+	colorlinks=true,
+	pdftitle={\mftitle},
+	pdfauthor={\mfauthor},
+	pdfsubject={\mfthesistype},
+	pdfkeywords={\mfkeywords},
+	pdfproducer={\mffakultafull},
+	linkcolor=webblue]{hyperref}
+\definecolor{webgreen}{rgb}{0, 0.5, 0} % less intense green
+\definecolor{webblue}{rgb}{0, 0, 0.5} % less intense blue
+\definecolor{webred}{rgb}{0.5, 0, 0}
+\definecolor{grey}{rgb}{0.5, 0.5, 0.5}
+\definecolor{white}{rgb}{0.95, 0.95, 0.95}
+\definecolor{black}{rgb}{0, 0, 0}
+%------------------------------------------------------------------------------------------------------
+% less intense red
+%------------------------------------------------------------------------------------------------------
+
+\usepackage[final]{pdfpages}
+
+ 
+%------------------------------------------------------------------------------------------------------
+% riadkovanie jeden a pol
+%------------------------------------------------------------------------------------------------------
+\renewcommand\baselinestretch{1.3} 
+
+\def\phrase{\begingroup\phrasenohyphen
+	\dononbreakablespace
+	\dononbreakablehyphen
+	\dophrase}
+\makeatletter
+\def\phrasenohyphen{%
+	\language\@ifundefined{l@nohyphenation}{\@cclv}{\l@nohyphenation}}
+\makeatother
+\def\dophrase#1{#1\endgroup}
+
+\author{\mfauthor}
+\title{\mftitle}
+
+\begin{document}
+
+%------------------------------------------------------------------------------------------------------
+% vlozime strukturu, vyplnte ju priamov suboroch, treba len pomenit texty
+%------------------------------------------------------------------------------------------------------
+% flatex input: [./content/structure/obalka.tex]
+%------------------------------------------------------------------------------------------------------
+%  toto je subor obalky vasej prace. 
+%  s tymto by ste asi ani nemali nic robit pouziju sa prednastavene veci z hlavneho suboru
+%------------------------------------------------------------------------------------------------------
+\frontmatter
+
+\thispagestyle{empty}
+
+\noindent
+\begin{center}
+\begin{minipage}{0.8\textwidth}
+\centerline{\renewcommand\baselinestretch{1.3} \LARGE\sc\mfuniversity}
+\centerline{\sc\mffakulta}
+\end{minipage}
+\end{center}
+
+\vfill
+\begin{center}
+\begin{minipage}{1\textwidth}
+\bigskip\bigskip
+\begin{center}
+\linespread{1}\LARGE\sc\mftitle
+\end{center}
+\smallskip
+\centerline{\mfthesistype}
+\bigskip
+\bigskip
+\bigskip\bigskip
+\end{minipage}
+\end{center}
+\vfill
+{\bf\mfdate\\
+\indent\mfauthor}
+\eject 
+
+
+% flatex input end: [./content/structure/obalka.tex]
+
+%------------------------------------------------------------------------------------------------------
+
+% flatex input: [./content/structure/titulka.tex]
+%------------------------------------------------------------------------------------------------------
+%  toto je titulna stranka, vsetky veci ste nastavili v config.tex
+%------------------------------------------------------------------------------------------------------
+\thispagestyle{empty}
+
+\noindent
+\begin{center}
+\begin{minipage}{0.8\textwidth}
+\centerline{\LARGE\sc\mfuniversity}
+\centerline{\sc\mffakulta}
+\end{minipage}
+\end{center}
+
+\vfill
+\begin{center}
+\begin{minipage}{1\textwidth}
+\bigskip\bigskip
+\begin{center}
+\linespread{1}\LARGE\sc\mftitle
+\end{center}
+\smallskip
+\centerline{\mfthesistype}
+\bigskip
+\bigskip
+\bigskip\bigskip
+\end{minipage}
+\end{center}
+\vfill
+\begin{minipage}{0.8\textwidth}
+\begin{tabular}{l l}
+Study programme:& \mfprogram \\
+Field of Study:& \mfodbor \\
+Department:& \mfpracovisko\\
+Thesis supervisor:&   \mfadvisor \\
+\end{tabular}
+\end{minipage}
+\begin{center}
+\end{center}
+\vfill
+{\bf\mfplacedate\\
+\indent\mfauthor}
+\eject 
+
+
+% flatex input end: [./content/structure/titulka.tex]
+
+%------------------------------------------------------------------------------------------------------
+
+% flatex input: [./content/structure/zadanie.tex]
+%------------------------------------------------------------------------------------------------------
+%  pdf zadania dajte do zlozky images v subore zadanie.pdf tak ako vidite v prikaze. 
+%  ak zadavate aj anglicke zadanie, odkomentujte(odstrante percento zo zaciatku) 
+%  druhy riadok a podla neho pridajte adekvatne pdf
+%------------------------------------------------------------------------------------------------------
+
+\includepdf{images/zadanie-en.pdf}
+\includepdf{images/zadanie.pdf}
+% \includepdf{images/zadanie-en.pdf}
+
+
+% flatex input end: [./content/structure/zadanie.tex]
+
+%------------------------------------------------------------------------------------------------------
+
+%------------------------------------------------------------------------------------------------------
+% ked treba, da sa vlozit cestne prehlasenie...
+%------------------------------------------------------------------------------------------------------
+%\input{./content/structure/prehlasenie.tex}
+
+% flatex input: [./content/structure/thanks.tex]
+%------------------------------------------------------------------------------------------------------
+% Podakovanie. Proste subor s podakovanim. Napiste sem komu dakujete, mozete sa inspirovat mojim
+%------------------------------------------------------------------------------------------------------
+{~}\vspace{12cm}
+
+\noindent
+\begin{minipage}{0.25\textwidth}~\end{minipage}
+\begin{center}
+\begin{minipage}{1\textwidth}
+%------------------------------------------------------------------------------------------------------
+%  sem pridajte svoj originalny text, alebo len prepiste \mfadvisor za vysklonovane meno vaseho veduceho
+%------------------------------------------------------------------------------------------------------
+
+I would like to thank my supervisor \mfadvisor for his guidance,support, and encouragement throughout writing this thesis. 
+
+Special thanks belong to my family for all their support.
+
+\end{minipage}
+\end{center}
+\hfill\mfauthor
+\vfill\eject 
+
+
+% flatex input end: [./content/structure/thanks.tex]
+
+%\input{./content/structure/prehlasenie.tex}
+
+% flatex input: [./content/structure/abstract.tex]
+%------------------------------------------------------------------------------------------------------
+% Toto je subor s abstraktom. Pridajte sem vas/tvoj abstrakt v slovencine a/alebo anglictine
+% Ak chcete len jeden abstrakt, vymazte vsetko medzi komentarmi "jazyk zaciatok" a "jazy koniec"
+%------------------------------------------------------------------------------------------------------
+
+%------------------------------------------------------------------------------------------------------
+% EN zaciatok
+%------------------------------------------------------------------------------------------------------
+\noindent
+\begin{center}
+\begin{minipage}{1\textwidth}
+\centerline{\large Abstract}
+Abstract in english.
+%------------------------------------------------------------------------------------------------------
+% sem pridajte abstrakt v anglictine
+%------------------------------------------------------------------------------------------------------
+\\ \\ 
+{\bf Key words:} \mfkeywordsen
+\end{minipage}
+\end{center}
+\eject % EOP v
+%------------------------------------------------------------------------------------------------------
+% EN konie
+%------------------------------------------------------------------------------------------------------
+
+%------------------------------------------------------------------------------------------------------
+% SK zaciatok
+%------------------------------------------------------------------------------------------------------
+\noindent
+\begin{center}
+\begin{minipage}{1\textwidth}
+\centerline{\large Abstrakt}
+%------------------------------------------------------------------------------------------------------
+% sem pridajte abstrakt v slovencine
+%------------------------------------------------------------------------------------------------------
+Abstrakt v slovencine.
+\\ \\ 
+{\bf Kľúčové slová:} \mfkeywordssk
+\end{minipage}
+\end{center}
+\eject % EOP v
+%------------------------------------------------------------------------------------------------------
+% SK konie
+%------------------------------------------------------------------------------------------------------
+
+
+% flatex input end: [./content/structure/abstract.tex]
+
+%\input{./content/structure/prehlasenie.tex}
+
+%------------------------------------------------------------------------------------------------------
+% obsah
+%------------------------------------------------------------------------------------------------------
+\tableofcontents
+
+%------------------------------------------------------------------------------------------------------
+% zoznam obrazkov
+%------------------------------------------------------------------------------------------------------
+\listoffigures
+
+\mainmatter
+
+%------------------------------------------------------------------------------------------------------
+% page stype plain pre ciste strany bez cisiel stran pre uvod
+%------------------------------------------------------------------------------------------------------
+\pagestyle{plain}
+
+%------------------------------------------------------------------------------------------------------
+% a teraz includneme vsetky kapitoly, realne je to len subor, v ktorom sa incuduju kapitoly postupne
+%------------------------------------------------------------------------------------------------------
+% flatex input: [./content/chapters/chapters.tex]
+\pagestyle{plain}
+% flatex input: [content/chapters/intro.tex]
+\chapter*{Introduction}\label{chap:intro}
+\addcontentsline{toc}{chapter}{Introduction}
+
+As one of the results of this magister thesis is our new databinding library in dart, 
+which is called \textbf{tiles}. 
+In next  text, we will use only \textbf{tiles} to mention \textit{our new databinding library in dart}.
+
+% flatex input end: [content/chapters/intro.tex]
+
+\pagestyle{headings}
+% flatex input: [content/chapters/motivation.tex]
+\chapter{Motivation - why databinding}\label{chap:motivatio}
+
+The first question, as always should be, is the motivation of this work. 
+What is the motivation to create another library, that will handle databinding in dart?
+
+We will start with small introduction to history of how websites and later web-applications was created. 
+Then we define a set of features required for \textbf{tiles}.
+
+\section{History}\label{sec:history}
+\subsection{Plain documents}\label{subsec:history-plain-doc}
+\subsection{Simple PHP}\label{subsec:history-server-side-scripts}
+\subsection{Server side frameworks}\label{subsec:history-server-side-frameworks}
+\subsection{Simple JavaScript/jQuery}\label{subsec:history-jquery}
+\subsection{JavaScript MVC frameworks}\label{subsec:history-js-mvc}
+
+
+\section{Objectives}\label{sec:objectives}
+
+From previous overview of "history" we can produce set of features, 
+which should be contained in \textbf{tiles}.
+
+\subsection{Server-side rendering}\label{subsec:objectives-server-side-rendering}
+\subsection{Programmer friendly API}\label{subsec:objectives-friendly-api}
+\subsection{Easy concept}\label{subsec:objectives-easy-concept}
+\subsection{Two way databinding}\label{subsec:objectives-two-way-databinding}
+
+% flatex input end: [content/chapters/motivation.tex]
+
+% flatex input: [content/chapters/databinding.tex]
+\chapter{Databinding}\label{chap:databinding}
+
+In this chapter we will introduce problematics of databinding more deeply then in introduction.
+
+\section{One way databinding}\label{sec:onewaydatabinding}
+
+Discuss one way databinding.
+
+\section{Two way databinding}
+
+Discuss two way databinding.
+
+% flatex input end: [content/chapters/databinding.tex]
+
+% flatex input: [content/chapters/existing.tex]
+\chapter{Existing solutions}\label{chap:existingsolutions}
+
+\section{Template driven}\label{sec:template}
+
+Discuss databinding based on filling some type of template with model. 
+This approach is used in standard MVC frameworks like AngularJS, Ember or UI libraries like Polymer.dart.
+
+\section{Component driven}\label{sec:component}
+
+Discuss databinding based on component approach used for example in React from facebook or our library.
+
+
+% flatex input end: [content/chapters/existing.tex]
+
+% flatex input: [content/chapters/our.tex]
 \chapter{Our solution}\label{chap:oursolution}
 
 In this chapter we will introduce and deeply describe our Dart library \texttt{Tiles}.
@@ -276,12 +655,38 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
       it should do whatever it needs to prepare whole state of object to live.
 
       An trivial example of constructor of \texttt{Component} is 
-      \input{content/examples/my_component_constructor.tex}
+      % flatex input: [content/examples/my_component_constructor.tex]
+      \begin{minted}{dart}
+class MyComponent extends Component {
+  MyComponent(props, [children]): super(props, children) {}
+}
+      \end{minted}
+
+% flatex input end: [content/examples/my_component_constructor.tex]
+
       which only call's constructor of super class \texttt{Component}
 
       Example of more complex constructor should be e.g. component 
       which maintain example \texttt{Todo} instance.
-      \input{content/examples/my_todo_component_constructor.tex}
+      % flatex input: [content/examples/my_todo_component_constructor.tex]
+      \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  MySearchComponent(props, [children]): super(props, children) {
+    if (props != null && props.todo is Todo) {
+      this.todo = props.todo
+    } else {
+      this.todo = new Todo();
+    }
+  }
+
+  // ...
+
+}
+      \end{minted}
+
+% flatex input end: [content/examples/my_todo_component_constructor.tex]
+
 
     \subsubsection{Did mount}\label{subsec:our-architecture-lifecycle-didmount}
 
@@ -292,7 +697,27 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
 
       For example, in our \texttt{MyTodoComponent} we should listen for change of todo on server, 
       and if it was changed, we can redraw component.
-      \input{content/examples/my_todo_component_didmount.tex}
+      % flatex input: [content/examples/my_todo_component_didmount.tex]
+      \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  StreamSubscription subscription;
+
+  // ...
+
+  didMount() {
+    this.subscription = this.todo.changedOnServer.listen((change) {
+      this.redraw();
+    });
+  }
+
+  // ...
+
+}
+      \end{minted}
+
+% flatex input end: [content/examples/my_todo_component_didmount.tex]
+
 
     \subsubsection{Will receive props}\label{subsec:our-architecture-lifecycle-willreceiveprops}
 
@@ -306,7 +731,30 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
       Example of \texttt{willReceiveProps} in our \texttt{MyTodoComponent} 
       should compare \texttt{todo} of old and new props and there are not equal, 
       it can update change listener.
-      \input{content/examples/my_todo_component_willreceiveprops.tex}
+      % flatex input: [content/examples/my_todo_component_willreceiveprops.tex]
+      \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  StreamSubscription subscription;
+
+  // ...
+
+  willReceiveProps(dynamic newProps) {
+    if (this.todo != newProps.todo) {
+      this.subscription.cancel();
+      this.subscription = newProps.todo.changedOnServer.listen((change) {
+        this.redraw();
+      });
+    }
+  }
+
+  // ...
+}
+      \end{minted}
+
+
+% flatex input end: [content/examples/my_todo_component_willreceiveprops.tex]
+
       
       
     \subsubsection{Should update}\label{subsec:our-architecture-lifecycle-shouldupdate}
@@ -324,7 +772,29 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
       If not, it return false, else it return true.
 
       Example in \texttt{MyTodoComponent} should look like this:
-      \input{content/examples/my_todo_component_shouldupdate.tex}
+      % flatex input: [content/examples/my_todo_component_shouldupdate.tex]
+      \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  StreamSubscription subscription;
+
+  // ...
+
+  shouldUpdate (newProps, oldProps) {
+    if (newProps.todo == oldProps.todo) {
+      return false;
+    }
+    return true;
+  }
+
+  // ...
+
+}
+      \end{minted}
+
+
+% flatex input end: [content/examples/my_todo_component_shouldupdate.tex]
+
 
     \subsubsection{Render}\label{subsec:our-architecture-lifecycle-render}
 
@@ -335,7 +805,29 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
       \textit{"this is how this component should look like"}.
 
       For example, in our \texttt{MyTodoComponent} render will return \texttt{<div>} which contains title and description of \texttt{todo}.
-      \input{content/examples/my_todo_component_render.tex}
+      % flatex input: [content/examples/my_todo_component_render.tex]
+      \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  StreamSubscription subscription;
+
+  // ...
+
+  render () {
+    return div ({"class": "todo"}, [
+      h2 ({}, todo.title),
+      p ({}, todo.description)
+    ]);
+  }
+
+  // ...
+
+}
+      \end{minted}
+
+
+% flatex input end: [content/examples/my_todo_component_render.tex]
+
 
     \subsubsection{Did update}\label{subsec:our-architecture-lifecycle-didupdate}
 
@@ -351,7 +843,25 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
       It is called right before it is unmounted from dom. 
 
       This is the correct place to stop all timers and listeners.
-      \input{content/examples/my_todo_component_willunmount.tex}
+      % flatex input: [content/examples/my_todo_component_willunmount.tex]
+      \begin{minted}{dart}
+class MyTodoComponent extends Component {
+  Todo todo;
+  StreamSubscription subscription;
+
+  // ...
+
+  willUnmount () {
+    subscription.cancel();
+  }
+
+  // ...
+
+}
+      \end{minted}
+
+% flatex input end: [content/examples/my_todo_component_willunmount.tex]
+
 
   \subsection{Rendering}\label{subsec:our-architecture-rendering}
     The main target of our library is rendering of a content. 
@@ -506,3 +1016,106 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
   \subsection{Component}\label{subsec:our-api-component}
   \subsection{Browser specific API}\label{subsec:our-api-browser}
   \subsection{Server specific API}\label{subsec:our-api-server}
+
+% flatex input end: [content/chapters/our.tex]
+
+% flatex input: [content/chapters/performance.tex]
+\chapter{Performance}\label{chap:performance}
+
+% flatex input end: [content/chapters/performance.tex]
+
+% flatex input: [content/chapters/benchmarks.tex]
+\chapter{Benchmarks}\label{chap:benchmarks}
+
+
+% flatex input end: [content/chapters/benchmarks.tex]
+
+\pagestyle{plain}
+% flatex input: [content/chapters/conclusion.tex]
+%------------------------------------------------------------------------------------------------------
+%  tak isto ako ufod, toto je zaver. V pripade anglictiny premenujte kapitolu...
+%------------------------------------------------------------------------------------------------------
+\chapter*{Conclusion}\label{chap:conclusion}
+\addcontentsline{toc}{chapter}{Conclusion}
+
+Here will be conclusion of wholw thesis
+
+
+% flatex input end: [content/chapters/conclusion.tex]
+
+
+% flatex input end: [./content/chapters/chapters.tex]
+
+%------------------------------------------------------------------------------------------------------
+
+\backmatter
+
+%------------------------------------------------------------------------------------
+% vyprodukujeme bibliografiu zo suboru literatura.bib
+%------------------------------------------------------------------------------------
+\nocite{*}
+%*flatex input: [main.bbl]
+\begin{thebibliography}{{JQU}12}
+
+\bibitem[{Aja}10]{restfullservice}
+{AjaxPatterns.org Wiki}.
+\newblock {\em {RESTful Service}}, 2010.
+\newblock \hfill\break{\tt \url{http://ajaxpatterns.org/RESTful_Service}}.
+
+\bibitem[jav12]{javawebframework}
+{\em {Java web frameworks discussed}}, 2012.
+\newblock \hfill\break{\tt
+  \url{http://entjavastuff.blogspot.com/2012/01/java-web-frameworks-discussed.html}}.
+
+\bibitem[{JQU}12]{jqueryui}
+{JQUERY FOUNDATION AND THE JQUERY UI TEAM.}
+\newblock {\em {\sl jQueryUI Demos \& Documentation}}, 2012.
+\newblock \hfill\break{\tt \url{http://jqueryui.com/demos/}}.
+
+\bibitem[{Mic}]{msdnmvc}
+{Microsoft Developer Network}.
+\newblock {\em {Model-View-Controller}}.
+\newblock \hfill\break{\tt
+  \url{http://msdn.microsoft.com/en-us/library/ff649643.aspx}}.
+
+\bibitem[Nie03]{alertbox}
+Jakob Nielsen.
+\newblock {\em {\sl Usability 101: Introduction to Usability}}, 2003.
+\newblock \hfill\break{\tt \url{http://www.useit.com/alertbox/20030825.html}}.
+
+\bibitem[{Ste}07]{restintro}
+{Stefan Tilkov}.
+\newblock {\em {A Brief Introduction to REST}}, 2007.
+\newblock \hfill\break{\tt
+  \url{http://www.infoq.com/articles/rest-introduction}}.
+
+\bibitem[{Sun}02]{sunmvc}
+{Sun Microsystems, Inc. All Rights Reserved}.
+\newblock {\em {Java BluePrints: Model-View-Controller}}, 2002.
+\newblock \hfill\break{\tt
+  \url{http://java.sun.com/blueprints/patterns/MVC-detailed.html}}.
+
+\bibitem[TS]{javascriptMVCmanual}
+Jupiter Consulting~JavaScriptMVC Training and Support.
+\newblock {\em {\sl JavaScriptMVC Documentation}}.
+\newblock \hfill\break{\tt \url{http://javascriptmvc.com/docs.html}}.
+
+\bibitem[{zen}]{play}
+{zenexity \& Typesafe}.
+\newblock {\em {\sl Play 2.0 documentation}}.
+\newblock \hfill\break{\tt
+  \url{http://www.playframework.org/documentation/2.0.1/Home}}.
+
+\end{thebibliography}
+
+% flatex input end: [main.bbl]
+%FLATEX-REM:\bibliographystyle{alpha}
+%FLATEX-REM:\bibliography{literatura.bib}
+
+\addcontentsline{toc}{chapter}{Bibliography}
+
+
+\end{document}
+ 
+
+% flatex input end: [main.tex]
