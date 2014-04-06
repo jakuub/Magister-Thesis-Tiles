@@ -1,0 +1,17 @@
+\begin{minted}{html+django}
+<h1>Comments</h1>
+
+<div id="comments">
+  {{#each comments}}
+  <div class="entry">
+    {{#if author}}
+      <h1>{{firstName}} {{lastName}}</h1>
+    {{else}}
+      <h1>Unknown Author</h1>
+    {{/if}}
+    <div>{{body}}</div>
+  </div>
+  {{/each}}
+</div>
+
+\end{minted}

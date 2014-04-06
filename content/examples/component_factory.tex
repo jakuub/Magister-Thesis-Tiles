@@ -1,0 +1,8 @@
+\begin{minted}{dart}
+class MyComponent extends Component {
+  MyComponent(props, [children]): super(props, children) {}
+}
+
+ComponentFactory factory = 
+  ([dynamic props, dynamic children]) => new MyComponent(props, children);
+\end{minted}

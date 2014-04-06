@@ -1,11 +1,140 @@
-\chapter{Existing solutions}\label{chap:existingsolutions}
+\chapter{Existing solutions}\label{chap:existing}
 
-\section{Template driven}\label{sec:template}
+There are two main approaches in data-binding based on main concepts of rendering content, template driven and component driven.
+These two concepts implements data-binding by different architecture design. 
 
-Discuss databinding based on filling some type of template with model. 
-This approach is used in standard MVC frameworks like AngularJS, Ember or UI libraries like Polymer.dart.
+\section{Template driven}\label{sec:existing-template}
 
-\section{Component driven}\label{sec:component}
+	Template driven approach is, as name predicts, based on usage of some template engine. 
+	These template engines take template and data and create HTML representation of passed data in the form of the template. 
+	They can be considered as a function $t:\mathbb D\mapsto\mathbb H$ where $\mathbb D$ is a set of all possible data and $\mathbb H$ is a context-free language of valid HTML.
 
-Discuss databinding based on component approach used for example in React from facebook or our library.
+	An easy example of a template, for example using \textit{handlebars.js} can look like this one (from \textit{handlebars.js} website):
+  \input{content/examples/handlebars_entry.tex}
 
+	When programmer want to use this template, he should create data object, which minimal version in JSON format is in next example:
+  \input{content/examples/handlebars_entry_data.tex}
+
+	When template is filled by this data, following HTML will be produced
+  \input{content/examples/handlebars_entry_result.tex}
+
+	Most of template engines also offer logic markup:
+  \input{content/examples/handlebars_logic.tex}
+
+	Template driven view are highly used because of they looks like resulting HTML. 
+	It is easy to convert HTML produced by graphic designer to template used in source code. 
+	Also programmers used to work in HTML more easily write templates then some other representation of the view.
+
+	Different libraries work with templates in different way. 
+	Some of them really parse input template as a string, recognize DOM tree in it and work with them that way.
+	Others uses in-browser html parser to parse template and then fill it with data.
+	This approach, because of this usage of tools accessible from browser, is more difficult to render on the server.
+
+	Table~\nameref{table:template-driven-libraries} compares some of existing solutions which are standalone libraries or MVC frameworks.
+
+	\begin{table}
+		\begin{tabular}{|l|l|c|c|c|c|}
+			\hline
+			\textbf{Solution}& \textbf{Language}   & \textbf{Standalone} & \textbf{In browser} & \textbf{On server} & \textbf{Tricky on server}\\
+			\hline
+			handlebars       & JavaScript          &         yes         &        yes          &        yes         &           no             \\
+			\hline
+			{{mustache}}     & JavaScript, python...&        yes         &        yes          &        yes         &           no             \\
+			\hline
+			dust             & JavaScript          &         yes         &        yes          &        yes         &           no             \\
+			\hline
+			AngularJS        & JavaScript          &         no          &        yes          &        no          &           yes            \\
+			\hline
+			meteor           & JavaScript          &         no          &        yes          &        no          &           yes            \\
+			\hline
+			EmberJS          & JavaScript          &         no          &        yes          &        yes         &           no             \\
+			\hline
+			Derby            & JavaScript          &         no          &        yes          &        yes         &           no             \\
+			\hline
+			Polymer          & JavaScript          &         yes         &        yes          &        no          &           yes            \\
+			\hline
+			Polymer.dart     & Dart                &         yes         &        yes          &      not now       &           yes            \\
+			\hline
+		\end{tabular}
+		\caption{Comparison of template driven libraries}
+		\label{table:template-driven-libraries}
+	\end{table}
+
+\section{Component driven}\label{sec:existing-component}
+
+	Component driven views, in opposite to template driven, don't use any additional type of data like templates. 
+	Whole view representation of data is stored in structure of so called \textit{components}, 
+	which are native objects connected to tree structure to represent DOM. 
+
+	When tree of components is constructed, it is rendered to DOM by depth-first search of the component tree.
+	When components and HTML elements are connected by stored association, 
+	every change in component structure can be applied to DOM tree. 
+
+	In addition, if we have tree of components, we can easily, by similar depth-first search, 
+	create markup string representing HTML of the component tree.
+	By this we can render whole component tree on server.
+
+	For this purpose programmer should not use browser specific features in part of component, 
+	which is called in initial built of component tree.
+
+	\begin{table}
+		\begin{tabular}{|l|l|c|c|c|c|}
+			\hline
+			\textbf{Solution}& \textbf{Language}   & \textbf{Standalone} & \textbf{In browser} & \textbf{On server} & \textbf{Tricky on server}\\
+			\hline
+			React            & JavaScript          &         yes         &        yes          &        yes         &           no             \\
+			\hline
+		\end{tabular}
+		\caption{Comparison of component driven libraries}
+		\label{table:component-driven-libraries}
+	\end{table}
+
+	We decided to use similar approach as is used in React library, so we briefly describe it.
+
+	\subsection{React}\label{subsec:existing-component-react}
+		
+		React is JavaScript UI library from facebook. 
+		Its main concept is to pack parts of the web application into reusable components, 
+		which are represented as object in JavaScript. 
+
+		This components can be mounted into elements in DOM, for now, we will call it \textit{mount root}. 
+		This will create \textit{virtual DOM} "mounted" to \textit{mount root}. 
+		This virtual DOM is then reflexed into the real DOM under the \textit{mount root}.
+
+		Components are organized to virtual DOM tree, where data flows from root component to leaves. 
+		This data flow is implemented by props of the component, which are read-only.
+		Component have also own state, which should be stored in state attribute and updated by methods \texttt{setState} and \texttt{replaceState}. 
+		State shouldn't be updated directly to preserve invariant, that real DOM always represents actual state of the virtual one. 
+
+		Component create structure under it by its method \texttt{render}, which should return one instance of a component, 
+		which will be the child of this component.
+		In render function, it can add to this rendered component props, which is the way, how data is flowing down, 
+		and children, which is the way, how to create spreading tree, not just a line. 
+		If the child component get children, it will be in \texttt{children} attribute. Component can reuse them in \texttt{render} method or ignore them.
+
+		This is because React maps all components to HTML elements and want to create more than one tree children only in components representing real DOM elements.
+
+		Components can listen to events on the DOM components (internal react components, representing DOM elements). 
+		They are attached trough props by event listeners. 
+
+		When event occurs, it bubble up to \textit{mount root} where is caught by React.
+		Then React simulate event bubbling from DOM component, which represents target element in virtual DOM,
+		with synthetic event, which manage browser compatibility. 
+
+		When this event is caught by some custom component, this component can react on that. 
+		It can change state, call some functions, store some data or what ever it wants.
+
+		State change(by mentioned methods) trigger redrawing of virtual DOM. 
+		This will use render methods to create new children of the components 
+		and process whole tree by depth-first search, 
+		which produce list of changes needed to get real DOM to state representing virtual one.
+
+		For this purpose, React implements some component life-cycle methods, which we will not discuss here. 
+		They are the superset of life-cycle methods we implement in Tiles library. 
+
+		For more information about react and it's architecture and API 
+		reader can go to the website of the React project \url[http://facebook.github.io/react/]
+
+\section{Conclusion}\label{sec:existing-conclusion}
+		
+		Here should be described, why we decided to use component driven approach and take inspiration from React library.

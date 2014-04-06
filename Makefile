@@ -39,3 +39,20 @@ flat: main.flt.tex
 main.flt.tex: */*/*.tex *.tex *.bib Makefile
 	flatex main.tex
 	mv main.flt main.flt.tex
+
+compare: 
+	flatex main.tex
+	mv main.flt main.flt.tex
+	latexdiff ../oldtext/main.flt.tex main.flt.tex > main.diff.tex
+	rm -f *.toc
+	pdfcslatex -shell-escape main.diff
+	pdfcslatex -shell-escape main.diff
+	rm main.diff.aux
+	# rm main.diff.bbl
+	# rm main.diff.blg
+	rm main.diff.lof
+	rm main.diff.log
+	rm main.diff.out
+	rm main.diff.toc
+	rm main.diff.tex
+

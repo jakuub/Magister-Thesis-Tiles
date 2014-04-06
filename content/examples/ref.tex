@@ -1,0 +1,12 @@
+\begin{minted}{dart}
+class MyComponent extends Component {
+  /* ... */
+  Element input;
+
+  render() {
+    return input({"ref": (component){
+      this.input = getElementForComponent(component);
+    }});
+  }
+}
+\end{minted}

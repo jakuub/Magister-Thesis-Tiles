@@ -8,6 +8,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{todonotes}
+\usepackage{amsfonts}
 \reversemarginpar
 \usepackage[]{algorithm2e}
 
@@ -362,29 +363,253 @@ Discuss two way databinding.
 % flatex input end: [content/chapters/databinding.tex]
 
 % flatex input: [content/chapters/existing.tex]
-\chapter{Existing solutions}\label{chap:existingsolutions}
+\chapter{Existing solutions}\label{chap:existing}
 
-\section{Template driven}\label{sec:template}
+There are two main approaches in data-binding based on main concepts of rendering content, template driven and component driven.
+These two concepts implements data-binding by different architecture design. 
 
-Discuss databinding based on filling some type of template with model. 
-This approach is used in standard MVC frameworks like AngularJS, Ember or UI libraries like Polymer.dart.
+\section{Template driven}\label{sec:existing-template}
 
-\section{Component driven}\label{sec:component}
+	Template driven approach is, as name predicts, based on usage of some template engine. 
+	These template engines take template and data and create HTML representation of passed data in the form of the template. 
+	They can be considered as a function $t:\mathbb D\mapsto\mathbb H$ where $\mathbb D$ is a set of all possible data and $\mathbb H$ is a context-free language of valid HTML.
 
-Discuss databinding based on component approach used for example in React from facebook or our library.
+	An easy example of a template, for example using \textit{handlebars.js} can look like this one (from \textit{handlebars.js} website):
+  % flatex input: [content/examples/handlebars_entry.tex]
+\begin{minted}{html+django}
+<div class="entry">
+  <h1>{{title}}</h1>
+  <div class="body">
+    {{body}}
+  </div>
+</div>
+\end{minted}
 
+% flatex input end: [content/examples/handlebars_entry.tex]
+
+
+	When programmer want to use this template, he should create data object, which minimal version in JSON format is in next example:
+  % flatex input: [content/examples/handlebars_entry_data.tex]
+\begin{minted}{json}
+{
+  "title": "Some title",
+  "body": "This is the content of the page"
+}
+\end{minted}
+
+% flatex input end: [content/examples/handlebars_entry_data.tex]
+
+
+	When template is filled by this data, following HTML will be produced
+  % flatex input: [content/examples/handlebars_entry_result.tex]
+\begin{minted}{html}
+<div class="entry">
+  <h1>Some title</h1>
+  <div class="body">
+    This is the content of the page
+  </div>
+</div>
+\end{minted}
+
+% flatex input end: [content/examples/handlebars_entry_result.tex]
+
+
+	Most of template engines also offer logic markup:
+  % flatex input: [content/examples/handlebars_logic.tex]
+\begin{minted}{html+django}
+<h1>Comments</h1>
+
+<div id="comments">
+  {{#each comments}}
+  <div class="entry">
+    {{#if author}}
+      <h1>{{firstName}} {{lastName}}</h1>
+    {{else}}
+      <h1>Unknown Author</h1>
+    {{/if}}
+    <div>{{body}}</div>
+  </div>
+  {{/each}}
+</div>
+
+\end{minted}
+
+% flatex input end: [content/examples/handlebars_logic.tex]
+
+
+	Template driven view are highly used because of they looks like resulting HTML. 
+	It is easy to convert HTML produced by graphic designer to template used in source code. 
+	Also programmers used to work in HTML more easily write templates then some other representation of the view.
+
+	Different libraries work with templates in different way. 
+	Some of them really parse input template as a string, recognize DOM tree in it and work with them that way.
+	Others uses in-browser html parser to parse template and then fill it with data.
+	This approach, because of this usage of tools accessible from browser, is more difficult to render on the server.
+
+	Table~\nameref{table:template-driven-libraries} compares some of existing solutions which are standalone libraries or MVC frameworks.
+
+	\begin{table}
+		\begin{tabular}{|l|l|c|c|c|c|}
+			\hline
+			\textbf{Solution}& \textbf{Language}   & \textbf{Standalone} & \textbf{In browser} & \textbf{On server} & \textbf{Tricky on server}\\
+			\hline
+			handlebars       & JavaScript          &         yes         &        yes          &        yes         &           no             \\
+			\hline
+			{{mustache}}     & JavaScript, python...&        yes         &        yes          &        yes         &           no             \\
+			\hline
+			dust             & JavaScript          &         yes         &        yes          &        yes         &           no             \\
+			\hline
+			AngularJS        & JavaScript          &         no          &        yes          &        no          &           yes            \\
+			\hline
+			meteor           & JavaScript          &         no          &        yes          &        no          &           yes            \\
+			\hline
+			EmberJS          & JavaScript          &         no          &        yes          &        yes         &           no             \\
+			\hline
+			Derby            & JavaScript          &         no          &        yes          &        yes         &           no             \\
+			\hline
+			Polymer          & JavaScript          &         yes         &        yes          &        no          &           yes            \\
+			\hline
+			Polymer.dart     & Dart                &         yes         &        yes          &      not now       &           yes            \\
+			\hline
+		\end{tabular}
+		\caption{Comparison of template driven libraries}
+		\label{table:template-driven-libraries}
+	\end{table}
+
+\section{Component driven}\label{sec:existing-component}
+
+	Component driven views, in opposite to template driven, don't use any additional type of data like templates. 
+	Whole view representation of data is stored in structure of so called \textit{components}, 
+	which are native objects connected to tree structure to represent DOM. 
+
+	When tree of components is constructed, it is rendered to DOM by depth-first search of the component tree.
+	When components and HTML elements are connected by stored association, 
+	every change in component structure can be applied to DOM tree. 
+
+	In addition, if we have tree of components, we can easily, by similar depth-first search, 
+	create markup string representing HTML of the component tree.
+	By this we can render whole component tree on server.
+
+	For this purpose programmer should not use browser specific features in part of component, 
+	which is called in initial built of component tree.
+
+	\begin{table}
+		\begin{tabular}{|l|l|c|c|c|c|}
+			\hline
+			\textbf{Solution}& \textbf{Language}   & \textbf{Standalone} & \textbf{In browser} & \textbf{On server} & \textbf{Tricky on server}\\
+			\hline
+			React            & JavaScript          &         yes         &        yes          &        yes         &           no             \\
+			\hline
+		\end{tabular}
+		\caption{Comparison of component driven libraries}
+		\label{table:component-driven-libraries}
+	\end{table}
+
+	We decided to use similar approach as is used in React library, so we briefly describe it.
+
+	\subsection{React}\label{subsec:existing-component-react}
+		
+		React is JavaScript UI library from facebook. 
+		Its main concept is to pack parts of the web application into reusable components, 
+		which are represented as object in JavaScript. 
+
+		This components can be mounted into elements in DOM, for now, we will call it \textit{mount root}. 
+		This will create \textit{virtual DOM} "mounted" to \textit{mount root}. 
+		This virtual DOM is then reflexed into the real DOM under the \textit{mount root}.
+
+		Components are organized to virtual DOM tree, where data flows from root component to leaves. 
+		This data flow is implemented by props of the component, which are read-only.
+		Component have also own state, which should be stored in state attribute and updated by methods \texttt{setState} and \texttt{replaceState}. 
+		State shouldn't be updated directly to preserve invariant, that real DOM always represents actual state of the virtual one. 
+
+		Component create structure under it by its method \texttt{render}, which should return one instance of a component, 
+		which will be the child of this component.
+		In render function, it can add to this rendered component props, which is the way, how data is flowing down, 
+		and children, which is the way, how to create spreading tree, not just a line. 
+		If the child component get children, it will be in \texttt{children} attribute. Component can reuse them in \texttt{render} method or ignore them.
+
+		This is because React maps all components to HTML elements and want to create more than one tree children only in components representing real DOM elements.
+
+		Components can listen to events on the DOM components (internal react components, representing DOM elements). 
+		They are attached trough props by event listeners. 
+
+		When event occurs, it bubble up to \textit{mount root} where is caught by React.
+		Then React simulate event bubbling from DOM component, which represents target element in virtual DOM,
+		with synthetic event, which manage browser compatibility. 
+
+		When this event is caught by some custom component, this component can react on that. 
+		It can change state, call some functions, store some data or what ever it wants.
+
+		State change(by mentioned methods) trigger redrawing of virtual DOM. 
+		This will use render methods to create new children of the components 
+		and process whole tree by depth-first search, 
+		which produce list of changes needed to get real DOM to state representing virtual one.
+
+		For this purpose, React implements some component life-cycle methods, which we will not discuss here. 
+		They are the superset of life-cycle methods we implement in Tiles library. 
+
+		For more information about react and it's architecture and API 
+		reader can go to the website of the React project \url[http://facebook.github.io/react/]
+
+\section{Conclusion}\label{sec:existing-conclusion}
+		
+		Here should be described, why we decided to use component driven approach and take inspiration from React library.
 
 % flatex input end: [content/chapters/existing.tex]
 
 % flatex input: [content/chapters/our.tex]
 \chapter{Our solution}\label{chap:oursolution}
 
-In this chapter we will introduce and deeply describe our Dart library \texttt{Tiles}.
+We decided to use component-driven approach of databinding, 
+because one of our main requirements is to be possible to render as on server, so in browser.
+We decided to take inspiration from Facebook \texttt{React} library, mainly in API of the library, which is component based, 
+with some differences in architecture.
 
+As we work in Dart language, which guarantees some browser compatibility and add some functionality that JavaScript doesn't have,
+we don't have to implement some of React's additional features like:
+\begin{itemize}
+  \item Synthetic events \textit{(Dart unified events)}
+  \item Mixins \textit{(Dart support native mixins as a part of a language)}
+  \item Props type checking \textit{(Dart is optional-typed language)}
+  \item Get default props and initial state \textit{(Dart work with classes which have constructors)}
+  \item Changed class name \textit{(Map in dart use string, so string "class" is no more reserved word)}
+  \item Test utilities \textit{(Dart has own unittest library and we work with classes and with native events, it is easily tested)}
+\end{itemize}
+
+In this next sections of this chapter we will introduce and deeply describe our Dart library \texttt{Tiles}.
+\todo{Need decision, if write tiles with small or capital \textbf{T}}
 
 \section{Requirements}\label{subsec:our-architecture-requirements}
 
-  In this section we write down a list of requirements on our library.
+  When we designed \texttt{Tiles} library, we take into account some basic requirements. 
+  \begin{description}
+    \item{\textbf{Rendering in both, browser and server}} \hfill \\
+      One of the main advantages of this library is possibility to render the same content, 
+      with the same code as on the server, so in the browser.
+      This resolved into package architecture and several architectural decisions.
+      \begin{description}
+        \item{\textbf{No template usage}} \hfill \\
+          To achieve possibility to render content on both, browser and server, 
+          we decided not to use templates, 
+          because to parse template into something independent from DOM is far more difficult,
+          then just use own structure clearly in one programming language.
+      \end{description}
+    \item{\textbf{Easy to use API}} \hfill \\
+      Solution can be very interesting and powerful, 
+      but if it don't offer reasonably easy to use API, almost no one will use it.
+      \begin{description}
+        \item{\textbf{React-like API}} \hfill \\
+          Because we use similar concept as JavaScript library React,  
+          which is widely used and known, 
+          if we offer similar API, more people will more quickly get used to it.
+      \end{description}
+    \item{\textbf{Performance}} \hfill \\
+      We want to offer useful library, and if want someone to use it, 
+      we need to offer good performance in the competition of Dart and JavaScript UI libraries.
+    \todo{Something more?}
+  \end{description}
+
+  How we fulfilled these requirements is in detail described in next sections of this chapter.
 
 \section{Architecture}\label{sec:our-architecture}
 
@@ -413,7 +638,6 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
       \caption{Idea}
       \label{img:library-idea}
     \end{figure}
-
 
     These components are somehow placed into tree structure, which represents \mbox{\textbf{\nameref{img:library-idea-virtual-dom}}}, 
     which is then translated to real DOM of client's browser or to markup rendered by server application.
@@ -643,7 +867,7 @@ In this chapter we will introduce and deeply describe our Dart library \texttt{T
 
     \begin{figure}[h]
     \centering  
-      \includegraphics[scale=0.6]{images/uml/tiles/TilesCore/LifeCycle.png}
+      \includegraphics[scale=0.5]{images/uml/tiles/TilesCore/LifeCycle.png}
       \caption{Life cycle of a \texttt{Component}}
       \label{img:our-life-cycle}
     \end{figure}
@@ -755,7 +979,6 @@ class MyTodoComponent extends Component {
 
 % flatex input end: [content/examples/my_todo_component_willreceiveprops.tex]
 
-      
       
     \subsubsection{Should update}\label{subsec:our-architecture-lifecycle-shouldupdate}
       Should update is partly lifecycle, partly not. 
@@ -1004,18 +1227,374 @@ class MyTodoComponent extends Component {
     As we were created dart library which creates virtual DOM, composed from nodes, which contains components, 
     it is obvious that we can "simulate" event bubbling trough this virtual DOM. 
 
-    This is fully in domain browser part of a library.
-    \todo{Add more content.}
+    This is useful to offer user of library possibility to catch events in DOM and react on them by update of state 
+    and triggering of redraw of the component, if needed. So the question is, how add this possibility to programmer.
+
+    It is important from performance point of view, because by this, we can add only one event listener for each event type in whole virtual DOM.
+    We will discuss this later in chapter~\nameref{chap:performance}.
+
+    To enable this synthetic bubbling, we need to find out, which component belongs to element on which was event triggered.
+
+    We maintain relationship between nodes, components and HTML elements, so we can store this relations.
+    By these relations we can listen to all events on root HTML element 
+    (element, which is whole our virtual DOM mounted to), 
+    and then, by stored relations mentioned above, assign DOM component to element on which was event triggered.
+
+    When we have this component, we can simulate bubbling of event trough our virtual DOM. 
+    This brings opportunity to "listen to events" on custom components. 
+    But this is really questionable feature.
+
+    If custom component automatically "listen to events" if have event listener in props, 
+    it enable programmer to listen to event on, for example, custom button which is composed from more child DOM components.
+    But this is additional functionality of DOM, which don't have to be desirable. 
+
+    On the other hand, if custom component don't automatically listens to event, props, it will lighten library from functionality, 
+    component will not have some additional functionality from that, which is created by programmer, 
+    and in addition, it is easily possible component, to pass event listener, which it got from props, some of it's child components.
+    
+    We decided to \textbf{ADD WHAT WE DECIDED TO DO}.\todo{decide, and add decision here}
+
+    Now, we will describe, how these synthetic event bubbling works.
+
+    \subsubsection{Synthetic bubbling}\label{subsec:our-architecture-events-bubbling}
+
+      When component is mounting, we store relation between HTML element, and node, which contain this component. 
+      Then we check, if this component have event listeners in it. 
+      If it has, we add event listener of the same event type to root HTML element, 
+      which is associated to root node of virtual DOM. 
+      Of cause, we will add only one listener of one event type to this element, 
+      although when there is more then one descendant, which "listens" to this event type.
+
+      Then, when this type of event occurs in HTML DOM subtree which represents our virtual DOM, 
+      it will bubble up to the root HTML element, there it is caught by our event listener. 
+      This event listener will recognize on which HTML element was event triggered, 
+      find representing node in virtual DOM, and start "bubbling" from it.
+
+      Bubbling is done by checking if component of this node have event listener for this type of event in it's props.
+      If it contain it, listener is called with event and components as arguments. 
+
+      We pass component as an argument because this listener is not created by this component itself, 
+      but by component above it, and it should be informed, on which component this listener was called.
+
+      If this listener didn't returns \texttt{false}, bubbling continues to parent node. 
+      When root is achieved, bubbling stops and real event listener, 
+      which simulate internal event bubbling, ends.
+
+      There exist better solution for stopping synthetic event bubbling then returning false from event listener 
+      by calling \texttt{stopPropagation} method on event, which stop bubbling in real DOM. 
+      But there exist no official way of getting this information from event object. 
+
+      This is resolvable, in multiple ways. For example, by creating "synthetic" event
+      which should encapsulate real event object and store information that \texttt{stopPropagation} was called.
+      But this solution creates some problems, e.g. multiple types of events in dart, 
+      represented by different classes with not the same api.
+      Because of this, we decided to not add this ideal functionality for now, while there not exists official way this information from event object.
+
+      Other solution, and in our opinion best one, 
+      is to add official way of getting information if \texttt{stopPropagation} was called to core Dart \texttt{Event} class.
+      But this is out of the scope of our library, so we created feature request to Dart developers and hope they will implement it.
 
   \subsection{Injecting}\label{subsec:our-architecture-injecting}
 
+    We added possibility to render whole HTML structure on server and add it to requested HTML.
+
+    This is good for user experience, because user of the application can see the result of his request event before JavaScript/Dart is loaded.
+    But if our browser package replace this structure with new DOM structure, 
+    generated from virtual DOM, it should be annoying for user of the application, because the part of the page, 
+    which is represented by virtual DOM, will disappear for a short time and then appear back in the same look. 
+
+    To prevent this, we created injecting system, which will inject existing DOM structure and rebuild it to represent virtual DOM.
+
+    When the \texttt{ComponentDescription} is mounting, basic implementation can erase whole content of element to which is description mounted to.
+    Instead of this, we will reuse existing structure by iterating trough virtual DOM and reusing every element, which match virtual DOM. 
+
+    When we iterate trough virtual DOM and get to node with DOM component, we will look at the currently processed HTML element.
+    If it match the type of DOM component (by tag name), 
+    it is associated with this node, 
+    adapted to represent it in real DOM\footnote{By changing attributes to correct state}, 
+    used to mount children of this node under it with the same process recursively,
+    and processing of elements move to next sibling of current element.
+
+    When current element don't match type of DOM component, 
+    new HTML element is inserted before it and paired with this node. 
+    By this, other DOM component at the same layer of the DOM component tree
+    \footnote{
+      By DOM component tree we mean derived tree from virtual DOM tree, 
+      which can be constructed by removing nodes with custom components
+      and connecting nodes with DOM components to closest ancestor in virtual DOM tree with DOM component in it.
+    }
+    can reuse this not matching element.
+    When one layer of the DOM component tree is finished
+    (which is when iteration go to the node, which contain DOM component associated with parent HTML element),
+    rest of the original HTML elements in this layer of DOM is erased. 
+
+    By these simple and lightweight comparisons, if the html was created by the same components with the same data on server, 
+    library will reuse whole html with no change and inject needed relations to the virtual DOM to the real one. 
+
+    Moreover if there exist some similar structure, not generated by same components on the server, 
+    our library will reuse as much as possible with not too complex and heavy comparison machinery.
+
 \section{API}\label{sec:our-api}
 
-  Documentation of offered API of our library.
+  One product of this work is open source UI library.
+  To use this library, user need to know the application programming interface(API) of it. 
+
+  In \texttt{tiles} library, user interface rendered by it consist of components, represented by the class \texttt{Component}. 
+  This class is used to create functional logic of part of the UI. 
+
+  To use it, mount it, add it to other component as a child, it is necessary to create \texttt{ComponentFactory}, 
+  \texttt{ComponentDescription} and optionally \texttt{ComponentDescriptionFactory}.
+
+  \textbf{\texttt{ComponentFactory}} is a function with two positional optional arguments \texttt{props} and \texttt{children}, 
+  which return instance of the Component, ideally new with setted \texttt{props} and \texttt{children}.
+  The easiest and most common way to create ComponentFacotry is shown in next example:
+  % flatex input: [content/examples/component_factory.tex]
+\begin{minted}{dart}
+class MyComponent extends Component {
+  MyComponent(props, [children]): super(props, children) {}
+}
+
+ComponentFactory factory = 
+  ([dynamic props, dynamic children]) => new MyComponent(props, children);
+\end{minted}
+
+% flatex input end: [content/examples/component_factory.tex]
+
+% }
+
+  \textbf{\texttt{ComponentDescription}} is something, what describes component. 
+  It is used as argument to mounting functions and as result of \texttt{render} method.
+  It is mostly not used directly, but by \texttt{ComponentDescriptionFactory}, 
+  which is method with the same arguments as \texttt{ComponentFacotry}, and returns instance of \texttt{ComponentDescription}.
+
+  It can be created by programmer himself, but mainly, it is created by \texttt{registerComponent} function, which accept one argument of \texttt{ComponentFacotry} type.
+  This method created \texttt{ComponentDescriptionFactory}, which returns description with passed \texttt{ComponentFacotry}.
+  Usage is shown on following example:
+  % flatex input: [content/examples/register_component.tex]
+\begin{minted}{dart}
+ComponentDescriptionFactory myComponent = registerComponent(factory);
+\end{minted}
+
+% flatex input end: [content/examples/register_component.tex]
+
+% }
+
+  This \texttt{ComponentDescriptionFactory} is then used to create description or directly in mounting into HTML element:
+  % flatex input: [content/examples/mount_component_description_factory.tex]
+\begin{minted}{dart}
+Element mountRoot = querySelector("#container");
+
+var props = {};
+var children = [];
+
+ComponentFacotry myComponentDescription = myComponent(props, childre);
+
+// Or directly in mountComponent
+
+mountComponent(myComponent(props, children), mountRoot);
+\end{minted}
+
+% flatex input end: [content/examples/mount_component_description_factory.tex]
+
+% }
 
   \subsection{Component}\label{subsec:our-api-component}
+
+    \texttt{Component} class is the main class of the API.
+    Every custom component should extend or implement it. 
+
+    It contains constructor, life-cycle methods, \texttt{render} and \texttt{redraw} method, props, children and offer \texttt{needUpdate} stream.
+    The whole default \texttt{Component} is this: 
+    % flatex input: [content/examples/component.tex]
+\begin{minted}{dart}
+class Component {
+  dynamic props;
+  List<ComponentDescription> children;
+  final StreamController _needUpdateController;
+  Stream<bool> get needUpdate => _needUpdateController.stream; 
+
+  /**
+   * Life cycle
+   */
+  Component(this.props, [this.children]): 
+    this._needUpdateController = new StreamController<bool>() {}
+  didMount() {}
+  willReceiveProps(dynamic newProps) {}
+  shouldUpdate(dynamic newProps, dynamic oldProps) => true;
+  List<ComponentDescription> render() {}
+  didUpdate() {}
+  willUnmount() {}
+  
+  redraw([bool now = false]) {
+    _needUpdateController.add(now);
+  }
+}
+\end{minted}
+\todo{Sem takúto skrátenú verziu, alebo môžem celý komponent aj s komentami?}
+
+\iffalse
+\begin{minted}{dart}
+class Component {
+  
+  /**
+   * props of component
+   */
+  dynamic props;
+  
+  List<ComponentDescription> children;
+
+  /**
+   * stream controller used to signalize to node, 
+   * when component need to be udpated
+   */
+  final StreamController _needUpdateController;
+
+  /**
+   * Offer stream which will create event everytime, when it need to be updated (rendered).
+   * 
+   * Stream use boolean data, which tells, if update should be done immediately
+   */
+  Stream<bool> get needUpdate => _needUpdateController.stream; 
+
+  /**
+   * constructor, it create component with setted stream controller. 
+   * 
+   * If stream was not passed, it will create own stream controller
+   */
+  Component(this.props, [this.children]): 
+    this._needUpdateController = new StreamController<bool>() {}
+  
+  didMount() {}
+
+  willReceiveProps(dynamic newProps) {}
+  
+  shouldUpdate(dynamic newProps, dynamic oldProps) => true;
+  
+  List<ComponentDescription> render() {}
+  
+  didUpdate() {}
+  
+  willUnmount() {}
+  
+  /**
+   * redraw will add event to stream
+   */
+  redraw([bool now = false]) {
+    _needUpdateController.add(now);
+  }
+}
+\end{minted}
+\fi
+
+% flatex input end: [content/examples/component.tex]
+
+% }
+
+    The easier way to create own component is by extending, not by implementing it, because extending add default functionality. 
+    Simple component should look like this:
+    % flatex input: [content/examples/my_component.tex]
+\begin{minted}{dart}
+class MyComponent extends Component {
+  MyComponent(props, [children]): super(props, children) {}
+
+  render() {
+    return div(null, [
+             span(null, "This is simple component")
+           ]);
+  }
+}
+\end{minted}
+
+% flatex input end: [content/examples/my_component.tex]
+
+% }
+
+    We can see, that this \texttt{MyComponent} only renders \texttt{ComponentDescription} of div DOM component which contain children with span description.
+    \footnote{DOM component API will be discussed later.}
+
+  \subsection{DOM component API}\label{subsec:our-api-dom}
+
+    There are prepared \texttt{ComponentDescriptionFactory} functions for each of standard HTML elements, which gets standard arguments. 
+    They will create new \texttt{ComponentDescription}, with correct factory, which created \texttt{DomComponent} with appropriate tag name.
+
+    These factories can be used like on example of \texttt{MyComponent} in \texttt{render} function.
+
   \subsection{Browser specific API}\label{subsec:our-api-browser}
+    
+    There are 3 main addition when components are rendered in browser.
+    \begin{itemize}
+      \item Mounting
+      \item References
+      \item Event listeners
+    \end{itemize}
+
+    \textbf{Mounting} is implemented by \texttt{mountComponent} function, which have 2 arguments, 
+    \texttt{ComponentDescription description} and \texttt{Element mountRoot}.
+    It will mount described component into \texttt{mountRoot} element.
+    % flatex input: [content/examples/mount_component_description_factory_only.tex]
+\begin{minted}{dart}
+mountComponent(myComponent(props, children), mountRoot);
+\end{minted}
+
+% flatex input end: [content/examples/mount_component_description_factory_only.tex]
+
+% }
+
+    \textbf{References} are part of props. If component have in \texttt{props["ref"]} instance of internal class \texttt{{\textunderscore}Ref}, 
+    which is only function returning void with one \texttt{Component} argument, then when this component is created and mounted, 
+    this \texttt{{\textunderscore}Ref} is called with it. 
+
+    It is useful, when some custom component want to have reference to element associated to some of it's descendant. 
+    Example of usage is something like this:
+    % flatex input: [content/examples/ref.tex]
+\begin{minted}{dart}
+class MyComponent extends Component {
+  /* ... */
+  Element input;
+
+  render() {
+    return input({"ref": (component){
+      this.input = getElementForComponent(component);
+    }});
+  }
+}
+\end{minted}
+
+% flatex input end: [content/examples/ref.tex]
+
+% }
+
+    \textbf{Event listeners} are also represented as part of props. 
+    They should be instance of \texttt{EventListener} class, which is function with 2 arguments, event and component and returns boolean.
+    They are used in the same way as references, by adding to props with key in format \texttt{onEventType}:
+    % flatex input: [content/examples/event_listener.tex]
+
+\begin{minted}{dart}
+input({"onClick": (event, component){
+  print("Input clicked.");
+}});
+\end{minted}
+
+% flatex input end: [content/examples/event_listener.tex]
+
+% }
+
   \subsection{Server specific API}\label{subsec:our-api-server}
+
+    There is only one thing we want to do on the server, and that is to create markup for some \texttt{ComponentDescription}.
+    For this purpose we created method \texttt{mountComponentToString}, which accepts 1 \texttt{ComponentDescription} argument and returns markup, 
+    which is identical to what browser part of library should create in DOM.
+    % flatex input: [content/examples/mount_component_to_string.tex]
+\begin{minted}{dart}
+String markup = mountComponentToString(
+  span({"class": "my-span"}, "Text it the span")
+);
+markup == '<span class="my-span">Text in the span</span>' // is true
+\end{minted}
+
+% flatex input end: [content/examples/mount_component_to_string.tex]
+
+% }
 
 % flatex input end: [content/chapters/our.tex]
 
