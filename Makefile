@@ -43,7 +43,7 @@ main.flt.tex: */*/*.tex *.tex *.bib Makefile
 compare: 
 	flatex main.tex
 	mv main.flt main.flt.tex
-	latexdiff ../oldtext/main.flt.tex main.flt.tex > main.diff.tex
+	latexdiff --exclude-textcmd="section,subsection" --config="PICTUREENV=(?:picture|DIFnomarkup|minted)[\w\d*@]*" ../oldtext/main.flt.tex main.flt.tex > main.diff.tex
 	rm -f *.toc
 	pdfcslatex -shell-escape main.diff
 	pdfcslatex -shell-escape main.diff
