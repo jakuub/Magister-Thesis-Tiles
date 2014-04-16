@@ -670,35 +670,33 @@ We don't have to implement some of the additional features of the \react library
 \end{itemize}
 
 In this next sections of this chapter we will introduce and deeply describe our Dart library \tiles.
-\todo{Need decision, if write \tiles with small or capital \textbf{T}}
 
 \section{Requirements}\label{subsec:our-architecture-requirements}
 
-  When we designed \tiles library, we take into account some basic requirements. 
+  When we designed the \tiles library, we take into account requirements derived from the motivation of this work:
+
   \begin{description}
-    \item{\textbf{Rendering in both, browser and server}} \hfill \\
-      One of the main advantages of this library is possibility to render the same content, 
+    \item{\textbf{Rendering in both environments, the browser and the server}} \hfill \\
+			One of the main advantages of \tiles library is a possibility to render the same content, 
       with the same code as on the server, so in the browser.
-      This resolved into package architecture and several architectural decisions.
+      This resolved into the package structure and several architectural decisions.
       \begin{description}
         \item{\textbf{No template usage}} \hfill \\
-          To achieve possibility to render content on both, browser and server, 
-          we decided not to use templates, 
-          because to parse template into something independent from DOM is far more difficult,
-          then just use own structure clearly in one programming language.
+          To achieve a possibility to render content in both environments, easy testing and mocking, 
+          we decided not to use templates.
       \end{description}
     \item{\textbf{Easy to use API}} \hfill \\
-      Solution can be very interesting and powerful, 
-      but if it don't offer reasonably easy to use API, almost no one will use it.
+      The solution can be very interesting and powerful, 
+      but if it don't offer a reasonably easy to use API, almost no one will use it.
       \begin{description}
 				\item{\textbf{\react-like API}} \hfill \\
-					Because we use similar concept as JavaScript library \react,  
+					Because we use a similar concept as the JavaScript \react library,  
           which is widely used and known, 
-          if we offer similar API, more people will more quickly get used to it.
+          if we offer similar API, more people will quickly get used to it.
       \end{description}
     \item{\textbf{Performance}} \hfill \\
-      We want to offer useful library, and if want someone to use it, 
-      we need to offer good performance in the competition of Dart and JavaScript UI libraries.
+      We want to offer the useful library, and if want someone to use it, 
+      we need to offer a good performance in the competition of Dart and JavaScript UI libraries.
   \end{description}
 
   How we fulfilled these requirements is in detail described in next sections of this chapter.
@@ -719,16 +717,17 @@ In this next sections of this chapter we will introduce and deeply describe our 
 
   But, of cause we add some examples, so wee will show some parts of api in this section too, 
   but they don't will be so much described as in next section.
+	\todo{this content need to be replaced}
 
   \subsection{Architectural overview}\label{subsec:our-architecture-overview}
-	Our high level idea is based on \facebook \react library attitude. 
+		Our high level idea is based on the \facebook \react library attitude. 
     We created api, whose main class is \texttt{Component}, which represents construct very similar to \react's \texttt{Component}.
     This component is mounted to an element, where it renders itself. 
     This relationship is described on \fullref{img:library-idea}.
     \begin{figure}[h]
     \centering  
       \includegraphics[scale=0.6]{images/uml/tiles/Idea/Idea.png}
-      \caption{Idea}
+      \caption{The Idea}
       \label{img:library-idea}
     \end{figure}
 
@@ -742,13 +741,14 @@ In this next sections of this chapter we will introduce and deeply describe our 
       \label{img:library-idea-virtual-dom}
     \end{figure}
     There can be the event listeners attached to these components. 
-    The \textbf{events} \footnote{We work at Dart, which create browser compatibility for us, so we don't have to create synthetic events like \react.}
+    The \textbf{events} 
+		\footnote{We work at Dart, which create browser compatibility for us, so we don't have to create synthetic events like \react.}
     are then bubbled trough a virtual DOM, instead real one.
     By this there can be the listener attached to a custom component, which doesn't have element representing it in a real DOM.
 
     As we work in Dart language, it is natural to try to reuse the most of code on the both, client and server side.
-    The next important part of idea is \textbf{server-side rendering}.
-    which should do and easy rendering of the same content on server as on the client's browser.
+    The next important part of architecture is \textbf{server-side rendering}.
+
     It is very important for SEO purposes and smooth user experience. 
 
   \subsection{Structure}\label{subsec:our-architecture-structure}
@@ -1119,13 +1119,11 @@ class MyTodoComponent extends Component {
 % flatex input end: [content/examples/my_todo_component_shouldupdate.tex]
 
 
-			\todo{End of the text refactoring}
-
     \subsubsection{Render}\label{subsec:our-architecture-lifecycle-render}
 
       Render is the main part of the \texttt{Component}. 
 
-      It is implemented by method \texttt{render}, which have no attributes.
+      It is implemented by the method \texttt{render}.
       It should return array of component descriptions which should be considered as 
       \textit{"this is how this component should look like"}.
 
@@ -1156,18 +1154,17 @@ class MyTodoComponent extends Component {
 
     \subsubsection{Did update}\label{subsec:our-architecture-lifecycle-didupdate}
 
-      When life-cycle method \texttt{didUpdate}, 
-      by which is implemented this life-cycle event, 
-      is triggered, component, and programmer, can be sure, 
-      that component is mounted and there exist elements in DOM for each DomComponent descendant.
+      When the life-cycle method \texttt{didUpdate}, 
+			by which is implemented the  life-cycle \textit{"Did update"} event, 
+      is triggered, the component is notified, 
+      that it is mounted and there exist HTML elements in the DOM for each DomComponent descendant.
 
     \subsubsection{Will unmount}\label{subsec:our-architecture-lifecycle-willunmount}
 
-      This event is implemented by method \texttt{willUnmount}, which contain no arguments.
-      
-      It is called right before it is unmounted from dom. 
-
+			The \textit{"Will unmount"} event is implemented by the method \texttt{willUnmount}.
+      It is called right before the component is removed from the virtual DOM and therefore from the real one. 
       This is the correct place to stop all timers and listeners.
+
       % flatex input: [content/examples/my_todo_component_willunmount.tex]
       \begin{minted}{dart}
 class MyTodoComponent extends Component {
@@ -1189,59 +1186,57 @@ class MyTodoComponent extends Component {
 
 
   \subsection{Rendering}\label{subsec:our-architecture-rendering}
-    The main target of our library is rendering of a content. 
-    By \texttt{Component} and \texttt{Node} we can create virtual DOM tree, 
-    but now we want to render this structure into something independent from our library. 
 
-    As our work is in the scope of web applications, we want to render it into DOM (browser rendering), 
-    and also into textual representation of a DOM(server rendering).
+    The main target of the \tiles library is the rendering of a content. 
+    By the \texttt{Component} and the \texttt{Node} we can create the virtual DOM tree, 
+    which should be reflected into the real one, or into the HTML markup string. 
 
-    As we described earlier in \fullref{subsec:our-architecture-structure}, 
+    As we described earlier in the \fullref{subsec:our-architecture-structure}, 
     these rendering types are separated to separate packages from the core package and are independent from each other. 
 
     \subsubsection{Server side}\label{subsec:our-architecture-rendering-server}
       On the server, we don't have DOM elements available, 
-      because of that we want to render our virtual DOM structure into a string,
-      which user of this library can return as a response to browser request.
+      therefore we want to render our virtual DOM structure into the string
+      representing HTML markup of the virtual and also the real DOM.
 
-      When we have string, which represents markup of DOM created from virtual DOM, 
-      created by our library, we can do server-side databinding, 
-      which can be reuse in the browser to smooth user experience. 
+      The markup string constructed on the server can be reused in the browser to smooth user experience. 
 
-      Our target, render virtual DOM into markup string is quiet easy.
-      From the programmers point of view, he will use \texttt{ComponentDescription} to describe, 
-      what component he want to render. 
-      Our server-side package of library will get this description, creates component from it, 
-      puts it into node and perform update of node. 
-      By this, virtual DOM is created. 
+      Our target, render virtual DOM into the markup string is not so complicated.
+      From the programmers point of the view, 
+			he will use a \texttt{ComponentDescription} to describe the component to be rendered.
+      Our server-side package of the library will get the description and construct the node tree structure, 
+			with node containing described component in the root. 
+      The node tree represents the created virtual DOM. 
 
-      Now, as we have virtual DOM, we can render it's markup by depth-first search of it's tree. 
-      In the search, when we came into node, we will do something like this algorithm (pseudo-code):
+      From the virtual DOM we can render corresponding markup string by the depth-first search of it's tree. 
+			The markup string is created recursively for every subtree starting from a node by this algorithm:
+
       \begin{algorithm}[H]
-        \KwData{node in virtual DOM}
-        \KwResult{String with markup of subtree of virtual DOM with root in setted node}
-        % initialization\;
-        % \While{not at end of this document}{
-        % read current\;
-        \eIf{component is DomComponent}{
-          \eIf{component is not pair}{
-            write markup with attributes from props\;
+        \KwData{The node in virtual DOM tree}
+        \KwResult{A string with the markup of the virtual DOM subtree with a root in the node}
+        \eIf{the component of the node is DomComponent}{
+          \eIf{the component is not pair}{
+            write the markup into the result with attributes from the props and a tag name from the component\;
           }{
-            write open markup\;
-            write markup for all children recursively\;
-            write close markup\;
+            write the open markup into the result with attributes from the props and a tag name from the component\;
+            write the markup for all children recursively into the result\;
+            write the close markup into the result\;
           }
         }{
-          write markup for all children recursively\;
+          write the markup for all children recursively into the result\;
         }
         % }
-        \caption{Write node into string.}
+        \caption{Write node into the markup string.}
       \end{algorithm}
 
     \subsubsection{In browser}\label{subsec:our-architecture-rendering-browser}
-      Rendering in browser is quiet more difficult than rendering to string. 
-      We can use same render to string method, but we will need some connections between nodes and elements, 
-      so we can't do it this simply.
+      The rendering in the browser is more difficult than the rendering into the markup string. 
+			It is possible to use the same \textit{render to the markup string} method and add this markup to the DOM. 
+			This will create DOM structure representing the virtual DOM, 
+			but doesn't create connections between nodes in the virtual DOM and HTML elements in the real one. 
+			This connections is necessary when the virtual DOM is updated.
+			Therefore the browser side rendering will work in a different way. 
+			\todo{End of the text refactoring}
 
       \paragraph{Initial mount}\label{par:our-architecture-rendering-browser-init} 
         First the user of the library need to do is to mount component to the HTML element. 
