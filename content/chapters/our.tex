@@ -2,11 +2,11 @@
 
 We decided to use component-driven approach of databinding, 
 because one of our main requirements is to be possible to render as on server, so in browser.
-We decided to take inspiration from Facebook \texttt{React} library, mainly in API of the library, which is component based, 
+We decided to take inspiration from Facebook \textit{React} library, mainly in API of the library, which is component based, 
 with some differences in architecture.
 
 As we work in Dart language, which guarantees some browser compatibility and add some functionality that JavaScript doesn't have,
-we don't have to implement some of React's additional features like:
+we don't have to implement some of \textit{React}'s additional features like:
 \begin{itemize}
   \item Synthetic events \textit{(Dart unified events)}
   \item Mixins \textit{(Dart support native mixins as a part of a language)}
@@ -38,22 +38,22 @@ In this next sections of this chapter we will introduce and deeply describe our 
       Solution can be very interesting and powerful, 
       but if it don't offer reasonably easy to use API, almost no one will use it.
       \begin{description}
-        \item{\textbf{React-like API}} \hfill \\
-          Because we use similar concept as JavaScript library React,  
+				\item{\textbf{\textit{React}-like API}} \hfill \\
+					Because we use similar concept as JavaScript library \textit{React},  
           which is widely used and known, 
           if we offer similar API, more people will more quickly get used to it.
       \end{description}
     \item{\textbf{Performance}} \hfill \\
       We want to offer useful library, and if want someone to use it, 
       we need to offer good performance in the competition of Dart and JavaScript UI libraries.
-    \todo{Something more?}
   \end{description}
 
   How we fulfilled these requirements is in detail described in next sections of this chapter.
 
 \section{Architecture}\label{sec:our-architecture}
 
-  In this section we describe our architecture from several points of view like \nameref{subsec:our-architecture-idea}, 
+  In this section we describe our architecture from several points of view like 
+	\nameref{subsec:our-architecture-overview}, 
   \nameref{subsec:our-architecture-structure}, 
   \nameref{subsec:our-architecture-core}, 
   \nameref{subsec:our-architecture-lifecycle}, 
@@ -67,11 +67,11 @@ In this next sections of this chapter we will introduce and deeply describe our 
   But, of cause we add some examples, so wee will show some parts of api in this section too, 
   but they don't will be so much described as in next section.
 
-  \subsection{High level idea}\label{subsec:our-architecture-idea}
-    Our high level idea is based on facebook React library attitude. 
+  \subsection{Architectural overview}\label{subsec:our-architecture-overview}
+	Our high level idea is based on facebook \textit{React} library attitude. 
     We created api, whose main class is \texttt{Component}, which represents construct very similar to react's \texttt{Component}.
     This component is mounted to an element, where it renders itself. 
-    This relationship is described on figure~\nameref{img:library-idea}.
+    This relationship is described on \fullref{img:library-idea}.
     \begin{figure}[h]
     \centering  
       \includegraphics[scale=0.6]{images/uml/tiles/Idea/Idea.png}
@@ -117,7 +117,7 @@ In this next sections of this chapter we will introduce and deeply describe our 
     Based on the mentioned packages structure, it is quiet obvious what are the dependences between these packages.
     \texttt{\textbf{Tiles}} package is independent, 
 		and both of \texttt{\textbf{Tiles Browser}} and \texttt{\textbf{Tiles Server}} are dependent on \texttt{\textbf{Tiles}} package.
-    These dependences are shown on figure~\nameref{img:library-packages}.
+    These dependences are shown on \fullref{img:library-packages}.
 
     \begin{figure}[h]
     \centering  
@@ -145,18 +145,18 @@ In this next sections of this chapter we will introduce and deeply describe our 
         Types of change are: \texttt{CREATED, UPDATED, MOVED, DELETED}
     \end{description}
 
-    In contrast with facebook React \texttt{Component}, our component provides only an API to a programmer.
+		In contrast with facebook \textit{React} \texttt{Component}, our component provides only an API to a programmer.
     This class is the main class for a programmer using our library. 
 		He doesn't need to use any other class created by our library. 
     Just some methods.
 
-    We also have an inspiration from React with idea of \textbf{virtual DOM}. 
+		We also have an inspiration from \textit{React} with idea of \textbf{virtual DOM}. 
 		Vertices of an virtual DOM are represented by the class \texttt{Node} instead of the class \texttt{Component} to separate the functionality. 
 
     Each node contain an instance of \texttt{Component}. 
 		The node represents the component in a virtual DOM.
     
-    The diagram of relationships is shown on figure~\nameref{img:library-core}. 
+    The diagram of relationships is shown on \fullref{img:library-core}. 
 		In the next chapters we describe the main classes more in details.
     \begin{figure}[h]
     \centering  
@@ -189,7 +189,7 @@ In this next sections of this chapter we will introduce and deeply describe our 
 
 			\texttt{ComponentDescriptionFactory registerComponent(ComponentFactory factory)} is additional method helping programmer 
 			for easier \texttt{ComponentDescription} creation. 
-			Factories are described late in section~\nameref{sec:our-api}
+			Factories are described late in \fullref{sec:our-api}
       
     \subsubsection{DomComponent}\label{subsubsec:our-architecture-core-dom-component}
       \texttt{DomComponent} is a subclass of class \texttt{Component}. 
@@ -309,7 +309,7 @@ In this next sections of this chapter we will introduce and deeply describe our 
     At the end of component's life in the real DOM, 
     component should be notified about that.
 
-    The whole life-cycle is shown on the figure~\nameref{img:our-life-cycle}.
+    The whole life-cycle is shown on the \fullref{img:our-life-cycle}.
 
     \begin{figure}[h]
     \centering  
@@ -412,7 +412,7 @@ In this next sections of this chapter we will introduce and deeply describe our 
     As our work is in the scope of web applications, we want to render it into DOM (browser rendering), 
     and also into textual representation of a DOM(server rendering).
 
-    As we described earlier in subsection~\nameref{subsec:our-architecture-structure}, 
+    As we described earlier in \fullref{subsec:our-architecture-structure}, 
     these rendering types are separated to separate packages from the core package and are independent from each other. 
 
     \subsubsection{Server side}\label{subsec:our-architecture-rendering-server}
@@ -469,7 +469,7 @@ In this next sections of this chapter we will introduce and deeply describe our 
         (element, which was component mounted to) from "virtual image".
 
         For now, we describe case, that root element is empty (has no child element or node).
-        Case, when it is not empty we discussed in the subsection~\nameref{subsec:our-architecture-injecting}.
+        Case, when it is not empty we discussed in the \fullref{subsec:our-architecture-injecting}.
         The mount is easily described by next algorithm:
         \begin{algorithm}[H]
           \KwData{node in virtual DOM and HTML element, to mount node to (mountRoot)}
@@ -549,7 +549,7 @@ In this next sections of this chapter we will introduce and deeply describe our 
     and triggering of redraw of the component, if needed. So the question is, how add this possibility to programmer.
 
     It is important from performance point of view, because by this, we can add only one event listener for each event type in whole virtual DOM.
-    We will discuss this later in chapter~\nameref{chap:performance}.
+    We will discuss this later in \fullref{chap:performance}.
 
     To enable this synthetic bubbling, we need to find out, which component belongs to element on which was event triggered.
 

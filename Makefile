@@ -34,16 +34,14 @@ dist-clean:
 booklet: main.ps
 	cat main.ps | psbook | psnup -2 >main-booklet.ps
 
-flat: main.flt.tex
-
-main.flt.tex: */*/*.tex *.tex *.bib Makefile
+flat: */*/*.tex *.tex *.bib Makefile
 	flatex main.tex
 	mv main.flt main.flt.tex
 
 compare: 
 	flatex main.tex
 	mv main.flt main.flt.tex
-	latexdiff --exclude-textcmd="section,subsection" --config="PICTUREENV=(?:picture|DIFnomarkup|minted)[\w\d*@]*" ../oldtext/main.flt.tex main.flt.tex > main.diff.tex
+	latexdiff --exclude-textcmd="section,subsection,chapter" --config="PICTUREENV=(?:picture|DIFnomarkup|minted|thebibliography)[\w\d*@]*" ../oldtext/main.flt.tex main.flt.tex > main.diff.tex
 	rm -f *.toc
 	pdfcslatex -shell-escape main.diff
 	pdfcslatex -shell-escape main.diff

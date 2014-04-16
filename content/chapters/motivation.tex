@@ -1,25 +1,59 @@
-\chapter{Motivation - why databinding}\label{chap:motivatio}
+\chapter{Motivation}\label{chap:motivation}
 
 The first question, as always should be, is the motivation of this work. 
-What is the motivation to create another library, that will handle databinding in dart?
+What is the motivation to create another library, that will handle databinding in Dart?
 
-We will start with small introduction to the history of how websites and later web-applications were created. 
-Then we define a set of features required for \textbf{tiles}.
+The motivation to create the \textbf{tiles} library contains from several aspects, 
+which are not contain in no other \texttt{Dart} library
+\footnote{We didn't find any suitable library and didn't hear about it}.
 
-\section{History}\label{sec:history}
-\subsection{Plain documents}\label{subsec:history-plain-doc}
-\subsection{Simple PHP}\label{subsec:history-server-side-scripts}
-\subsection{Server side frameworks}\label{subsec:history-server-side-frameworks}
-\subsection{Simple JavaScript/jQuery}\label{subsec:history-jquery}
-\subsection{JavaScript MVC frameworks}\label{subsec:history-js-mvc}
+\begin{description}
+	\item[Dart as a programming language] \hfill \\
+		Dart language is young programming language with an active development and progress. 
+		One of its advantages is optional typing, 
+		the build-in compilation to the JavaScript, which enable programming a browser applications,
+		and a Java-like virtual machine, which runs the Dart in the most commonly used operating systems.
 
+		It is designed for the web applications with all necessary support for them. 
+		As it enable the compilation into the JavaScript and running directly under the OS, 
+		it also enable to share a source code between server part of an application 
+		and its client application running in the web browser.
 
-\section{Objectives}\label{sec:objectives}
+		Dart also guarantees browser compatibility, what is important for ease of web application development.
+	\item[Testability] \hfill \\
+		Very important aspect in a building complex application is the testability of the source code.
 
-From previous overview of "history" we can produce a set of the features, 
-which should be contained in \textbf{tiles}.
+		Because of this, it is essential to use libraries, which enables easy testing and mocking components.
+	\item[Server side rendering] \hfill \\
+		Server side rendering is very important for user experience and for search engine optimization. 
 
-\subsection{Server-side rendering}\label{subsec:objectives-server-side-rendering}
-\subsection{Programmer friendly API}\label{subsec:objectives-friendly-api}
-\subsection{Easy concept}\label{subsec:objectives-easy-concept}
-\subsection{Two way databinding}\label{subsec:objectives-two-way-databinding}
+		When we have the CPM\footnote{Computer Programming Language} which can be used as on the server, so in the clients browser, 
+		it is natural to think about a use of the same source code to create an in-browser application, 
+		and to render its page on the server. 
+	\item[No templates] \hfill \\
+		This aspect is important from two point of views: the testability and the server side rendering.
+
+		From the testability point of view, it is easier to test and mock structures created in only one CPM. 
+		If the template is used to create a component of the UI, 
+		it is much more difficult to test it and also think about this testing.
+		If this component is only one class in the CPM without dependences on another type of the information, 
+		testing is more natural and easier to think about.
+
+		From the server side rendering point of view, if we want to work with templates, 
+		we need to access them differently when we work in the OS and in the clients browser.
+		If we have the structure fully composed in one CPM, it is easier to compose the same HTML structure on the server as in the browser, 
+		then if we have the structure composed by the template and the CPM.
+	\item[Only one language] \hfill \\
+		This aspect is very related with the previous one. 
+		When the application is created fully in one programming language, 
+		it is easier for programmers to work with it (they don't have to switch between different CPM).
+
+		Also it is easier to compile whole application into the JavaScript, analyze the source code or refactor it.
+	\item[Reliability] \hfill \\
+		The reliability has significant importance in complex applications. 
+		This reliability can be achieved by automatic tests, a robust design and quality development. 
+\end{description}
+
+When we take into account these aspects, there exists no library, which fulfill all of them.
+
+As there is a need for this kind of a library, we decided to design and create one. 
