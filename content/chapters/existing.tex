@@ -117,14 +117,16 @@ These two approaches do the same thing, create structure of the components, diff
 	create the markup string representing the HTML markup of the component tree.
 	This enable the rendering of the whole component tree on the server without use of browser-specific features.
 
-	An example of the component driven UI library is the JavaScript library \textit{React} created by the facebook.
-  \textit{React} is standalone UI library which enable native rendering of the component structure as in the browser, so on the server.
+	An example of the component driven UI library is the JavaScript library \react created by the \facebook.
+  \react is standalone UI library which enable native rendering of the component structure as in the browser, so on the server.
 
-	We decided to use a similar approach to \textit{React} library, so we briefly describe it.
+	We decided to use a similar approach to \react library, so we briefly describe it.
 
 	\subsection{React}\label{subsec:existing-component-react}
 		
-		\textit{React} is JavaScript UI library from facebook. 
+		Lots of people use \react as the V in MVC.\cite{react}
+
+		\react is JavaScript UI library from \facebook. 
 		Its main concept is to pack parts of the web application into reusable components, 
 		which are represented as object in JavaScript. 
 
@@ -132,40 +134,47 @@ These two approaches do the same thing, create structure of the components, diff
 		This will create \textit{virtual DOM} "mounted" to \textit{mount root}. 
 		This virtual DOM is then reflexed into the real DOM under the \textit{mount root}.
 
-		Components are organized to virtual DOM tree, where data flows from root component to leaves. 
-		This data flow is implemented by props of the component, which are read-only.
-		Component have also own state, which should be stored in state attribute and updated by methods \texttt{setState} and \texttt{replaceState}. 
-		State shouldn't be updated directly to preserve invariant, that real DOM always represents actual state of the virtual one. 
+		\react uses a virtual DOM diff implementation for ultra-high performance. 
+		It can also render on the server using Node.js — no heavy browser DOM required.\cite{react}
 
-		Component create structure under it by its method \texttt{render}, which should return one instance of a component, 
-		which will be the child of this component.
-		In render function, it can add to this rendered component props, which is the way, how data is flowing down, 
-		and children, which is the way, how to create spreading tree, not just a line. 
-		If the child component get children, it will be in \texttt{children} attribute. Component can reuse them in \texttt{render} method or ignore them.
+		Components are organized to the virtual DOM tree, where a data flows from the root component to leaves. 
+		This data flow is implemented by the props of the component, which are read-only.
+		Component have also a state, which should be stored in the state attribute and updated by methods \texttt{setState} and \texttt{replaceState}. 
+		The state shouldn't be updated directly to preserve the invariant, that the real DOM always represents the actual state of the virtual one. 
 
-		This is because \textit{React} maps all components to HTML elements and want to create more than one tree children only in components representing real DOM elements.
+		Component describe the structure under it by its method \texttt{render}, 
+		which should return one instance of a component, 
+		which will be added as a child of this component.
+		The render function also add props to the child component.
+		This realize the data flow in "down" direction. 
+		The render also add children to the child component, which is the way, 
+		how to create a spreading tree, not just a line. 
+		The child component have read access to passed children and can reuse them in the \texttt{render} method or ignore them.
 
-		Components can listen to events on the DOM components (internal react components, representing DOM elements). 
-		They are attached trough props by event listeners. 
+		The \react offer own events system with synthetic event bubbling.
+		This enable programmer to listen to events independently from browser. 
+		The \react manage the browser compatibility.
 
-		When event occurs, it bubble up to \textit{mount root} where is caught by \textit{React}.
-		Then \textit{React} simulate event bubbling from DOM component, which represents target element in virtual DOM,
-		with synthetic event, which manage browser compatibility. 
-
-		When this event is caught by some custom component, this component can react on that. 
-		It can change state, call some functions, store some data or what ever it wants.
+		Components can listen to events on DOM components (internal \react components, representing DOM elements). 
+		They are attached trough props by the event listeners syntax(\texttt{onChange}, \texttt{onClick} etc.). 
 
 		State change(by mentioned methods) trigger redrawing of virtual DOM. 
-		This will use render methods to create new children of the components 
-		and process whole tree by depth-first search, 
-		which produce list of changes needed to get real DOM to state representing virtual one.
 
-		For this purpose, \textit{React} implements some component life-cycle methods, which we will not discuss here. 
-		They are the superset of life-cycle methods we implement in Tiles library. 
+		\react implements component life-cycle methods,
+		which notify the component about its actual state of living (just mounted, just updated, before unmount, etc.). 
+		They are the superset of life-cycle methods implemented in the tiles library. 
 
-		For more information about react and it's architecture and API 
-		reader can go to the website of the \textit{React} project \url[http://facebook.github.io/react/]
+		For more information about \react, it's architecture and API 
+		reader can go to the website of the \react project \url[http://facebook.github.io/react/].
 
 \section{Conclusion}\label{sec:existing-conclusion}
-		
-\todo{Here should be described, why we decided to use component driven approach and take inspiration from \textit{React} library.}
+
+	We decided to use \textbf{Component driven} views and databinding, because it is not dependent on the template engine, 
+	whole source code can be written in the same CPL with all advantages gained by that 
+	and naturally easier thinking about testing and mocking.
+
+	Our solution is based on the idea of the \react library.
+
+	As we decided to work in the Dart language, we don't have to implement a browser compatibility, synthetic events, mixins, etc.
+
+	The architecture of the tiles library will be described in the \fullref{chap:oursolution}.

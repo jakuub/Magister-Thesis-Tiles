@@ -307,6 +307,14 @@ Abstrakt v slovencine.
 %------------------------------------------------------------------------------------------------------
 % a teraz includneme vsetky kapitoly, realne je to len subor, v ktorom sa incuduju kapitoly postupne
 %------------------------------------------------------------------------------------------------------
+% flatex input: [./content/macros.tex]
+\newcommand{\tiles}[0]{\textbf{\texttt{Tiles}} }
+\newcommand{\react}[0]{\textit{React} }
+\newcommand{\facebook}[0]{Facebook }
+
+% flatex input end: [./content/macros.tex]
+
+%------------------------------------------------------------------------------------------------------
 % flatex input: [./content/chapters/chapters.tex]
 \pagestyle{plain}
 % flatex input: [content/chapters/intro.tex]
@@ -314,8 +322,8 @@ Abstrakt v slovencine.
 \addcontentsline{toc}{chapter}{Introduction}
 
 As one of the results of this magister thesis is our new databinding library in dart, 
-which is called \textbf{tiles}. 
-In next  text, we will use only \textbf{tiles} to mention \textit{our new databinding library in dart}.
+which is called \tiles. 
+In next  text, we will use only \tiles to mention \textit{our new databinding library in dart}.
 
 % flatex input end: [content/chapters/intro.tex]
 
@@ -569,14 +577,16 @@ These two approaches do the same thing, create structure of the components, diff
 	create the markup string representing the HTML markup of the component tree.
 	This enable the rendering of the whole component tree on the server without use of browser-specific features.
 
-	An example of the component driven UI library is the JavaScript library \textit{React} created by the facebook.
-  \textit{React} is standalone UI library which enable native rendering of the component structure as in the browser, so on the server.
+	An example of the component driven UI library is the JavaScript library \react created by the \facebook.
+  \react is standalone UI library which enable native rendering of the component structure as in the browser, so on the server.
 
-	We decided to use a similar approach to \textit{React} library, so we briefly describe it.
+	We decided to use a similar approach to \react library, so we briefly describe it.
 
 	\subsection{React}\label{subsec:existing-component-react}
 		
-		\textit{React} is JavaScript UI library from facebook. 
+		Lots of people use \react as the V in MVC.\cite{react}
+
+		\react is JavaScript UI library from \facebook. 
 		Its main concept is to pack parts of the web application into reusable components, 
 		which are represented as object in JavaScript. 
 
@@ -584,56 +594,72 @@ These two approaches do the same thing, create structure of the components, diff
 		This will create \textit{virtual DOM} "mounted" to \textit{mount root}. 
 		This virtual DOM is then reflexed into the real DOM under the \textit{mount root}.
 
-		Components are organized to virtual DOM tree, where data flows from root component to leaves. 
-		This data flow is implemented by props of the component, which are read-only.
-		Component have also own state, which should be stored in state attribute and updated by methods \texttt{setState} and \texttt{replaceState}. 
-		State shouldn't be updated directly to preserve invariant, that real DOM always represents actual state of the virtual one. 
+		\react uses a virtual DOM diff implementation for ultra-high performance. 
+		It can also render on the server using Node.js — no heavy browser DOM required.\cite{react}
 
-		Component create structure under it by its method \texttt{render}, which should return one instance of a component, 
-		which will be the child of this component.
-		In render function, it can add to this rendered component props, which is the way, how data is flowing down, 
-		and children, which is the way, how to create spreading tree, not just a line. 
-		If the child component get children, it will be in \texttt{children} attribute. Component can reuse them in \texttt{render} method or ignore them.
+		Components are organized to the virtual DOM tree, where a data flows from the root component to leaves. 
+		This data flow is implemented by the props of the component, which are read-only.
+		Component have also a state, which should be stored in the state attribute and updated by methods \texttt{setState} and \texttt{replaceState}. 
+		The state shouldn't be updated directly to preserve the invariant, that the real DOM always represents the actual state of the virtual one. 
 
-		This is because \textit{React} maps all components to HTML elements and want to create more than one tree children only in components representing real DOM elements.
+		Component describe the structure under it by its method \texttt{render}, 
+		which should return one instance of a component, 
+		which will be added as a child of this component.
+		The render function also add props to the child component.
+		This realize the data flow in "down" direction. 
+		The render also add children to the child component, which is the way, 
+		how to create a spreading tree, not just a line. 
+		The child component have read access to passed children and can reuse them in the \texttt{render} method or ignore them.
 
-		Components can listen to events on the DOM components (internal react components, representing DOM elements). 
-		They are attached trough props by event listeners. 
+		The \react offer own events system with synthetic event bubbling.
+		This enable programmer to listen to events independently from browser. 
+		The \react manage the browser compatibility.
 
-		When event occurs, it bubble up to \textit{mount root} where is caught by \textit{React}.
-		Then \textit{React} simulate event bubbling from DOM component, which represents target element in virtual DOM,
-		with synthetic event, which manage browser compatibility. 
-
-		When this event is caught by some custom component, this component can react on that. 
-		It can change state, call some functions, store some data or what ever it wants.
+		Components can listen to events on DOM components (internal \react components, representing DOM elements). 
+		They are attached trough props by the event listeners syntax(\texttt{onChange}, \texttt{onClick} etc.). 
 
 		State change(by mentioned methods) trigger redrawing of virtual DOM. 
-		This will use render methods to create new children of the components 
-		and process whole tree by depth-first search, 
-		which produce list of changes needed to get real DOM to state representing virtual one.
 
-		For this purpose, \textit{React} implements some component life-cycle methods, which we will not discuss here. 
-		They are the superset of life-cycle methods we implement in Tiles library. 
+		\react implements component life-cycle methods,
+		which notify the component about its actual state of living (just mounted, just updated, before unmount, etc.). 
+		They are the superset of life-cycle methods implemented in the tiles library. 
 
-		For more information about react and it's architecture and API 
-		reader can go to the website of the \textit{React} project \url[http://facebook.github.io/react/]
+		For more information about \react, it's architecture and API 
+		reader can go to the website of the \react project \url[http://facebook.github.io/react/].
 
 \section{Conclusion}\label{sec:existing-conclusion}
-		
-\todo{Here should be described, why we decided to use component driven approach and take inspiration from \textit{React} library.}
+
+	We decided to use \textbf{Component driven} views and databinding, because it is not dependent on the template engine, 
+	whole source code can be written in the same CPL with all advantages gained by that 
+	and naturally easier thinking about testing and mocking.
+
+	Our solution is based on the idea of the \react library.
+
+	As we decided to work in the Dart language, we don't have to implement a browser compatibility, synthetic events, mixins, etc.
+
+	The architecture of the tiles library will be described in the \fullref{chap:oursolution}.
 
 % flatex input end: [content/chapters/existing.tex]
 
 % flatex input: [content/chapters/our.tex]
 \chapter{Our solution}\label{chap:oursolution}
 
-We decided to use component-driven approach of databinding, 
-because one of our main requirements is to be possible to render as on server, so in browser.
-We decided to take inspiration from Facebook \textit{React} library, mainly in API of the library, which is component based, 
+The first attempt was to create wrapper of the \react library into the Dart language. 
+This wrapper was successfully created, tested and also used in an independent commercial project. 
+
+The problem occurs in the performance of the wrapper, 
+where the bottleneck of the speed was the communication between \react created in the JavaScript and the wrapper in the Dart language. 
+This bottleneck can be reduced by some adjustment and some Dart hacks, but it was still a bottleneck. 
+
+That's why we decided to build our own library called \tiles.
+Most of the performance benchmarks of the \tiles library later in this work will be compared with the \react wrapper. 
+
+As we told in the previous part of the work, 
+we decided to take inspiration from the \facebook \react library,
+mainly in the API of the library, which is component based, 
 with some differences in architecture.
 
-As we work in Dart language, which guarantees some browser compatibility and add some functionality that JavaScript doesn't have,
-we don't have to implement some of \textit{React}'s additional features like:
+We don't have to implement some of the additional features of the \react library, because of the nature of the Dart language.
 \begin{itemize}
   \item Synthetic events \textit{(Dart unified events)}
   \item Mixins \textit{(Dart support native mixins as a part of a language)}
@@ -643,12 +669,12 @@ we don't have to implement some of \textit{React}'s additional features like:
   \item Test utilities \textit{(Dart has own unittest library and we work with classes and with native events, it is easily tested)}
 \end{itemize}
 
-In this next sections of this chapter we will introduce and deeply describe our Dart library \texttt{Tiles}.
-\todo{Need decision, if write tiles with small or capital \textbf{T}}
+In this next sections of this chapter we will introduce and deeply describe our Dart library \tiles.
+\todo{Need decision, if write \tiles with small or capital \textbf{T}}
 
 \section{Requirements}\label{subsec:our-architecture-requirements}
 
-  When we designed \texttt{Tiles} library, we take into account some basic requirements. 
+  When we designed \tiles library, we take into account some basic requirements. 
   \begin{description}
     \item{\textbf{Rendering in both, browser and server}} \hfill \\
       One of the main advantages of this library is possibility to render the same content, 
@@ -665,8 +691,8 @@ In this next sections of this chapter we will introduce and deeply describe our 
       Solution can be very interesting and powerful, 
       but if it don't offer reasonably easy to use API, almost no one will use it.
       \begin{description}
-				\item{\textbf{\textit{React}-like API}} \hfill \\
-					Because we use similar concept as JavaScript library \textit{React},  
+				\item{\textbf{\react-like API}} \hfill \\
+					Because we use similar concept as JavaScript library \react,  
           which is widely used and known, 
           if we offer similar API, more people will more quickly get used to it.
       \end{description}
@@ -695,8 +721,8 @@ In this next sections of this chapter we will introduce and deeply describe our 
   but they don't will be so much described as in next section.
 
   \subsection{Architectural overview}\label{subsec:our-architecture-overview}
-	Our high level idea is based on facebook \textit{React} library attitude. 
-    We created api, whose main class is \texttt{Component}, which represents construct very similar to react's \texttt{Component}.
+	Our high level idea is based on \facebook \react library attitude. 
+    We created api, whose main class is \texttt{Component}, which represents construct very similar to \react's \texttt{Component}.
     This component is mounted to an element, where it renders itself. 
     This relationship is described on \fullref{img:library-idea}.
     \begin{figure}[h]
@@ -716,7 +742,7 @@ In this next sections of this chapter we will introduce and deeply describe our 
       \label{img:library-idea-virtual-dom}
     \end{figure}
     There can be the event listeners attached to these components. 
-    The \textbf{events} \footnote{We work at Dart, which create browser compatibility for us, so we don't have to create synthetic events like react.}
+    The \textbf{events} \footnote{We work at Dart, which create browser compatibility for us, so we don't have to create synthetic events like \react.}
     are then bubbled trough a virtual DOM, instead real one.
     By this there can be the listener attached to a custom component, which doesn't have element representing it in a real DOM.
 
@@ -772,12 +798,12 @@ In this next sections of this chapter we will introduce and deeply describe our 
         Types of change are: \texttt{CREATED, UPDATED, MOVED, DELETED}
     \end{description}
 
-		In contrast with facebook \textit{React} \texttt{Component}, our component provides only an API to a programmer.
+		In contrast with \facebook \react \texttt{Component}, our component provides only an API to a programmer.
     This class is the main class for a programmer using our library. 
 		He doesn't need to use any other class created by our library. 
     Just some methods.
 
-		We also have an inspiration from \textit{React} with idea of \textbf{virtual DOM}. 
+		We also have an inspiration from \react with idea of \textbf{virtual DOM}. 
 		Vertices of an virtual DOM are represented by the class \texttt{Node} instead of the class \texttt{Component} to separate the functionality. 
 
     Each node contain an instance of \texttt{Component}. 
@@ -1415,7 +1441,7 @@ class MyTodoComponent extends Component {
   One product of this work is open source UI library.
   To use this library, user need to know the application programming interface(API) of it. 
 
-  In \texttt{tiles} library, user interface rendered by it consist of components, represented by the class \texttt{Component}. 
+  In \tiles library, user interface rendered by it consist of components, represented by the class \texttt{Component}. 
   This class is used to create functional logic of part of the UI. 
 
   To use it, mount it, add it to other component as a child, it is necessary to create \texttt{ComponentFactory}, 
