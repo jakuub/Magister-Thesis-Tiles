@@ -701,23 +701,18 @@ In this next sections of this chapter we will introduce and deeply describe our 
 
   How we fulfilled these requirements is in detail described in next sections of this chapter.
 
-\section{Architecture}\label{sec:our-architecture}
+\section{Architecture - \tiles}\label{sec:our-architecture}
 
-  In this section we describe our architecture from several points of view like 
-  \nameref{subsec:our-architecture-overview}, 
-  \nameref{subsec:our-architecture-structure}, 
-  \nameref{subsec:our-architecture-core}, 
-  \nameref{subsec:our-architecture-lifecycle}, 
-  \nameref{subsec:our-architecture-events}, 
-  \nameref{subsec:our-architecture-rendering} and
-  \nameref{subsec:our-architecture-injecting}.
+	The \tiles library implements a component driven databinding. 
+	It enable declarative definition of the user interface by the \texttt{Component} class.
+	The component define the structure of the virtual DOM tree, which is rendered to the real DOM. 
+	Updates in the virtual DOM are reflected into the real one with usage of the smallest difference between old and the new structure.
+	
+	The composition of the virtual DOM is used in the \tiles to create the system of synthetic event bubbling, 
+	which offer the programmer a simple way of listening to events in the DOM from a component perspective.
 
-  We will focus on good understanding of how library works. 
-  We will not discuss API a lot, this is the focus of next section. 
-
-  But, of cause we add some examples, so wee will show some parts of api in this section too, 
-  but they don't will be so much described as in next section.
-  \todo{this content need to be replaced}
+	The architecture of the \tiles library offer the possibility to think about UI as a set of the functional components, 
+	instead of HTML elements and a Dart/JavaScript application manipulating with them.
 
   \subsection{Architectural overview}\label{subsec:our-architecture-overview}
     Our high level idea is based on the \facebook \react library attitude. 
@@ -1411,14 +1406,14 @@ class MyTodoComponent extends Component {
   To use this library, user need to know the application programming interface(API) of it. 
 
   In the \tiles library, the user interface consist of components, represented by the class \texttt{Component}. 
-	The \texttt{Component} class is used to create a functional logic of a part of the UI. 
+  The \texttt{Component} class is used to create a functional logic of a part of the UI. 
 
   To use it, mount it and add it to the other component as a child is necessary to create a \texttt{ComponentFactory} 
   and a \texttt{ComponentDescriptionFactory}, which creates a \texttt{ComponentDescription}.
 
   The \textbf{\texttt{ComponentFactory}} is a function with two positional optional arguments: \texttt{props} and \texttt{children}.
-	It return an instance of the \texttt{Component}. The \texttt{ComponentFactory} is used as a comparable type of the component.
-	The easiest and most common way to create \texttt{ComponentFactory} is shown in next example:
+  It return an instance of the \texttt{Component}. The \texttt{ComponentFactory} is used as a comparable type of the component.
+  The easiest and most common way to create \texttt{ComponentFactory} is shown in next example:
   % flatex input: [content/examples/component_factory.tex]
 \begin{minted}{dart}
 class MyComponent extends Component {
@@ -1435,19 +1430,19 @@ ComponentFactory factory =
 
   \textbf{\texttt{ComponentDescription}} is a description of a component. 
   It is used as argument to mounting functions and as a result of the \texttt{render} method.
-	Most of the time is used indirectly by usage of \texttt{ComponentDescriptionFactory}.
+  Most of the time is used indirectly by usage of \texttt{ComponentDescriptionFactory}.
 
-	\textbf{\texttt{ComponentDescriptionFactory}} is a function, which create a \texttt{ComponentDescription}.
-	It has 7 optional named arguments: 
-	\begin{description}
-		\item[props] passed to the component factory,
-		\item[children] also passed to the component factory, 
-		\item[key] used to optimize reorder of children and
-		\item[listeners] used to attach event listeners to the component created by the description.
-	\end{description}
+  \textbf{\texttt{ComponentDescriptionFactory}} is a function, which create a \texttt{ComponentDescription}.
+  It has 7 optional named arguments: 
+  \begin{description}
+    \item[props] passed to the component factory,
+    \item[children] also passed to the component factory, 
+    \item[key] used to optimize reorder of children and
+    \item[listeners] used to attach event listeners to the component created by the description.
+  \end{description}
 
   The \texttt{ComponentDescriptionFactory} can be created by programmer himself, 
-	but the most often way is to create it by the \texttt{registerComponent} function, which accept one argument of \texttt{ComponentFacotry} type.
+  but the most often way is to create it by the \texttt{registerComponent} function, which accept one argument of \texttt{ComponentFacotry} type.
   This method creates \texttt{ComponentDescriptionFactory}, which returns a description with passed \texttt{ComponentFacotry}.
   A usage is shown on the following example:
   % flatex input: [content/examples/register_component.tex]
@@ -1483,8 +1478,8 @@ mountComponent(myComponent(props, children), mountRoot);
     The \texttt{Component} class is the main class of the API of the \tiles library.
     Every custom component should extend or implement it. 
 
-		The \texttt{Component} class contains a constructor, life-cycle methods, 
-		the \texttt{render} and a \texttt{redraw} method, props, children and offer a \texttt{needUpdate} stream.
+    The \texttt{Component} class contains a constructor, life-cycle methods, 
+    the \texttt{render} and a \texttt{redraw} method, props, children and offer a \texttt{needUpdate} stream.
     The default \texttt{Component} implementation is following: 
     % flatex input: [content/examples/component.tex]
 \begin{minted}{dart}
@@ -1516,7 +1511,7 @@ class Component {
 
 % }
 
-		The easier way to create own component is by extending the \texttt{Component} class:
+    The easier way to create own component is by extending the \texttt{Component} class:
     % flatex input: [content/examples/my_component.tex]
 \begin{minted}{dart}
 class MyComponent extends Component {
@@ -1539,10 +1534,10 @@ class MyComponent extends Component {
   \subsection{DOM component API}\label{subsec:our-api-dom}
 
     The \tiles library contain prepared \texttt{ComponentDescriptionFactory} functions for the each of standard HTML elements, 
-		with standard arguments. 
-		They creates new \texttt{ComponentDescription}, describing \texttt{DomComponent} with passed props and children.
+    with standard arguments. 
+    They creates new \texttt{ComponentDescription}, describing \texttt{DomComponent} with passed props and children.
 
-		Usage of the factories are shown on the previous example.
+    Usage of the factories are shown on the previous example.
 
   \subsection{Browser specific API}\label{subsec:our-api-browser}
     
@@ -1566,9 +1561,9 @@ mountComponent(myComponent(props, children), mountRoot);
 % }
 
     \textbf{References} are part of the props. 
-		If component have in \texttt{props["ref"]} instance of an internal class \texttt{{\textunderscore}Ref}, 
-		which is only a function returning \texttt{void} with one \texttt{Component} argument, 
-		then when this component is created and mounted, 
+    If component have in \texttt{props["ref"]} instance of an internal class \texttt{{\textunderscore}Ref}, 
+    which is only a function returning \texttt{void} with one \texttt{Component} argument, 
+    then when this component is created and mounted, 
     this reference method is called with it. 
 
     It is useful, when a custom component want to have a reference to the element associated to one of it's descendant. 
@@ -1593,7 +1588,7 @@ class MyComponent extends Component {
 
     \textbf{Event listeners} are represented in a form of a Map, stored at the node. 
     They should be instances of a \texttt{EventListener} class, which is a function with 2 arguments, an event and a component, and returns boolean.
-		The map containing event listeners is passed to the \texttt{ComponentDescriptionFactory} as a named parameter \texttt{listeners}.
+    The map containing event listeners is passed to the \texttt{ComponentDescriptionFactory} as a named parameter \texttt{listeners}.
     % flatex input: [content/examples/event_listener.tex]
 
 \begin{minted}{dart}
@@ -1610,7 +1605,7 @@ input(listeners: {"onClick": (event, component){
 
     There is only one thing we want to do on the server. Create markup for a \texttt{ComponentDescription}.
     We created a method \texttt{mountComponentToString}, 
-		which require one \texttt{ComponentDescription} argument and returns the markup string representing the virtual DOM created from the description of a component.
+    which require one \texttt{ComponentDescription} argument and returns the markup string representing the virtual DOM created from the description of a component.
     % flatex input: [content/examples/mount_component_to_string.tex]
 \begin{minted}{dart}
 String markup = mountComponentToString(

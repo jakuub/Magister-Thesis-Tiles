@@ -10,7 +10,7 @@
 \BOOKMARK [1][-]{section.3.3}{Conclusion}{chapter.3}% 10
 \BOOKMARK [0][-]{chapter.4}{Our solution}{}% 11
 \BOOKMARK [1][-]{section.4.1}{Requirements}{chapter.4}% 12
-\BOOKMARK [1][-]{section.4.2}{Architecture}{chapter.4}% 13
+\BOOKMARK [1][-]{section.4.2}{Architecture - Tiles }{chapter.4}% 13
 \BOOKMARK [2][-]{subsection.4.2.1}{Architectural overview}{section.4.2}% 14
 \BOOKMARK [2][-]{subsection.4.2.2}{Structure}{section.4.2}% 15
 \BOOKMARK [2][-]{subsection.4.2.3}{Core}{section.4.2}% 16
@@ -25,5 +25,5 @@
 \BOOKMARK [2][-]{subsection.4.3.4}{Server specific API}{section.4.3}% 25
 \BOOKMARK [0][-]{chapter.5}{Performance}{}% 26
 \BOOKMARK [0][-]{chapter.6}{Benchmarks}{}% 27
-\BOOKMARK [0][-]{chapter*.28}{Conclusion}{}% 28
-\BOOKMARK [0][-]{chapter*.29}{Bibliography}{}% 29
+\BOOKMARK [0][-]{chapter*.27}{Conclusion}{}% 28
+\BOOKMARK [0][-]{chapter*.28}{Bibliography}{}% 29

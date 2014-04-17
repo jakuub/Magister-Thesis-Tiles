@@ -57,23 +57,18 @@ In this next sections of this chapter we will introduce and deeply describe our 
 
   How we fulfilled these requirements is in detail described in next sections of this chapter.
 
-\section{Architecture}\label{sec:our-architecture}
+\section{Architecture - \tiles}\label{sec:our-architecture}
 
-  In this section we describe our architecture from several points of view like 
-  \nameref{subsec:our-architecture-overview}, 
-  \nameref{subsec:our-architecture-structure}, 
-  \nameref{subsec:our-architecture-core}, 
-  \nameref{subsec:our-architecture-lifecycle}, 
-  \nameref{subsec:our-architecture-events}, 
-  \nameref{subsec:our-architecture-rendering} and
-  \nameref{subsec:our-architecture-injecting}.
+  The \tiles library implements a component driven databinding. 
+  It enable declarative definition of the user interface by the \texttt{Component} class.
+  The component define the structure of the virtual DOM tree, which is rendered to the real DOM. 
+  Updates in the virtual DOM are reflected into the real one with usage of the smallest difference between old and the new structure.
+  
+  The composition of the virtual DOM is used in the \tiles to create the system of synthetic event bubbling, 
+  which offer the programmer a simple way of listening to events in the DOM from a component perspective.
 
-  We will focus on good understanding of how library works. 
-  We will not discuss API a lot, this is the focus of next section. 
-
-  But, of cause we add some examples, so wee will show some parts of api in this section too, 
-  but they don't will be so much described as in next section.
-  \todo{this content need to be replaced}
+  The architecture of the \tiles library offer the possibility to think about UI as a set of the functional components, 
+  instead of HTML elements and a Dart/JavaScript application manipulating with them.
 
   \subsection{Architectural overview}\label{subsec:our-architecture-overview}
     Our high level idea is based on the \facebook \react library attitude. 
