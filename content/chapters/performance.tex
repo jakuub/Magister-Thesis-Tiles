@@ -1,1 +1,71 @@
 \chapter{Performance}\label{chap:performance}
+
+  The performance is an important aspect of the UI library\footnote{as almost everywhere}.
+  If the UI library is slow, the user experience is unsatisfactory and application is considered as worse as it can be.
+
+  The question about performance of the UI library can be divided into the initial render, 
+  the update of the UI and the continuous consumption of computational resources.
+
+  The complexity of each task of the UI can be dependent on data size and resulting structure size. 
+  These two aspect are generally connected. 
+
+  We will take into account both of them. 
+  Data are a partial input of all tasks. 
+  The resulting structure combine the input data and the complexity of the UI. 
+  Therefore "How long it takes to process the structure of a size N" is in some cases a good question.
+
+  The complexity of the application logic not reflected into the complexity and a size of the UI structure is not relevant for as, 
+  because it is independent from the UI library. Therefore we will suppose, that it is constant. 
+
+  \section{Initial render}\label{sec:performance-initial-render}
+    
+    The initial render creates the whole structure of the UI, 
+    therefor it is not possible to perform it in less then a linear time from the size of the resulting structure.
+    It should be at least constructed.
+
+    The performance is also at least linear from the size of the read data(they must be at least read).
+
+    The \tiles library constructs virtual DOM representing the UI with a tree of the nodes. 
+    Each node contain the constant size of the information used by the \tiles library. 
+
+    The creation of the virtual DOM will process each node in the virtual DOM tree constant number of times. 
+    We assume a constant complexity of the application logic, so every life-cycle method called by our library will take a constant time.
+    Therefore the creation of the virtual DOM is linear from the size of it.
+
+    The initial render will process the virtual DOM by the depth-first search 
+    and creates the DOM structure in the process of the search without any looping and repeating.
+    So the projection from the virtual DOM into the real one is performed in linear time from the size of the virtual DOM.
+
+    At the summary, the whole initial mount consist of the creation of the virtual DOM (linear from the size of the virtual DOM), 
+    and the projection of the virtual DOM into the real one (also linear from the size of the virtual DOM).
+    The complexity of the initial render is therefore linear from the size of the virtual DOM.
+
+    The last question is, what relation is between the size of the virtual and the real DOM. 
+
+    The subtree without any DOM component in it is useless from the UI point of view, 
+    so we assume, that every leaf\footnote{A leaf is also a subtree} of the virtual DOM is a DOM component, 
+    which will be linearly reflected to the HTML element.
+
+    A long line of not DOM nodes without any branching is also useless (it can be replaced by one virtual DOM).
+
+    From these facts is obvious, that in the most cases, the ratio of DOM components in the virtual DOM has the constant lower bound.
+
+    So the complexity of the initial render is linear from the size of the virtual DOM, 
+    which is generally linear from the size of the resulting structure.
+
+  \section{Update of the UI}\label{sec:performance-update}
+
+  \section{Continuous resource consumption}\label{sec:performance-continuous}
+    
+    As we perform an asynchronous updating of the virtual DOM, the only one repeated task is to check, 
+    if there is something to be updated. This is not a performance bug, it will be discussed in the \fullref{sec:performance-optimizations}.
+
+    The check of the update need is performed on each mounted virtual DOM in the constant time(root node isDirty or hasDirtyDescendant). 
+    When we have the whole application UI represented in one virtual DOM, there is only constant time to check the update need. 
+
+    In general, the complexity of the task, which is performed periodically in the time, is linear from the number of virtual DOMs. 
+    Virtual DOMs should not be initialized dynamically from the size of a data, for this purpose should be used the virtual DOM itself.
+    Therefore we assume the constant number of virtual DOMs in the application, 
+    so the constant complexity of the task performed in each animation frame.
+
+  \section{Performance optimizations}\label{sec:performance-optimizations}
