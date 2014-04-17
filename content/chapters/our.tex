@@ -33,7 +33,7 @@ In this next sections of this chapter we will introduce and deeply describe our 
 
   \begin{description}
     \item{\textbf{Rendering in both environments, the browser and the server}} \hfill \\
-			One of the main advantages of \tiles library is a possibility to render the same content, 
+      One of the main advantages of \tiles library is a possibility to render the same content, 
       with the same code as on the server, so in the browser.
       This resolved into the package structure and several architectural decisions.
       \begin{description}
@@ -45,8 +45,8 @@ In this next sections of this chapter we will introduce and deeply describe our 
       The solution can be very interesting and powerful, 
       but if it don't offer a reasonably easy to use API, almost no one will use it.
       \begin{description}
-				\item{\textbf{\react-like API}} \hfill \\
-					Because we use a similar concept as the JavaScript \react library,  
+        \item{\textbf{\react-like API}} \hfill \\
+          Because we use a similar concept as the JavaScript \react library,  
           which is widely used and known, 
           if we offer similar API, more people will quickly get used to it.
       \end{description}
@@ -60,7 +60,7 @@ In this next sections of this chapter we will introduce and deeply describe our 
 \section{Architecture}\label{sec:our-architecture}
 
   In this section we describe our architecture from several points of view like 
-	\nameref{subsec:our-architecture-overview}, 
+  \nameref{subsec:our-architecture-overview}, 
   \nameref{subsec:our-architecture-structure}, 
   \nameref{subsec:our-architecture-core}, 
   \nameref{subsec:our-architecture-lifecycle}, 
@@ -73,10 +73,10 @@ In this next sections of this chapter we will introduce and deeply describe our 
 
   But, of cause we add some examples, so wee will show some parts of api in this section too, 
   but they don't will be so much described as in next section.
-	\todo{this content need to be replaced}
+  \todo{this content need to be replaced}
 
   \subsection{Architectural overview}\label{subsec:our-architecture-overview}
-		Our high level idea is based on the \facebook \react library attitude. 
+    Our high level idea is based on the \facebook \react library attitude. 
     We created api, whose main class is \texttt{Component}, which represents construct very similar to \react's \texttt{Component}.
     This component is mounted to an element, where it renders itself. 
     This relationship is described on \fullref{img:library-idea}.
@@ -98,7 +98,7 @@ In this next sections of this chapter we will introduce and deeply describe our 
     \end{figure}
     There can be the event listeners attached to these components. 
     The \textbf{events} 
-		\footnote{We work at Dart, which create browser compatibility for us, so we don't have to create synthetic events like \react.}
+    \footnote{We work at Dart, which create browser compatibility for us, so we don't have to create synthetic events like \react.}
     are then bubbled trough a virtual DOM, instead real one.
     By this there can be the listener attached to a custom component, which doesn't have element representing it in a real DOM.
 
@@ -125,7 +125,7 @@ In this next sections of this chapter we will introduce and deeply describe our 
 
     Based on the mentioned packages structure, it is quiet obvious what are the dependences between these packages.
     \texttt{\textbf{Tiles}} package is independent, 
-		and both of \texttt{\textbf{Tiles Browser}} and \texttt{\textbf{Tiles Server}} are dependent on \texttt{\textbf{Tiles}} package.
+    and both of \texttt{\textbf{Tiles Browser}} and \texttt{\textbf{Tiles Server}} are dependent on \texttt{\textbf{Tiles}} package.
     These dependences are shown on \fullref{img:library-packages}.
 
     \begin{figure}[h]
@@ -147,26 +147,26 @@ In this next sections of this chapter we will introduce and deeply describe our 
       \item[ComponentDescription]
         is self-explanatory. 
         It is returned from the component to describe it's children. 
-				The principles are described later at this document.
+        The principles are described later at this document.
       \item[NodeChange]
         represents one change in a virtual DOM, which should be applied into the real DOM. 
         This way, we are able to achieve minimal changing of the real DOM. 
         Types of change are: \texttt{CREATED, UPDATED, MOVED, DELETED}
     \end{description}
 
-		In contrast with \facebook \react \texttt{Component}, our component provides only an API to a programmer.
+    In contrast with \facebook \react \texttt{Component}, our component provides only an API to a programmer.
     This class is the main class for a programmer using our library. 
-		He doesn't need to use any other class created by our library. 
+    He doesn't need to use any other class created by our library. 
     Just some methods.
 
-		We also have an inspiration from \react with idea of \textbf{virtual DOM}. 
-		Vertices of an virtual DOM are represented by the class \texttt{Node} instead of the class \texttt{Component} to separate the functionality. 
+    We also have an inspiration from \react with idea of \textbf{virtual DOM}. 
+    Vertices of an virtual DOM are represented by the class \texttt{Node} instead of the class \texttt{Component} to separate the functionality. 
 
     Each node contain an instance of \texttt{Component}. 
-		The node represents the component in a virtual DOM.
+    The node represents the component in a virtual DOM.
     
     The diagram of relationships is shown on \fullref{img:library-core}. 
-		In the next chapters we describe the main classes more in details.
+    In the next chapters we describe the main classes more in details.
     \begin{figure}[h]
     \centering  
       \includegraphics[scale=0.2]{images/uml/tiles/TilesCore/Core.png}
@@ -196,9 +196,9 @@ In this next sections of this chapter we will introduce and deeply describe our 
       which is automatically created in default constructor of class \texttt{Component}, 
       so it is very important, to call superclass constructor in each custom component class.
 
-			\texttt{ComponentDescriptionFactory registerComponent(ComponentFactory factory)} is additional method helping programmer 
-			for easier \texttt{ComponentDescription} creation. 
-			Factories are described late in \fullref{sec:our-api}
+      \texttt{ComponentDescriptionFactory registerComponent(ComponentFactory factory)} is additional method helping programmer 
+      for easier \texttt{ComponentDescription} creation. 
+      Factories are described late in \fullref{sec:our-api}
       
     \subsubsection{DomComponent}\label{subsubsec:our-architecture-core-dom-component}
       \texttt{DomComponent} is a subclass of class \texttt{Component}. 
@@ -223,21 +223,21 @@ In this next sections of this chapter we will introduce and deeply describe our 
           which returns instance of a subclass of a \texttt{Component}.
         \item \textbf{Properties} \hfill \\
           Data which should be passed to the factory. 
-					This data are used as a properties of the component.
+          This data are used as a properties of the component.
         \item \textbf{Children} \hfill \\
           Children of described component.  
           This is useful mainly when programmer wants to render more complex structure of \texttt{DOMComponent}s.
         \item \textbf{Key} \hfill \\
-					Key is an identifier of a child. 
-					It is used to recognize reordering of children of the component.
-					When components \texttt{render} method returns list of descriptions, 
-					keys they contain are recognized and matched with keys stored in virtual DOM.
+          Key is an identifier of a child. 
+          It is used to recognize reordering of children of the component.
+          When components \texttt{render} method returns list of descriptions, 
+          keys they contain are recognized and matched with keys stored in virtual DOM.
 
-					If there is a match in key of the child in different position, child is only moved an updated. 
-					If there is no match in key, default process follows.
+          If there is a match in key of the child in different position, child is only moved an updated. 
+          If there is no match in key, default process follows.
       \end{itemize}
 
-			Description is once created with all the parameters and then these parameters can't be changed. 
+      Description is once created with all the parameters and then these parameters can't be changed. 
       All these parameters is set up by constructor. 
 
       \texttt{ComponentDescription} has one important method, which is \texttt{Component createComponent()}, 
@@ -246,16 +246,16 @@ In this next sections of this chapter we will introduce and deeply describe our 
     \subsubsection{Node}\label{subsubsec:our-architecture-core-node}
       \texttt{Node} is the most important and complex class in the library.
       It providers following functionality:
-			\begin{itemize}
-				\item creates virtual DOM tree, maintains creating and updating of the tree based on results of component's \texttt{render} method, 
-				\item listens to component's \texttt{needUpdate} stream and marks self as \textit{"dirty"} when it's component need update,
-				\item and handles updating process that is rearranging children of the \texttt{Node}.
-			\end{itemize}
+      \begin{itemize}
+        \item creates virtual DOM tree, maintains creating and updating of the tree based on results of component's \texttt{render} method, 
+        \item listens to component's \texttt{needUpdate} stream and marks self as \textit{"dirty"} when it's component need update,
+        \item and handles updating process that is rearranging children of the \texttt{Node}.
+      \end{itemize}
 
-			The node is also a vertex of the virtual DOM. 
-			It store children as a list of children. 
-			To use all possible optimization, node contain a \texttt{ComponentFactory} of the contained component, which is used when the virtual DOM is updated.
-			It also contain \texttt{key} which is used to recognize changed position of the same child.
+      The node is also a vertex of the virtual DOM. 
+      It store children as a list of children. 
+      To use all possible optimization, node contain a \texttt{ComponentFactory} of the contained component, which is used when the virtual DOM is updated.
+      It also contain \texttt{key} which is used to recognize changed position of the same child.
 
       Node has two important flags: \texttt{isDirty} and \texttt{hasDirtyDescendant}. 
       These flags represent information, whether the node, or its descendants, needs to be redrawn.
@@ -266,20 +266,20 @@ In this next sections of this chapter we will introduce and deeply describe our 
       When \texttt{hasDirtyDescendant} is true and \texttt{isDirty} is false, 
       the node doesn't have to update itself, it is enough to call update on child nodes.
 
-			Method \texttt{update({List<NodeChange> changes, bool force: false})} is executing the update process. 
-			It take 2 named arguments:
-			\begin{description}
-				\item{\textbf{\texttt{List<NodeChange> changes}}} is used to be filled by changes generated by the update process,
-				\item{\textbf{\texttt{bool force: false}}} is a flag signalizing if to update despite that node is not dirty.
-			\end{description}
+      Method \texttt{update({List<NodeChange> changes, bool force: false})} is executing the update process. 
+      It take 2 named arguments:
+      \begin{description}
+        \item{\textbf{\texttt{List<NodeChange> changes}}} is used to be filled by changes generated by the update process,
+        \item{\textbf{\texttt{bool force: false}}} is a flag signalizing if to update despite that node is not dirty.
+      \end{description}
 
-			The \texttt{update} method is used mostly in the browser part of an library, where it offers a possibility to get changes in the virtual DOM, which should be used to update the real one. 
+      The \texttt{update} method is used mostly in the browser part of an library, where it offers a possibility to get changes in the virtual DOM, which should be used to update the real one. 
 
       A methods logic consists of several main steps.
       \begin{enumerate}
-				\item check, if update is needed by flags \texttt{isDirty}, \texttt{hasDirtyDescendant} or \texttt{force}, if no, exit,
-				\item if component of this node needs to update (\texttt{isDirty == true}) or \texttt{force == true}, update this node with rearrangement of children,
-				\item if any changes was generated, add them into the \texttt{changes} list
+        \item check, if update is needed by flags \texttt{isDirty}, \texttt{hasDirtyDescendant} or \texttt{force}, if no, exit,
+        \item if component of this node needs to update (\texttt{isDirty == true}) or \texttt{force == true}, update this node with rearrangement of children,
+        \item if any changes was generated, add them into the \texttt{changes} list
         \item set this node as not dirty and not have dirty descendant.
       \end{enumerate}
 
@@ -291,7 +291,7 @@ In this next sections of this chapter we will introduce and deeply describe our 
       \texttt{NodeChange} takes place as a record of a change in the virtual DOM. 
       It is used to mirror changes in the virtual DOM with the real DOM. 
 
-			When some node in the virtual DOM is updated by method \texttt{update}, the list of changes is is collected.
+      When some node in the virtual DOM is updated by method \texttt{update}, the list of changes is is collected.
       This list is subsequently processed by browser part of a library, which mirrors changes to the real DOM.
 
       \texttt{NodeChange} class has no methods (except constructor) and acts as a data chunk dedicated just for it's purpose. 
@@ -308,9 +308,9 @@ In this next sections of this chapter we will introduce and deeply describe our 
     Subsequently, it is mounted and rendered into the virtual DOM, and then in to real DOM.
 
     When a "higher" node wants to update the node of the component, 
-		the component will first receive props, 
-		subsequently is asked if want to update, 
-		if yes, it is asked for actual description of its children. 
+    the component will first receive props, 
+    subsequently is asked if want to update, 
+    if yes, it is asked for actual description of its children. 
 
     Sometimes the component wants to update itself (e.g. because event occurs).
     It calls redraw, then, it will be asked if really should update, and if yes, it is rendered and updated.
@@ -343,10 +343,10 @@ In this next sections of this chapter we will introduce and deeply describe our 
 
     \subsubsection{Did mount}\label{subsec:our-architecture-lifecycle-didmount}
 
-			When the component is mounted to the real DOM, user of the library should be notified about this event. 
-			It is done by triggering the \textbf{Did mount} life-cycle event implemented the method \texttt{didMount}. 
+      When the component is mounted to the real DOM, user of the library should be notified about this event. 
+      It is done by triggering the \textbf{Did mount} life-cycle event implemented the method \texttt{didMount}. 
 
-			This is the place in time, were the component \textit{start to live its life} with the connection to the real DOM.
+      This is the place in time, were the component \textit{start to live its life} with the connection to the real DOM.
       This is the correct place to initialize for example the timers, stream listeners etc. 
 
       Our \texttt{MyTodoComponent} example compoent should listen for a change of the todo on the server, 
@@ -355,11 +355,11 @@ In this next sections of this chapter we will introduce and deeply describe our 
 
     \subsubsection{Will receive props}\label{subsec:our-architecture-lifecycle-willreceiveprops}
 
-			When the component is updated by "higher" ancestor, it will receive new props.
-			A user of the library can need the possibility to compare these props with the old one
-			and perform needed changes. 
+      When the component is updated by "higher" ancestor, it will receive new props.
+      A user of the library can need the possibility to compare these props with the old one
+      and perform needed changes. 
 
-			This is the correct place for subsequent life-cycle event \textit{Will receive props}
+      This is the correct place for subsequent life-cycle event \textit{Will receive props}
       implemented by the method \texttt{willReceiveProps}. 
 
       The example of \texttt{willReceiveProps} in \texttt{MyTodoComponent} 
@@ -369,12 +369,12 @@ In this next sections of this chapter we will introduce and deeply describe our 
       
     \subsubsection{Should update}\label{subsec:our-architecture-lifecycle-shouldupdate}
 
-			An optimization of the performance of an application can be done by rejecting "redraw" of the component.
-			To reject this "redraw", component should be asked, if the redraw is needed. 
+      An optimization of the performance of an application can be done by rejecting "redraw" of the component.
+      To reject this "redraw", component should be asked, if the redraw is needed. 
 
-			This is implemented by the \texttt{shouldUpdate} method, which returns true if the component want to be redrawn. 
+      This is implemented by the \texttt{shouldUpdate} method, which returns true if the component want to be redrawn. 
 
-			By default \texttt{shouldUpdate} returns true, 
+      By default \texttt{shouldUpdate} returns true, 
       what resolves to always updating of custom component, which doesn't implement this method.
 
       In a basic scenario this method recognize, 
@@ -398,13 +398,13 @@ In this next sections of this chapter we will introduce and deeply describe our 
     \subsubsection{Did update}\label{subsec:our-architecture-lifecycle-didupdate}
 
       When the life-cycle method \texttt{didUpdate}, 
-			by which is implemented the  life-cycle \textit{"Did update"} event, 
+      by which is implemented the  life-cycle \textit{"Did update"} event, 
       is triggered, the component is notified, 
       that it is mounted and there exist HTML elements in the DOM for each DomComponent descendant.
 
     \subsubsection{Will unmount}\label{subsec:our-architecture-lifecycle-willunmount}
 
-			The \textit{"Will unmount"} event is implemented by the method \texttt{willUnmount}.
+      The \textit{"Will unmount"} event is implemented by the method \texttt{willUnmount}.
       It is called right before the component is removed from the virtual DOM and therefore from the real one. 
       This is the correct place to stop all timers and listeners.
 
@@ -428,13 +428,13 @@ In this next sections of this chapter we will introduce and deeply describe our 
 
       Our target, render virtual DOM into the markup string is not so complicated.
       From the programmers point of the view, 
-			he will use a \texttt{ComponentDescription} to describe the component to be rendered.
+      he will use a \texttt{ComponentDescription} to describe the component to be rendered.
       Our server-side package of the library will get the description and construct the node tree structure, 
-			with node containing described component in the root. 
+      with node containing described component in the root. 
       The node tree represents the created virtual DOM. 
 
       From the virtual DOM we can render corresponding markup string by the depth-first search of it's tree. 
-			The markup string is created recursively for every subtree starting from a node by this algorithm:
+      The markup string is created recursively for every subtree starting from a node by this algorithm:
 
       \begin{algorithm}[H]
         \KwData{The node in virtual DOM tree}
@@ -455,206 +455,181 @@ In this next sections of this chapter we will introduce and deeply describe our 
       \end{algorithm}
 
     \subsubsection{In browser}\label{subsec:our-architecture-rendering-browser}
+
       The rendering in the browser is more difficult than the rendering into the markup string. 
-			It is possible to use the same \textit{render to the markup string} method and add this markup to the DOM. 
-			This will create DOM structure representing the virtual DOM, 
-			but doesn't create connections between nodes in the virtual DOM and HTML elements in the real one. 
-			This connections is necessary when the virtual DOM is updated.
-			Therefore the browser side rendering will work in a different way. 
-			\todo{End of the text refactoring}
+      It is possible to use the same \textit{render to the markup string} method and add this markup to the DOM. 
+      This will create DOM structure representing the virtual DOM, 
+      but doesn't create connections between nodes in the virtual DOM and HTML elements in the real one. 
+      This connections is necessary when the virtual DOM is updated.
+      Therefore the browser side rendering will work in a different way. 
 
       \paragraph{Initial mount}\label{par:our-architecture-rendering-browser-init} 
-        First the user of the library need to do is to mount component to the HTML element. 
-        Of cause, he will mount component description, not component directly.
-        When component is mounting, it is created, placed into the node and after this, node is "updated". 
-        It is initial update which creates virtual DOM. 
 
-        When virtual DOM is created, we need to construct real DOM under the root element 
-        (element, which was component mounted to) from "virtual image".
+        The first thing, the user of the library need to do, is to mount the component into the HTML element(\textit{mount root}). 
+        For this purpose the \texttt{ComponentDescription} describing the component is used.
+        The mount process consist from creation of the component from the description, 
+        placing it into the node and first render of the virtual DOM with the root in the node. 
 
-        For now, we describe case, that root element is empty (has no child element or node).
-        Case, when it is not empty we discussed in the \fullref{subsec:our-architecture-injecting}.
-        The mount is easily described by next algorithm:
+        The virtual DOM is subsequently reflected into the real DOM created under the \textit{mount root}.
+
+        Suppose that the \textit{mount root} have no children 
+        (the case of the \textit{mount root} with children is described in the \fullref{subsec:our-architecture-injecting},%\\
+        the node mount process is described in the \fullref{algorithm:mount-node}:
         \begin{algorithm}[H]
-          \KwData{node in virtual DOM and HTML element, to mount node to (mountRoot)}
-          \KwResult{Mounted node into element}
-          % initialization\;
-          % \While{not at end of this document}{
-          % read current\;
-          \eIf{node.component is DomComponent}{
-            \eIf{node.component is not pair}{
-              create element representing component\;
-              add created element to mountRoot\;
-            }{
-              create element representing component\;
-              add created element to mountRoot\;
-              \For{child in node.children} {
-                run recursively with created element as mountRoot and child as node\;
+          \KwData{The node in the virtual DOM and a HTML element, to mount the node to (mountRoot)}
+          \KwResult{Mounted the node into the element}
+          \eIf{the component of the node is DomComponent}{
+            create an element representing the component\;
+            add the created element to the mountRoot\;
+            save relations between the created element and the node;
+
+            \If{the component is a pair component}{
+              \For{a child in children of the node}{
+                mount the child node into the newly created element as a mountRoot\;
               }
             }
-            save relations between created element and node;
           }{
-            \eIf{node.component is tex component}{
-              create HTML text node with text from component\;
-              add text node to mountRoot\;
-              save relations between created text node and node;
+            \eIf{the component is a text component}{
+              create a HTML text node with the text from the component\;
+              add the text node to the mountRoot\;
+              save relations between the created text node and the node;
             }{
-              \For{child in node.children} {
-                run recursively with mountRoot and child as node\;
+              \For{a child in children of the node}{
+                mount the child node into the mountRoot\;
               }
             }
           }
           % }
-          \caption{Write node into string.}
+          \caption{Mount the component into the real DOM.}
+          \label{algorithm:mount-node}
         \end{algorithm}
 
-        As we can see, algorithm is recursive and skips custom components. 
-        Also it creates relations between created elements and nodes. 
-        Which are these relations we discuss later, when we need them.
+        The algorithm is recursive and skips custom components. 
+        It creates relationships between created elements and nodes. 
+        These relations is used to easy reflect the change in the virtual DOM into the real one 
+        when the virtual DOM is changed.
 
-        By this algorithm, it is obvious, that we have real DOM with the same structure, 
-        if we can obtain from virtual DOM by removing nodes with custom components 
-        and connect their children with their parent.
+        The DOM structure created by the \fullref{algorithm:mount-node} reflects the virtual DOM structure 
+        with removed nodes with the custom component.
 
       \paragraph{Update}\label{par:our-architecture-rendering-browser-update} 
-        Later, there can be situation, that virtual DOM want to be updated. 
-        This is when some node was marked as \textit{dirty}.
-        Then framework perform update of this node, 
-        which triggers update of the subtrees with roots in dirty nodes.
-        This updates return lists of changes in virtual DOM, 
-        which should be applied to browser element structure.
+        
+        As time goes, the situation, that the virtual DOM need to be updated, occurs. 
+        The need of the update is realized by the method \texttt{redraw} of the component, 
+        which cause marking the node as dirty.
+        The framework recognize this situation and perform update of this node and the structure under it.
+        The update produces a list of changes in the virtual DOM needed to be applied to the real DOM.
 
-        These updates should be processed by it's type. 
-        But for every type we need the information about which HTML element represents some node. 
-        This is first relation, which we need to remember, when we initialize mounted relation, 
-        relation \mbox{\texttt{Node $\rightarrow$ Element}}. 
-        This relation is stored by map \texttt{Map<Node, Element>}.
+        Updates are processed by their type. 
+        For every type the information about the HTML element representing a node is needed. 
+        This information is stored in the relation \mbox{\texttt{Node $\rightarrow$ Element}}, 
+        created in the mount of the node. 
+        It is stored by \texttt{Map<Node, Element>}.
 
-        But what happened when we want to apply node change into real DOM structure?
-        For each type of change something different of cause:
+        What happened when we want to apply the node change into the real DOM structure differs by the type of the change:
         \begin{description}
-          \item[CREATED]
-            when new node is created, it should be mounted into the DOM. 
-            If it has \texttt{DomComponent} inside, HTML element will be created and placed at the correct place. 
-            If it has some custom component, this change will be ignored. 
-          \item[UPDATED]
-            If node was updated, then if it has \texttt{DomComponent}, it's element is updated with setted props.
-          \item[MOVED]
-            Node or it's children(if it is node with custom component) is moved to new position.
-          \item[DELETED]
-            Element of node or elements of its descendants(if it is node with custom component) are removed from DOM.
+          \item[CREATED] \hfill \\
+            A newly created node is mounted into the DOM. 
+            The adjusted \fullref{algorithm:mount-node} is used for this purpose.
+          \item[UPDATED] \hfill \\
+            If the node with a DOM component in it was updated, the element, related with it, is updated with the props of the node.
+            If the node with a custom component was updated, no action is needed, because this node is not directly reflected to the DOM.
+          \item[MOVED] \hfill \\
+            The DOM representation of the moved node is moved to the new position.
+          \item[DELETED] \hfill \\
+            The DOM representation of the removed node is removed from the real DOM. 
         \end{description}
 
   \subsection{Events}\label{subsec:our-architecture-events}
-    As we were created dart library which creates virtual DOM, composed from nodes, which contains components, 
-    it is obvious that we can "simulate" event bubbling trough this virtual DOM. 
 
-    This is useful to offer user of library possibility to catch events in DOM and react on them by update of state 
-    and triggering of redraw of the component, if needed. So the question is, how add this possibility to programmer.
+    In the library which create own virtual DOM structure, it is natural to think about event in this virtual DOM. 
+    As in the real one, it is natural to create event bubbling trough virtual DOM. 
+    This synthetic event bubbling represents real event bubbling of the event 
+    trough the real DOM elements associated with nodes in the virtual DOM.
 
-    It is important from performance point of view, because by this, we can add only one event listener for each event type in whole virtual DOM.
+    Synthetic event bubbling is useful for the user of the library to catch events in the DOM and react on them by update of the state 
+    and triggering of the redraw of the component, if needed. 
+
+    The \tiles library listen to DOM events on \textit{mount root} of the virtual DOM.
+    When an event occur, the \tiles catch it on it's bubbling route up to he \texttt{body} element, 
+    recognize, which node represents the target element of the event and start synthetic bubbling of the event from that node. 
+
+    To store the relation \mbox{\texttt{Target Element $\rightarrow$ Node}} is used \texttt{Map<Element, Node>}.
+
+    The \tiles library listen to every type of the event only once in the \textit{mount root} 
+    of the virtual DOM for each event listened by components in it.
+
+    It is important from the performance point of view, because we can add only one event listener for each event type in the whole virtual DOM.
     We will discuss this later in \fullref{chap:performance}.
 
-    To enable this synthetic bubbling, we need to find out, which component belongs to element on which was event triggered.
-
-    We maintain relationship between nodes, components and HTML elements, so we can store this relations.
-    By these relations we can listen to all events on root HTML element 
-    (element, which is whole our virtual DOM mounted to), 
-    and then, by stored relations mentioned above, assign DOM component to element on which was event triggered.
-
-    When we have this component, we can simulate bubbling of event trough our virtual DOM. 
-    This brings opportunity to "listen to events" on custom components. 
-    But this is really questionable feature.
-
-    If custom component automatically "listen to events" if have event listener in props, 
-    it enable programmer to listen to event on, for example, custom button which is composed from more child DOM components.
-    But this is additional functionality of DOM, which don't have to be desirable. 
-
-    On the other hand, if custom component don't automatically listens to event, props, it will lighten library from functionality, 
-    component will not have some additional functionality from that, which is created by programmer, 
-    and in addition, it is easily possible component, to pass event listener, which it got from props, some of it's child components.
-    
-    We decided to \textbf{ADD WHAT WE DECIDED TO DO}.\todo{decide, and add decision here}
-
-    Now, we will describe, how these synthetic event bubbling works.
+    Synthetic event bubbling trough the virtual DOM enable to listen to the bubbled event even on custom component.
 
     \subsubsection{Synthetic bubbling}\label{subsec:our-architecture-events-bubbling}
 
-      When component is mounting, we store relation between HTML element, and node, which contain this component. 
-      Then we check, if this component have event listeners in it. 
-      If it has, we add event listener of the same event type to root HTML element, 
-      which is associated to root node of virtual DOM. 
-      Of cause, we will add only one listener of one event type to this element, 
-      although when there is more then one descendant, which "listens" to this event type.
+      When the component is mounting, we store the relation between the HTML element, and the node, which contains this component. 
+      Then we check a presence of the event listeners in the descriptions of the component. 
+      We add event listener for every type of the event present in the virtual DOM to the \textit{mount root} HTML element. 
+      The event listener in the \textit{mount root} is only one for each event type in the virtual DOM.
 
-      Then, when this type of event occurs in HTML DOM subtree which represents our virtual DOM, 
-      it will bubble up to the root HTML element, there it is caught by our event listener. 
-      This event listener will recognize on which HTML element was event triggered, 
-      find representing node in virtual DOM, and start "bubbling" from it.
+      When the event type listened by \textit{mount root} occurs in the DOM subtree representing our virtual DOM, 
+      it will bubble up to the \textit{mount root}, where is caught by the event listener created by the \tiles library. 
+      The \tiles library will recognize the target HTML element of the caught event 
+      and simulate event bubbling from the node representing the target element in the virtual DOM.
 
-      Bubbling is done by checking if component of this node have event listener for this type of event in it's props.
-      If it contain it, listener is called with event and components as arguments. 
+      The synthetic bubbling process starts from the target node and check event listeners associated with it.
+      If a listener for a type of the current event is presented, it is called with the event and the component as arguments. 
 
-      We pass component as an argument because this listener is not created by this component itself, 
-      but by component above it, and it should be informed, on which component this listener was called.
+      The component is passed because the listener is not created by this component itself, 
+      but by the component above it, which should be informed, on which component the listener was called.
 
-      If this listener didn't returns \texttt{false}, bubbling continues to parent node. 
-      When root is achieved, bubbling stops and real event listener, 
-      which simulate internal event bubbling, ends.
-
-      There exist better solution for stopping synthetic event bubbling then returning false from event listener 
-      by calling \texttt{stopPropagation} method on event, which stop bubbling in real DOM. 
-      But there exist no official way of getting this information from event object. 
-
-      This is resolvable, in multiple ways. For example, by creating "synthetic" event
-      which should encapsulate real event object and store information that \texttt{stopPropagation} was called.
-      But this solution creates some problems, e.g. multiple types of events in dart, 
-      represented by different classes with not the same api.
-      Because of this, we decided to not add this ideal functionality for now, while there not exists official way this information from event object.
-
-      Other solution, and in our opinion best one, 
-      is to add official way of getting information if \texttt{stopPropagation} was called to core Dart \texttt{Event} class.
-      But this is out of the scope of our library, so we created feature request to Dart developers and hope they will implement it.
+      There is no official way of getting an information if the \texttt{stopPropagation} was called on the event.
+      Therefore the listener, which want to stop a propagation, should return the \texttt{false} boolean.
+      If the listener returns something else, bubbling continues with the parent of the current node.
+      When the root node is achieved, the bubbling stops.
 
   \subsection{Injecting}\label{subsec:our-architecture-injecting}
 
-    We added possibility to render whole HTML structure on server and add it to requested HTML.
+    The \tiles library implement a built in server side rendering.
 
-    This is good for user experience, because user of the application can see the result of his request event before JavaScript/Dart is loaded.
-    But if our browser package replace this structure with new DOM structure, 
-    generated from virtual DOM, it should be annoying for user of the application, because the part of the page, 
-    which is represented by virtual DOM, will disappear for a short time and then appear back in the same look. 
+    It is important as for the SEO, so for the user experience. 
+    User don't have to wait until the source code of the application is loaded into the browser and see the content of the page. 
+    If our browser package replaces the structure generated on server with a new DOM structure 
+    generated from virtual DOM, the part of the page is re-drawn from scratch,
+    what cause disappearance of the content for the small amount of the time.
 
-    To prevent this, we created injecting system, which will inject existing DOM structure and rebuild it to represent virtual DOM.
+    To prevent this behavior, we created an injecting system, which will "inject" the existing DOM structure 
+    and rebuild it to represent the virtual DOM.
 
-    When the \texttt{ComponentDescription} is mounting, basic implementation can erase whole content of element to which is description mounted to.
-    Instead of this, we will reuse existing structure by iterating trough virtual DOM and reusing every element, which match virtual DOM. 
+    When the \texttt{ComponentDescription} is mounting, 
+    basic implementation can erase whole content of element to which is the description mounted to.
+    Instead, we will reuse the existing structure by iterating trough the virtual DOM and reusing every element, which match the virtual DOM. 
+    The \tiles library iterate trough the virtual DOM and the real DOM simultaneously and compare them. 
 
-    When we iterate trough virtual DOM and get to node with DOM component, we will look at the currently processed HTML element.
-    If it match the type of DOM component (by tag name), 
-    it is associated with this node, 
-    adapted to represent it in real DOM\footnote{By changing attributes to correct state}, 
-    used to mount children of this node under it with the same process recursively,
-    and processing of elements move to next sibling of current element.
+    When the iteration trough the virtual DOM process a node with a DOM component and the HTML element,
+    their tag names are compared.
+    If tag names match, the HTML element is associated with the node, 
+    element's attributes are adapted to the props of the node's component 
+    and is used to mount/inject children of the node recursively.
 
-    When current element don't match type of DOM component, 
-    new HTML element is inserted before it and paired with this node. 
-    By this, other DOM component at the same layer of the DOM component tree
+    When the tag name don't match, 
+    a new HTML element is inserted before the currently iterated element and paired with the node. 
+    Subsequent DOM component at the same layer of the DOM component tree
     \footnote{
-      By DOM component tree we mean derived tree from virtual DOM tree, 
-      which can be constructed by removing nodes with custom components
-      and connecting nodes with DOM components to closest ancestor in virtual DOM tree with DOM component in it.
+      By the DOM component tree we mean a derived tree from the virtual DOM tree, 
+      which can be constructed by removing nodes with a custom component
+      and connecting nodes with DOM components to the closest ancestor in the virtual DOM tree with a DOM component in it.
     }
     can reuse this not matching element.
-    When one layer of the DOM component tree is finished
-    (which is when iteration go to the node, which contain DOM component associated with parent HTML element),
-    rest of the original HTML elements in this layer of DOM is erased. 
 
-    By these simple and lightweight comparisons, if the html was created by the same components with the same data on server, 
-    library will reuse whole html with no change and inject needed relations to the virtual DOM to the real one. 
+    When injecting of children finishes for a node with a DOM component in it, 
+    not used(injected) child HTML elements of the associated element are removed.
 
-    Moreover if there exist some similar structure, not generated by same components on the server, 
-    our library will reuse as much as possible with not too complex and heavy comparison machinery.
+    This implementation of injecting enable a full reuse of the DOM structure created on the server.
+    It also create relations important for future updates of the virtual DOM. 
+
+    Moreover, if there exist a similar structure, not generated from same components on the server, 
+    our library will reuse as much as possible of it.
+\todo{End of the text refactoring}
 
 \section{API}\label{sec:our-api}
 

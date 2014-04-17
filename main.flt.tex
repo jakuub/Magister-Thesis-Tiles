@@ -1230,206 +1230,181 @@ class MyTodoComponent extends Component {
       \end{algorithm}
 
     \subsubsection{In browser}\label{subsec:our-architecture-rendering-browser}
+
       The rendering in the browser is more difficult than the rendering into the markup string. 
 			It is possible to use the same \textit{render to the markup string} method and add this markup to the DOM. 
 			This will create DOM structure representing the virtual DOM, 
 			but doesn't create connections between nodes in the virtual DOM and HTML elements in the real one. 
 			This connections is necessary when the virtual DOM is updated.
 			Therefore the browser side rendering will work in a different way. 
-			\todo{End of the text refactoring}
 
       \paragraph{Initial mount}\label{par:our-architecture-rendering-browser-init} 
-        First the user of the library need to do is to mount component to the HTML element. 
-        Of cause, he will mount component description, not component directly.
-        When component is mounting, it is created, placed into the node and after this, node is "updated". 
-        It is initial update which creates virtual DOM. 
 
-        When virtual DOM is created, we need to construct real DOM under the root element 
-        (element, which was component mounted to) from "virtual image".
+				The first thing, the user of the library need to do, is to mount the component into the HTML element(\textit{mount root}). 
+				For this purpose the \texttt{ComponentDescription} describing the component is used.
+				The mount process consist from creation of the component from the description, 
+				placing it into the node and first render of the virtual DOM with the root in the node. 
 
-        For now, we describe case, that root element is empty (has no child element or node).
-        Case, when it is not empty we discussed in the \fullref{subsec:our-architecture-injecting}.
-        The mount is easily described by next algorithm:
+				The virtual DOM is subsequently reflected into the real DOM created under the \textit{mount root}.
+
+				Suppose that the \textit{mount root} have no children 
+				(the case of the \textit{mount root} with children is described in the \fullref{subsec:our-architecture-injecting},%\\
+				the node mount process is described in the \fullref{algorithm:mount-node}:
         \begin{algorithm}[H]
-          \KwData{node in virtual DOM and HTML element, to mount node to (mountRoot)}
-          \KwResult{Mounted node into element}
-          % initialization\;
-          % \While{not at end of this document}{
-          % read current\;
-          \eIf{node.component is DomComponent}{
-            \eIf{node.component is not pair}{
-              create element representing component\;
-              add created element to mountRoot\;
-            }{
-              create element representing component\;
-              add created element to mountRoot\;
-              \For{child in node.children} {
-                run recursively with created element as mountRoot and child as node\;
+          \KwData{The node in the virtual DOM and a HTML element, to mount the node to (mountRoot)}
+          \KwResult{Mounted the node into the element}
+          \eIf{the component of the node is DomComponent}{
+						create an element representing the component\;
+						add the created element to the mountRoot\;
+            save relations between the created element and the node;
+
+            \If{the component is a pair component}{
+              \For{a child in children of the node}{
+								mount the child node into the newly created element as a mountRoot\;
               }
             }
-            save relations between created element and node;
           }{
-            \eIf{node.component is tex component}{
-              create HTML text node with text from component\;
-              add text node to mountRoot\;
-              save relations between created text node and node;
+            \eIf{the component is a text component}{
+              create a HTML text node with the text from the component\;
+              add the text node to the mountRoot\;
+              save relations between the created text node and the node;
             }{
-              \For{child in node.children} {
-                run recursively with mountRoot and child as node\;
+              \For{a child in children of the node}{
+								mount the child node into the mountRoot\;
               }
             }
           }
           % }
-          \caption{Write node into string.}
+          \caption{Mount the component into the real DOM.}
+					\label{algorithm:mount-node}
         \end{algorithm}
 
-        As we can see, algorithm is recursive and skips custom components. 
-        Also it creates relations between created elements and nodes. 
-        Which are these relations we discuss later, when we need them.
+        The algorithm is recursive and skips custom components. 
+        It creates relationships between created elements and nodes. 
+				These relations is used to easy reflect the change in the virtual DOM into the real one 
+				when the virtual DOM is changed.
 
-        By this algorithm, it is obvious, that we have real DOM with the same structure, 
-        if we can obtain from virtual DOM by removing nodes with custom components 
-        and connect their children with their parent.
+				The DOM structure created by the \fullref{algorithm:mount-node} reflects the virtual DOM structure 
+				with removed nodes with the custom component.
 
       \paragraph{Update}\label{par:our-architecture-rendering-browser-update} 
-        Later, there can be situation, that virtual DOM want to be updated. 
-        This is when some node was marked as \textit{dirty}.
-        Then framework perform update of this node, 
-        which triggers update of the subtrees with roots in dirty nodes.
-        This updates return lists of changes in virtual DOM, 
-        which should be applied to browser element structure.
+				
+				As time goes, the situation, that the virtual DOM need to be updated, occurs. 
+				The need of the update is realized by the method \texttt{redraw} of the component, 
+				which cause marking the node as dirty.
+        The framework recognize this situation and perform update of this node and the structure under it.
+				The update produces a list of changes in the virtual DOM needed to be applied to the real DOM.
 
-        These updates should be processed by it's type. 
-        But for every type we need the information about which HTML element represents some node. 
-        This is first relation, which we need to remember, when we initialize mounted relation, 
-        relation \mbox{\texttt{Node $\rightarrow$ Element}}. 
-        This relation is stored by map \texttt{Map<Node, Element>}.
+        Updates are processed by their type. 
+        For every type the information about the HTML element representing a node is needed. 
+				This information is stored in the relation \mbox{\texttt{Node $\rightarrow$ Element}}, 
+				created in the mount of the node. 
+        It is stored by \texttt{Map<Node, Element>}.
 
-        But what happened when we want to apply node change into real DOM structure?
-        For each type of change something different of cause:
+        What happened when we want to apply the node change into the real DOM structure differs by the type of the change:
         \begin{description}
-          \item[CREATED]
-            when new node is created, it should be mounted into the DOM. 
-            If it has \texttt{DomComponent} inside, HTML element will be created and placed at the correct place. 
-            If it has some custom component, this change will be ignored. 
-          \item[UPDATED]
-            If node was updated, then if it has \texttt{DomComponent}, it's element is updated with setted props.
-          \item[MOVED]
-            Node or it's children(if it is node with custom component) is moved to new position.
-          \item[DELETED]
-            Element of node or elements of its descendants(if it is node with custom component) are removed from DOM.
+          \item[CREATED] \hfill \\
+            A newly created node is mounted into the DOM. 
+						The adjusted \fullref{algorithm:mount-node} is used for this purpose.
+          \item[UPDATED] \hfill \\
+            If the node with a DOM component in it was updated, the element, related with it, is updated with the props of the node.
+						If the node with a custom component was updated, no action is needed, because this node is not directly reflected to the DOM.
+          \item[MOVED] \hfill \\
+						The DOM representation of the moved node is moved to the new position.
+          \item[DELETED] \hfill \\
+						The DOM representation of the removed node is removed from the real DOM. 
         \end{description}
 
   \subsection{Events}\label{subsec:our-architecture-events}
-    As we were created dart library which creates virtual DOM, composed from nodes, which contains components, 
-    it is obvious that we can "simulate" event bubbling trough this virtual DOM. 
 
-    This is useful to offer user of library possibility to catch events in DOM and react on them by update of state 
-    and triggering of redraw of the component, if needed. So the question is, how add this possibility to programmer.
+		In the library which create own virtual DOM structure, it is natural to think about event in this virtual DOM. 
+		As in the real one, it is natural to create event bubbling trough virtual DOM. 
+		This synthetic event bubbling represents real event bubbling of the event 
+		trough the real DOM elements associated with nodes in the virtual DOM.
 
-    It is important from performance point of view, because by this, we can add only one event listener for each event type in whole virtual DOM.
+    Synthetic event bubbling is useful for the user of the library to catch events in the DOM and react on them by update of the state 
+    and triggering of the redraw of the component, if needed. 
+
+		The \tiles library listen to DOM events on \textit{mount root} of the virtual DOM.
+		When an event occur, the \tiles catch it on it's bubbling route up to he \texttt{body} element, 
+		recognize, which node represents the target element of the event and start synthetic bubbling of the event from that node. 
+
+		To store the relation \mbox{\texttt{Target Element $\rightarrow$ Node}} is used \texttt{Map<Element, Node>}.
+
+		The \tiles library listen to every type of the event only once in the \textit{mount root} 
+		of the virtual DOM for each event listened by components in it.
+
+    It is important from the performance point of view, because we can add only one event listener for each event type in the whole virtual DOM.
     We will discuss this later in \fullref{chap:performance}.
 
-    To enable this synthetic bubbling, we need to find out, which component belongs to element on which was event triggered.
-
-    We maintain relationship between nodes, components and HTML elements, so we can store this relations.
-    By these relations we can listen to all events on root HTML element 
-    (element, which is whole our virtual DOM mounted to), 
-    and then, by stored relations mentioned above, assign DOM component to element on which was event triggered.
-
-    When we have this component, we can simulate bubbling of event trough our virtual DOM. 
-    This brings opportunity to "listen to events" on custom components. 
-    But this is really questionable feature.
-
-    If custom component automatically "listen to events" if have event listener in props, 
-    it enable programmer to listen to event on, for example, custom button which is composed from more child DOM components.
-    But this is additional functionality of DOM, which don't have to be desirable. 
-
-    On the other hand, if custom component don't automatically listens to event, props, it will lighten library from functionality, 
-    component will not have some additional functionality from that, which is created by programmer, 
-    and in addition, it is easily possible component, to pass event listener, which it got from props, some of it's child components.
-    
-    We decided to \textbf{ADD WHAT WE DECIDED TO DO}.\todo{decide, and add decision here}
-
-    Now, we will describe, how these synthetic event bubbling works.
+		Synthetic event bubbling trough the virtual DOM enable to listen to the bubbled event even on custom component.
 
     \subsubsection{Synthetic bubbling}\label{subsec:our-architecture-events-bubbling}
 
-      When component is mounting, we store relation between HTML element, and node, which contain this component. 
-      Then we check, if this component have event listeners in it. 
-      If it has, we add event listener of the same event type to root HTML element, 
-      which is associated to root node of virtual DOM. 
-      Of cause, we will add only one listener of one event type to this element, 
-      although when there is more then one descendant, which "listens" to this event type.
+      When the component is mounting, we store the relation between the HTML element, and the node, which contains this component. 
+      Then we check a presence of the event listeners in the descriptions of the component. 
+			We add event listener for every type of the event present in the virtual DOM to the \textit{mount root} HTML element. 
+			The event listener in the \textit{mount root} is only one for each event type in the virtual DOM.
 
-      Then, when this type of event occurs in HTML DOM subtree which represents our virtual DOM, 
-      it will bubble up to the root HTML element, there it is caught by our event listener. 
-      This event listener will recognize on which HTML element was event triggered, 
-      find representing node in virtual DOM, and start "bubbling" from it.
+			When the event type listened by \textit{mount root} occurs in the DOM subtree representing our virtual DOM, 
+			it will bubble up to the \textit{mount root}, where is caught by the event listener created by the \tiles library. 
+			The \tiles library will recognize the target HTML element of the caught event 
+			and simulate event bubbling from the node representing the target element in the virtual DOM.
 
-      Bubbling is done by checking if component of this node have event listener for this type of event in it's props.
-      If it contain it, listener is called with event and components as arguments. 
+			The synthetic bubbling process starts from the target node and check event listeners associated with it.
+			If a listener for a type of the current event is presented, it is called with the event and the component as arguments. 
 
-      We pass component as an argument because this listener is not created by this component itself, 
-      but by component above it, and it should be informed, on which component this listener was called.
+      The component is passed because the listener is not created by this component itself, 
+      but by the component above it, which should be informed, on which component the listener was called.
 
-      If this listener didn't returns \texttt{false}, bubbling continues to parent node. 
-      When root is achieved, bubbling stops and real event listener, 
-      which simulate internal event bubbling, ends.
-
-      There exist better solution for stopping synthetic event bubbling then returning false from event listener 
-      by calling \texttt{stopPropagation} method on event, which stop bubbling in real DOM. 
-      But there exist no official way of getting this information from event object. 
-
-      This is resolvable, in multiple ways. For example, by creating "synthetic" event
-      which should encapsulate real event object and store information that \texttt{stopPropagation} was called.
-      But this solution creates some problems, e.g. multiple types of events in dart, 
-      represented by different classes with not the same api.
-      Because of this, we decided to not add this ideal functionality for now, while there not exists official way this information from event object.
-
-      Other solution, and in our opinion best one, 
-      is to add official way of getting information if \texttt{stopPropagation} was called to core Dart \texttt{Event} class.
-      But this is out of the scope of our library, so we created feature request to Dart developers and hope they will implement it.
+			There is no official way of getting an information if the \texttt{stopPropagation} was called on the event.
+			Therefore the listener, which want to stop a propagation, should return the \texttt{false} boolean.
+			If the listener returns something else, bubbling continues with the parent of the current node.
+      When the root node is achieved, the bubbling stops.
 
   \subsection{Injecting}\label{subsec:our-architecture-injecting}
 
-    We added possibility to render whole HTML structure on server and add it to requested HTML.
+		The \tiles library implement a built in server side rendering.
 
-    This is good for user experience, because user of the application can see the result of his request event before JavaScript/Dart is loaded.
-    But if our browser package replace this structure with new DOM structure, 
-    generated from virtual DOM, it should be annoying for user of the application, because the part of the page, 
-    which is represented by virtual DOM, will disappear for a short time and then appear back in the same look. 
+		It is important as for the SEO, so for the user experience. 
+		User don't have to wait until the source code of the application is loaded into the browser and see the content of the page. 
+    If our browser package replaces the structure generated on server with a new DOM structure 
+    generated from virtual DOM, the part of the page is re-drawn from scratch,
+		what cause disappearance of the content for the small amount of the time.
 
-    To prevent this, we created injecting system, which will inject existing DOM structure and rebuild it to represent virtual DOM.
+    To prevent this behavior, we created an injecting system, which will "inject" the existing DOM structure 
+		and rebuild it to represent the virtual DOM.
 
-    When the \texttt{ComponentDescription} is mounting, basic implementation can erase whole content of element to which is description mounted to.
-    Instead of this, we will reuse existing structure by iterating trough virtual DOM and reusing every element, which match virtual DOM. 
+    When the \texttt{ComponentDescription} is mounting, 
+		basic implementation can erase whole content of element to which is the description mounted to.
+    Instead, we will reuse the existing structure by iterating trough the virtual DOM and reusing every element, which match the virtual DOM. 
+		The \tiles library iterate trough the virtual DOM and the real DOM simultaneously and compare them. 
 
-    When we iterate trough virtual DOM and get to node with DOM component, we will look at the currently processed HTML element.
-    If it match the type of DOM component (by tag name), 
-    it is associated with this node, 
-    adapted to represent it in real DOM\footnote{By changing attributes to correct state}, 
-    used to mount children of this node under it with the same process recursively,
-    and processing of elements move to next sibling of current element.
+    When the iteration trough the virtual DOM process a node with a DOM component and the HTML element,
+		their tag names are compared.
+		If tag names match, the HTML element is associated with the node, 
+		element's attributes are adapted to the props of the node's component 
+		and is used to mount/inject children of the node recursively.
 
-    When current element don't match type of DOM component, 
-    new HTML element is inserted before it and paired with this node. 
-    By this, other DOM component at the same layer of the DOM component tree
+    When the tag name don't match, 
+    a new HTML element is inserted before the currently iterated element and paired with the node. 
+    Subsequent DOM component at the same layer of the DOM component tree
     \footnote{
-      By DOM component tree we mean derived tree from virtual DOM tree, 
-      which can be constructed by removing nodes with custom components
-      and connecting nodes with DOM components to closest ancestor in virtual DOM tree with DOM component in it.
+      By the DOM component tree we mean a derived tree from the virtual DOM tree, 
+      which can be constructed by removing nodes with a custom component
+      and connecting nodes with DOM components to the closest ancestor in the virtual DOM tree with a DOM component in it.
     }
     can reuse this not matching element.
-    When one layer of the DOM component tree is finished
-    (which is when iteration go to the node, which contain DOM component associated with parent HTML element),
-    rest of the original HTML elements in this layer of DOM is erased. 
 
-    By these simple and lightweight comparisons, if the html was created by the same components with the same data on server, 
-    library will reuse whole html with no change and inject needed relations to the virtual DOM to the real one. 
+		When injecting of children finishes for a node with a DOM component in it, 
+		not used(injected) child HTML elements of the associated element are removed.
 
-    Moreover if there exist some similar structure, not generated by same components on the server, 
-    our library will reuse as much as possible with not too complex and heavy comparison machinery.
+		This implementation of injecting enable a full reuse of the DOM structure created on the server.
+		It also create relations important for future updates of the virtual DOM. 
+
+    Moreover, if there exist a similar structure, not generated from same components on the server, 
+    our library will reuse as much as possible of it.
+\todo{End of the text refactoring}
 
 \section{API}\label{sec:our-api}
 

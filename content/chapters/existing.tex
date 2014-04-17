@@ -17,164 +17,164 @@ These two approaches do the same thing, create structure of the components, diff
 
 \section{Template driven}\label{sec:existing-template}
 
-	Template driven approach is, as the name predicts, based on the usage of a template engine. 
-	Template engines take a template and the data and create a component structure, 
-	which is reflected into the HTML representation of passed data in the form of the template. 
-	They can be considered as a function $t:\mathbb D\mapsto\mathbb H$, 
-	where $\mathbb D$ is a set of all possible data and $\mathbb H$ is a context-free language of valid HTML.
+  Template driven approach is, as the name predicts, based on the usage of a template engine. 
+  Template engines take a template and the data and create a component structure, 
+  which is reflected into the HTML representation of passed data in the form of the template. 
+  They can be considered as a function $t:\mathbb D\mapsto\mathbb H$, 
+  where $\mathbb D$ is a set of all possible data and $\mathbb H$ is a context-free language of valid HTML.
 
-	An easy example of a template, for example using \textit{handlebars.js} can look like this one (from \textit{handlebars.js} website):
+  An easy example of a template, for example using \textit{handlebars.js} can look like this one (from \textit{handlebars.js} website):
   \input{content/examples/handlebars_entry.tex}
 
-	When programmer want to use this template, he should create data object, which minimal version in JSON format is in next example:
+  When programmer want to use this template, he should create data object, which minimal version in JSON format is in next example:
   \input{content/examples/handlebars_entry_data.tex}
 
-	When template is filled by this data, following HTML will be produced
+  When template is filled by this data, following HTML will be produced
   \input{content/examples/handlebars_entry_result.tex}
 
-	Most of template engines also offer logic markup, which add possibility of the better control of a composed structure. 
-	This is highly usable when programmer want to create more complex structures based on the data. 
-	The typical example of this structure is the \texttt{<ul>} list generated from the array of items to render.
-	
-	This "in template" logic has on one hand some advantages, on the other hand, 
-	the HTML syntax was not created to represent a logic, but an information.
-	Because of this, more complex templates witch not so trivial logic in it becomes hard to read and understand.
-	
-	Easy use of the logic in the template is shown on the next example:
+  Most of template engines also offer logic markup, which add possibility of the better control of a composed structure. 
+  This is highly usable when programmer want to create more complex structures based on the data. 
+  The typical example of this structure is the \texttt{<ul>} list generated from the array of items to render.
+  
+  This "in template" logic has on one hand some advantages, on the other hand, 
+  the HTML syntax was not created to represent a logic, but an information.
+  Because of this, more complex templates witch not so trivial logic in it becomes hard to read and understand.
+  
+  Easy use of the logic in the template is shown on the next example:
   \input{content/examples/handlebars_logic.tex}
 
-	The template driven view are highly used because of the syntax similarity between the template and the resulting HTML. 
-	It is easy to convert the HTML produced by a graphic designer to the template used in the source code. 
-	Also programmers used to work in the HTML more easily write templates then some other representation of the component structure.
+  The template driven view are highly used because of the syntax similarity between the template and the resulting HTML. 
+  It is easy to convert the HTML produced by a graphic designer to the template used in the source code. 
+  Also programmers used to work in the HTML more easily write templates then some other representation of the component structure.
 
-	Different libraries work with templates in a different way. 
-	Some of them really parse the input template as a string, recognize component tree in it and work with the template that way.
-	Others uses in-browser HTML parser to parse the template and then fill it with the data.
-	This approach, because of its usage of tools accessible only from the browser, is more difficult to render on the server.
+  Different libraries work with templates in a different way. 
+  Some of them really parse the input template as a string, recognize component tree in it and work with the template that way.
+  Others uses in-browser HTML parser to parse the template and then fill it with the data.
+  This approach, because of its usage of tools accessible only from the browser, is more difficult to render on the server.
 
-	Templates are mostly used two different ways:
-	\begin{description}
-		\item[Template used as View] \hfill \\
-			Template is used to render HTML structure into some element. 
-			Functionality of the HTML structure is then realized separately and attached to it.  
-			This is used for example in the CanJS.
-		\item[Template used as Component] \hfill \\
-			The other (and more modern) use of template is to represent one component with attached functionality, 
-			which can be represented later as custom HTML element in other templates. 
-			In this template, other custom components can be created by using their custom HTML element representation. 
-			It is not necessary to create them separately in the code of an application.
+  Templates are mostly used two different ways:
+  \begin{description}
+    \item[Template used as View] \hfill \\
+      Template is used to render HTML structure into some element. 
+      Functionality of the HTML structure is then realized separately and attached to it.  
+      This is used for example in the CanJS.
+    \item[Template used as Component] \hfill \\
+      The other (and more modern) use of template is to represent one component with attached functionality, 
+      which can be represented later as custom HTML element in other templates. 
+      In this template, other custom components can be created by using their custom HTML element representation. 
+      It is not necessary to create them separately in the code of an application.
 
-			This approach is used e.g. in Polymer project, which work with so called "shadow DOM" which use similar concept.
-	\end{description}
+      This approach is used e.g. in Polymer project, which work with so called "shadow DOM" which use similar concept.
+  \end{description}
 
-	\fullref{table:template-driven-libraries} compares some of existing solutions which are standalone libraries or MVC frameworks.
-	The aspects of the comparison are a natural rendering in the browser and  on the server and if the library is a standalone UI library, 
-	or is a part of the more complex MVC framework. 
-	We don't compare a possibility to render the view on the server other then the natural way, 
-	because it is always possible to render it by usage of tools like the \textit{PhantomJS}.
+  \fullref{table:template-driven-libraries} compares some of existing solutions which are standalone libraries or MVC frameworks.
+  The aspects of the comparison are a natural rendering in the browser and  on the server and if the library is a standalone UI library, 
+  or is a part of the more complex MVC framework. 
+  We don't compare a possibility to render the view on the server other then the natural way, 
+  because it is always possible to render it by usage of tools like the \textit{PhantomJS}.
 
-	\begin{table}
-		\begin{tabular}{|l|l|c|c|c|c|}
-			\hline
-			\textbf{Solution}& \textbf{Language}   & \textbf{Standalone} & \textbf{In browser} & \textbf{On server} \\
-			\hline
-			handlebars       & JavaScript          &         yes         &        yes          &        yes         \\
-			\hline
-			{{mustache}}     & \shortstack{JavaScript,  
-														\\		python...} &        yes         &        yes          &        yes          \\
-			\hline
-			dust             & JavaScript          &         yes         &        yes          &        yes         \\
-			\hline
-			AngularJS        & JavaScript          &         no          &        yes          &        no          \\
-			\hline
-			meteor           & JavaScript          &         no          &        yes          &        no          \\
-			\hline
-			EmberJS          & JavaScript          &         no          &        yes          &        yes         \\
-			\hline
-			Derby            & JavaScript          &         no          &        yes          &        yes         \\
-			\hline
-			Polymer          & JavaScript          &         yes         &        yes          &        no          \\
-			\hline
-			Polymer.dart     & Dart                &         yes         &        yes          &      not now       \\
-			\hline
-		\end{tabular}
-		\caption{Comparison of template driven libraries}
-		\label{table:template-driven-libraries}
-	\end{table}
+  \begin{table}
+    \begin{tabular}{|l|l|c|c|c|c|}
+      \hline
+      \textbf{Solution}& \textbf{Language}   & \textbf{Standalone} & \textbf{In browser} & \textbf{On server} \\
+      \hline
+      handlebars       & JavaScript          &         yes         &        yes          &        yes         \\
+      \hline
+      {{mustache}}     & \shortstack{JavaScript,  
+                            \\    python...} &        yes         &        yes          &        yes          \\
+      \hline
+      dust             & JavaScript          &         yes         &        yes          &        yes         \\
+      \hline
+      AngularJS        & JavaScript          &         no          &        yes          &        no          \\
+      \hline
+      meteor           & JavaScript          &         no          &        yes          &        no          \\
+      \hline
+      EmberJS          & JavaScript          &         no          &        yes          &        yes         \\
+      \hline
+      Derby            & JavaScript          &         no          &        yes          &        yes         \\
+      \hline
+      Polymer          & JavaScript          &         yes         &        yes          &        no          \\
+      \hline
+      Polymer.dart     & Dart                &         yes         &        yes          &      not now       \\
+      \hline
+    \end{tabular}
+    \caption{Comparison of template driven libraries}
+    \label{table:template-driven-libraries}
+  \end{table}
 
 \section{Component driven}\label{sec:existing-component}
 
-	Component driven views, in opposite to the template driven, don't use any additional type of data like templates. 
-	Components are created by the same programming language as the functionality and 
-	are composed into the tree structure which is mapped into the DOM. 
+  Component driven views, in opposite to the template driven, don't use any additional type of data like templates. 
+  Components are created by the same programming language as the functionality and 
+  are composed into the tree structure which is mapped into the DOM. 
 
-	When the tree of components (we will call it "Virtual DOM" later)is constructed, 
-	it is rendered to the DOM by the depth-first search of the component tree.
-	When components and HTML elements are connected by stored associations, 
-	every change in the component structure can be applied to the DOM tree. 
+  When the tree of components (we will call it "Virtual DOM" later)is constructed, 
+  it is rendered to the DOM by the depth-first search of the component tree.
+  When components and HTML elements are connected by stored associations, 
+  every change in the component structure can be applied to the DOM tree. 
 
-	In addition, if we have the tree of components, we can easily, by the similar depth-first search, 
-	create the markup string representing the HTML markup of the component tree.
-	This enable the rendering of the whole component tree on the server without use of browser-specific features.
+  In addition, if we have the tree of components, we can easily, by the similar depth-first search, 
+  create the markup string representing the HTML markup of the component tree.
+  This enable the rendering of the whole component tree on the server without use of browser-specific features.
 
-	An example of the component driven UI library is the JavaScript library \react created by the \facebook.
+  An example of the component driven UI library is the JavaScript library \react created by the \facebook.
   \react is standalone UI library which enable native rendering of the component structure as in the browser, so on the server.
 
-	We decided to use a similar approach to \react library, so we briefly describe it.
+  We decided to use a similar approach to \react library, so we briefly describe it.
 
-	\subsection{React}\label{subsec:existing-component-react}
-		
-		Lots of people use \react as the V in MVC.\cite{react}
+  \subsection{React}\label{subsec:existing-component-react}
+    
+    Lots of people use \react as the V in MVC.\cite{react}
 
-		\react is JavaScript UI library from \facebook. 
-		Its main concept is to pack parts of the web application into reusable components, 
-		which are represented as object in JavaScript. 
+    \react is JavaScript UI library from \facebook. 
+    Its main concept is to pack parts of the web application into reusable components, 
+    which are represented as object in JavaScript. 
 
-		This components can be mounted into elements in DOM, for now, we will call it \textit{mount root}. 
-		This will create \textit{virtual DOM} "mounted" to \textit{mount root}. 
-		This virtual DOM is then reflexed into the real DOM under the \textit{mount root}.
+    This components can be mounted into elements in DOM, for now, we will call it \textit{mount root}. 
+    This will create \textit{virtual DOM} "mounted" to \textit{mount root}. 
+    This virtual DOM is then reflexed into the real DOM under the \textit{mount root}.
 
-		\react uses a virtual DOM diff implementation for ultra-high performance. 
-		It can also render on the server using Node.js — no heavy browser DOM required.\cite{react}
+    \react uses a virtual DOM diff implementation for ultra-high performance. 
+    It can also render on the server using Node.js — no heavy browser DOM required.\cite{react}
 
-		Components are organized to the virtual DOM tree, where a data flows from the root component to leaves. 
-		This data flow is implemented by the props of the component, which are read-only.
-		Component have also a state, which should be stored in the state attribute and updated by methods \texttt{setState} and \texttt{replaceState}. 
-		The state shouldn't be updated directly to preserve the invariant, that the real DOM always represents the actual state of the virtual one. 
+    Components are organized to the virtual DOM tree, where a data flows from the root component to leaves. 
+    This data flow is implemented by the props of the component, which are read-only.
+    Component have also a state, which should be stored in the state attribute and updated by methods \texttt{setState} and \texttt{replaceState}. 
+    The state shouldn't be updated directly to preserve the invariant, that the real DOM always represents the actual state of the virtual one. 
 
-		Component describe the structure under it by its method \texttt{render}, 
-		which should return one instance of a component, 
-		which will be added as a child of this component.
-		The render function also add props to the child component.
-		This realize the data flow in "down" direction. 
-		The render also add children to the child component, which is the way, 
-		how to create a spreading tree, not just a line. 
-		The child component have read access to passed children and can reuse them in the \texttt{render} method or ignore them.
+    Component describe the structure under it by its method \texttt{render}, 
+    which should return one instance of a component, 
+    which will be added as a child of this component.
+    The render function also add props to the child component.
+    This realize the data flow in "down" direction. 
+    The render also add children to the child component, which is the way, 
+    how to create a spreading tree, not just a line. 
+    The child component have read access to passed children and can reuse them in the \texttt{render} method or ignore them.
 
-		The \react offer own events system with synthetic event bubbling.
-		This enable programmer to listen to events independently from browser. 
-		The \react manage the browser compatibility.
+    The \react offer own events system with synthetic event bubbling.
+    This enable programmer to listen to events independently from browser. 
+    The \react manage the browser compatibility.
 
-		Components can listen to events on DOM components (internal \react components, representing DOM elements). 
-		They are attached trough props by the event listeners syntax(\texttt{onChange}, \texttt{onClick} etc.). 
+    Components can listen to events on DOM components (internal \react components, representing DOM elements). 
+    They are attached trough props by the event listeners syntax(\texttt{onChange}, \texttt{onClick} etc.). 
 
-		State change(by mentioned methods) trigger redrawing of virtual DOM. 
+    State change(by mentioned methods) trigger redrawing of virtual DOM. 
 
-		\react implements component life-cycle methods,
-		which notify the component about its actual state of living (just mounted, just updated, before unmount, etc.). 
-		They are the superset of life-cycle methods implemented in the tiles library. 
+    \react implements component life-cycle methods,
+    which notify the component about its actual state of living (just mounted, just updated, before unmount, etc.). 
+    They are the superset of life-cycle methods implemented in the tiles library. 
 
-		For more information about \react, it's architecture and API 
-		reader can go to the website of the \react project \url[http://facebook.github.io/react/].
+    For more information about \react, it's architecture and API 
+    reader can go to the website of the \react project \url[http://facebook.github.io/react/].
 
 \section{Conclusion}\label{sec:existing-conclusion}
 
-	We decided to use \textbf{Component driven} views and databinding, because it is not dependent on the template engine, 
-	whole source code can be written in the same CPL with all advantages gained by that 
-	and naturally easier thinking about testing and mocking.
+  We decided to use \textbf{Component driven} views and databinding, because it is not dependent on the template engine, 
+  whole source code can be written in the same CPL with all advantages gained by that 
+  and naturally easier thinking about testing and mocking.
 
-	Our solution is based on the idea of the \react library.
+  Our solution is based on the idea of the \react library.
 
-	As we decided to work in the Dart language, we don't have to implement a browser compatibility, synthetic events, mixins, etc.
+  As we decided to work in the Dart language, we don't have to implement a browser compatibility, synthetic events, mixins, etc.
 
-	The architecture of the tiles library will be described in the \fullref{chap:oursolution}.
+  The architecture of the tiles library will be described in the \fullref{chap:oursolution}.
