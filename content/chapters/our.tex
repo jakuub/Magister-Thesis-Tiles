@@ -629,90 +629,100 @@ In this next sections of this chapter we will introduce and deeply describe our 
 
     Moreover, if there exist a similar structure, not generated from same components on the server, 
     our library will reuse as much as possible of it.
-\todo{End of the text refactoring}
 
 \section{API}\label{sec:our-api}
 
-  One product of this work is open source UI library.
+  One product of this work is an open source UI library called \tiles.
   To use this library, user need to know the application programming interface(API) of it. 
 
-  In \tiles library, user interface rendered by it consist of components, represented by the class \texttt{Component}. 
-  This class is used to create functional logic of part of the UI. 
+  In the \tiles library, the user interface consist of components, represented by the class \texttt{Component}. 
+  The \texttt{Component} class is used to create a functional logic of a part of the UI. 
 
-  To use it, mount it, add it to other component as a child, it is necessary to create \texttt{ComponentFactory}, 
-  \texttt{ComponentDescription} and optionally \texttt{ComponentDescriptionFactory}.
+  To use it, mount it and add it to the other component as a child is necessary to create a \texttt{ComponentFactory} 
+  and a \texttt{ComponentDescriptionFactory}, which creates a \texttt{ComponentDescription}.
 
-  \textbf{\texttt{ComponentFactory}} is a function with two positional optional arguments \texttt{props} and \texttt{children}, 
-  which return instance of the Component, ideally new with setted \texttt{props} and \texttt{children}.
-  The easiest and most common way to create ComponentFacotry is shown in next example:
+  The \textbf{\texttt{ComponentFactory}} is a function with two positional optional arguments: \texttt{props} and \texttt{children}.
+  It return an instance of the \texttt{Component}. The \texttt{ComponentFactory} is used as a comparable type of the component.
+  The easiest and most common way to create \texttt{ComponentFactory} is shown in next example:
   \input{content/examples/component_factory.tex}
 
-  \textbf{\texttt{ComponentDescription}} is something, what describes component. 
-  It is used as argument to mounting functions and as result of \texttt{render} method.
-  It is mostly not used directly, but by \texttt{ComponentDescriptionFactory}, 
-  which is method with the same arguments as \texttt{ComponentFacotry}, and returns instance of \texttt{ComponentDescription}.
+  \textbf{\texttt{ComponentDescription}} is a description of a component. 
+  It is used as argument to mounting functions and as a result of the \texttt{render} method.
+  Most of the time is used indirectly by usage of \texttt{ComponentDescriptionFactory}.
 
-  It can be created by programmer himself, but mainly, it is created by \texttt{registerComponent} function, which accept one argument of \texttt{ComponentFacotry} type.
-  This method created \texttt{ComponentDescriptionFactory}, which returns description with passed \texttt{ComponentFacotry}.
-  Usage is shown on following example:
+  \textbf{\texttt{ComponentDescriptionFactory}} is a function, which create a \texttt{ComponentDescription}.
+  It has 7 optional named arguments: 
+  \begin{description}
+    \item[props] passed to the component factory,
+    \item[children] also passed to the component factory, 
+    \item[key] used to optimize reorder of children and
+    \item[listeners] used to attach event listeners to the component created by the description.
+  \end{description}
+
+  The \texttt{ComponentDescriptionFactory} can be created by programmer himself, 
+  but the most often way is to create it by the \texttt{registerComponent} function, which accept one argument of \texttt{ComponentFacotry} type.
+  This method creates \texttt{ComponentDescriptionFactory}, which returns a description with passed \texttt{ComponentFacotry}.
+  A usage is shown on the following example:
   \input{content/examples/register_component.tex}
 
-  This \texttt{ComponentDescriptionFactory} is then used to create description or directly in mounting into HTML element:
+  The \texttt{ComponentDescriptionFactory} is used to create a component description or directly in the mounting into HTML element:
   \input{content/examples/mount_component_description_factory.tex}
 
   \subsection{Component}\label{subsec:our-api-component}
 
-    \texttt{Component} class is the main class of the API.
+    The \texttt{Component} class is the main class of the API of the \tiles library.
     Every custom component should extend or implement it. 
 
-    It contains constructor, life-cycle methods, \texttt{render} and \texttt{redraw} method, props, children and offer \texttt{needUpdate} stream.
-    The whole default \texttt{Component} is this: 
+    The \texttt{Component} class contains a constructor, life-cycle methods, 
+    the \texttt{render} and a \texttt{redraw} method, props, children and offer a \texttt{needUpdate} stream.
+    The default \texttt{Component} implementation is following: 
     \input{content/examples/component.tex}
 
-    The easier way to create own component is by extending, not by implementing it, because extending add default functionality. 
-    Simple component should look like this:
+    The easier way to create own component is by extending the \texttt{Component} class:
     \input{content/examples/my_component.tex}
 
-    We can see, that this \texttt{MyComponent} only renders \texttt{ComponentDescription} of div DOM component which contain children with span description.
-    \footnote{DOM component API will be discussed later.}
+    The \texttt{MyComponent} only renders \texttt{ComponentDescription} of a div DOM component which contain children with a span description.
 
   \subsection{DOM component API}\label{subsec:our-api-dom}
 
-    There are prepared \texttt{ComponentDescriptionFactory} functions for each of standard HTML elements, which gets standard arguments. 
-    They will create new \texttt{ComponentDescription}, with correct factory, which created \texttt{DomComponent} with appropriate tag name.
+    The \tiles library contain prepared \texttt{ComponentDescriptionFactory} functions for the each of standard HTML elements, 
+    with standard arguments. 
+    They creates new \texttt{ComponentDescription}, describing \texttt{DomComponent} with passed props and children.
 
-    These factories can be used like on example of \texttt{MyComponent} in \texttt{render} function.
+    Usage of the factories are shown on the previous example.
 
   \subsection{Browser specific API}\label{subsec:our-api-browser}
     
-    There are 3 main addition when components are rendered in browser.
+    There are 3 main additions when the virtual DOM is rendered in the browser.
     \begin{itemize}
       \item Mounting
       \item References
       \item Event listeners
     \end{itemize}
 
-    \textbf{Mounting} is implemented by \texttt{mountComponent} function, which have 2 arguments, 
+    The \textbf{mounting} is implemented by the \texttt{mountComponent} method with 2 arguments, 
     \texttt{ComponentDescription description} and \texttt{Element mountRoot}.
-    It will mount described component into \texttt{mountRoot} element.
+    It will mount the described component into the \texttt{mountRoot} element.
     \input{content/examples/mount_component_description_factory_only.tex}
 
-    \textbf{References} are part of props. If component have in \texttt{props["ref"]} instance of internal class \texttt{{\textunderscore}Ref}, 
-    which is only function returning void with one \texttt{Component} argument, then when this component is created and mounted, 
-    this \texttt{{\textunderscore}Ref} is called with it. 
+    \textbf{References} are part of the props. 
+    If component have in \texttt{props["ref"]} instance of an internal class \texttt{{\textunderscore}Ref}, 
+    which is only a function returning \texttt{void} with one \texttt{Component} argument, 
+    then when this component is created and mounted, 
+    this reference method is called with it. 
 
-    It is useful, when some custom component want to have reference to element associated to some of it's descendant. 
-    Example of usage is something like this:
+    It is useful, when a custom component want to have a reference to the element associated to one of it's descendant. 
+    Example of the usage is in the following example:
     \input{content/examples/ref.tex}
 
-    \textbf{Event listeners} are also represented as part of props. 
-    They should be instance of \texttt{EventListener} class, which is function with 2 arguments, event and component and returns boolean.
-    They are used in the same way as references, by adding to props with key in format \texttt{onEventType}:
+    \textbf{Event listeners} are represented in a form of a Map, stored at the node. 
+    They should be instances of a \texttt{EventListener} class, which is a function with 2 arguments, an event and a component, and returns boolean.
+    The map containing event listeners is passed to the \texttt{ComponentDescriptionFactory} as a named parameter \texttt{listeners}.
     \input{content/examples/event_listener.tex}
 
   \subsection{Server specific API}\label{subsec:our-api-server}
 
-    There is only one thing we want to do on the server, and that is to create markup for some \texttt{ComponentDescription}.
-    For this purpose we created method \texttt{mountComponentToString}, which accepts 1 \texttt{ComponentDescription} argument and returns markup, 
-    which is identical to what browser part of library should create in DOM.
+    There is only one thing we want to do on the server. Create markup for a \texttt{ComponentDescription}.
+    We created a method \texttt{mountComponentToString}, 
+    which require one \texttt{ComponentDescription} argument and returns the markup string representing the virtual DOM created from the description of a component.
     \input{content/examples/mount_component_to_string.tex}

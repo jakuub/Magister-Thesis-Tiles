@@ -1,6 +1,6 @@
 \begin{minted}{dart}
 String markup = mountComponentToString(
-  span({"class": "my-span"}, "Text it the span")
+  span(props: {"class": "my-span"}, "Text in the span")
 );
 markup == '<span class="my-span">Text in the span</span>' // is true
 \end{minted}
