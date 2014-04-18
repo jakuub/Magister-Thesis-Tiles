@@ -1,11 +1,52 @@
-\chapter{Databinding}\label{chap:databinding}
+\chapter{Data binding}\label{chap:databinding}
 
-In this chapter we will introduce the area of databinding more deeply then in introduction.
+	Data binding is the process of tying the data in one object to another object. 
+	It provides a convenient way to pass data between the different layers of the application.\cite{flexdatabinding}
+	When we talk about the data binding in the UI of the web application: 
+	Data binding is the process that establishes a connection between the application UI (User Interface) and business logic.\cite{databindingwikipedia}
+	The application logic of the web application is represented by a data model(JavaScript/Dart used on the website) 
+	and the UI by the HTML view of the data.
 
-\section{One way databinding}\label{sec:onewaydatabinding}
+	The data binding is widely used in frameworks using MVC patterns. 
+	The most common way to implement the data binding is by using a template engine. 
+	The template engine takes the template, merge it with data and produce the view of the UI. 
 
-Discuss one way databinding.
+	The model(data) can be connected with the view in a one direction, $model \mapsto view$, 
+	or in both directions, $model \mapsto view$ and $view \mapsto model$. 
+	The single way $view \mapsto model$ is not used. 
 
-\section{Two way databinding}
+	\section{One way data binding}\label{sec:onewaydatabinding}
 
-Discuss two way databinding.
+		The one way data binding implements the $model \mapsto view$ direction. 
+		
+		The server side rendering is an example, 
+		where the one direction data binding is the perfect way to map data into the view.
+		From the server side rendering point of view, 
+		the other direction of the data binding doesn't event exist.
+
+		The more interesting usage of the one way binding direction is in the browser application. 
+		The one way data binding is used to reflect the model of the application into the UI view.
+		This reflection is maintained continuously and keep the UI in the sync with the model. 
+		Therefore each change of the data model is reflected into the view. 
+
+	\section{Two way data binding}
+
+		Two way data binding extends the one way by implementing the second direction: $view \mapsto model$. 
+
+		One direction, when the model is updated, the view is modified to reflect the data.
+		In the second direction, when the view is changed (e.g. value in the input field), 
+		the model is update to represent actual view. 
+		This way, the model and the view are continually synchronized.
+		The model is the \textit{single-source-of-truth} for the application state\cite{angular}.
+
+		The most common understanding of the two way data binding is the reflection of the change of input elements
+		(input, select, text-area etc.) into the data model.
+
+		There are additional informations stored in the view, which can be reflected into the model.
+		For example the order of items in a list, a position in the DOM or any other information stored by the structure of the view, 
+		which can be changed e.g. by drag-and-drop actions. 
+		In the majority of two way data binding implementations, this type of the information isn't reflected.
+
+		As the information from input elements can be reflected to the model by event listeners, 
+		we decided to not implement the two way data binding in the first phase of the \tiles library.
+		We plan to implement it later, by using the observable pattern.

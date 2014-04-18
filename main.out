@@ -1,8 +1,8 @@
 \BOOKMARK [0][-]{chapter*.3}{Introduction}{}% 1
 \BOOKMARK [0][-]{chapter.1}{Motivation}{}% 2
-\BOOKMARK [0][-]{chapter.2}{Databinding}{}% 3
-\BOOKMARK [1][-]{section.2.1}{One way databinding}{chapter.2}% 4
-\BOOKMARK [1][-]{section.2.2}{Two way databinding}{chapter.2}% 5
+\BOOKMARK [0][-]{chapter.2}{Data binding}{}% 3
+\BOOKMARK [1][-]{section.2.1}{One way data binding}{chapter.2}% 4
+\BOOKMARK [1][-]{section.2.2}{Two way data binding}{chapter.2}% 5
 \BOOKMARK [0][-]{chapter.3}{Existing solutions}{}% 6
 \BOOKMARK [1][-]{section.3.1}{Template driven}{chapter.3}% 7
 \BOOKMARK [1][-]{section.3.2}{Component driven}{chapter.3}% 8
