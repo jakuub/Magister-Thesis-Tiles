@@ -55,6 +55,24 @@
 
   \section{Update of the UI}\label{sec:performance-update}
 
+    The performance of the update process is reflected into the agility of the UI of the application.
+    We assume, that the library is used wisely by a user of it.
+    We also suppose no usage and user optimization by \texttt{shouldUpdate} method.
+
+    In the \tiles library, when data are changed and the redraw method was called, 
+    the competent node is marked as dirty. 
+    The update process will redraw the whole virtual DOM structure under the dirty node. 
+    The list of changes is produced and subsequently applied to the real DOM. 
+
+    The complexity of the update process is therefore asymptoticly equal 
+    to the size of the subtree of the virtual DOM with the root in the dirty node.
+    This is in the worse case the whole virtual DOM. 
+
+    This complexity can be decreased by proper usage of the \texttt{shouldUpdate} function. 
+
+    In general scenario, parts of the UI dependent on a data change are not huge, 
+    which decreases the time needed for the update.  
+
   \section{Continuous resource consumption}\label{sec:performance-continuous}
     
     As we perform an asynchronous updating of the virtual DOM, the only one repeated task is to check, 
@@ -69,3 +87,48 @@
     so the constant complexity of the task performed in each animation frame.
 
   \section{Performance optimizations}\label{sec:performance-optimizations}
+    
+    The performance of the pure algorithm can be enhanced by an optimization of selected parts. 
+    For this purpose we used batched updates, the up-down update (from the root tree to the leafs of the virtual DOM) 
+    and many small refinements like \texttt{shouldUpdate} method. 
+
+    \subsection{Batched updates}\label{sec:performance-optimizations-batched-updates}
+   
+      Every triggered redraw of the component will cause an event in the \texttt{needUpdate} stream. 
+      The event is caught by the node containing the component, which mark itself as dirty. The synchronized process of redraw ends here. 
+
+      If more than one redraw happened, all of them are batched by marking a components node as dirty.
+      Mark the node as dirty cause adding the flag to the route from the node to the root node of the virtual DOM as \textit{have dirty descendants}.
+
+      On every animation frame, each root node is check for the need of the update, and if it is dirty or has dirty descendant, the update is started.
+      The update perform all needed updates in the virtual DOM in one batch.
+      The update is perform only when the real DOM will be drawn to the user
+      \footnote{The information about redrawing the UI by the browser is implemented by the \textit{animation frame} event}. 
+
+    \subsection{Up-down update process}\label{sec:performance-optimizations-batched-updates}
+
+      We can perform the update process of bathed updates from the root to leafs of the virtual DOM tree. 
+      Therefore when the node is deleted from the virtual DOM, none of it's descendants will be updated, even if they wanted to.
+      The update of removed node would be useless, because it's change will be never reflected into the real DOM. 
+
+      The up-down update also saves the performance from repeating the update of the same node. 
+      For example, we have 4 nodes A, B, C and D, when the A is parent of the B, the B of the C, etc. 
+      If they trigger the redraw from the bottom to the root, the order is D, C, B and A. 
+      If we perform updates in the order in which the redraw was triggered, we will perform following updates:
+
+      \begin{enumerate}
+            \item update D,
+            \item update C, and also D, as it got a new props,
+            \item update B, so update the C and D too and 
+            \item update A, which cause the update of the B, the C and the D too. 
+      \end{enumerate}
+
+      When we perform update process of the batched updates from the root to leafs, every node will be updated only once. 
+
+      \begin{enumerate}
+            \item update A,
+            \item update B,  
+            \item update C and 
+            \item update D.
+      \end{enumerate}
+

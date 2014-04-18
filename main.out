@@ -28,6 +28,8 @@
 \BOOKMARK [1][-]{section.5.2}{Update of the UI}{chapter.5}% 28
 \BOOKMARK [1][-]{section.5.3}{Continuous resource consumption}{chapter.5}% 29
 \BOOKMARK [1][-]{section.5.4}{Performance optimizations}{chapter.5}% 30
-\BOOKMARK [0][-]{chapter.6}{Benchmarks}{}% 31
-\BOOKMARK [0][-]{chapter*.27}{Conclusion}{}% 32
-\BOOKMARK [0][-]{chapter*.28}{Bibliography}{}% 33
+\BOOKMARK [2][-]{subsection.5.4.1}{Batched updates}{section.5.4}% 31
+\BOOKMARK [2][-]{subsection.5.4.2}{Up-down update process}{section.5.4}% 32
+\BOOKMARK [0][-]{chapter.6}{Benchmarks}{}% 33
+\BOOKMARK [0][-]{chapter*.27}{Conclusion}{}% 34
+\BOOKMARK [0][-]{chapter*.28}{Bibliography}{}% 35
