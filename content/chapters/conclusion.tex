@@ -1,8 +1,31 @@
-%------------------------------------------------------------------------------------------------------
-%  tak isto ako ufod, toto je zaver. V pripade anglictiny premenujte kapitolu...
-%------------------------------------------------------------------------------------------------------
 \chapter*{Conclusion}\label{chap:conclusion}
 \addcontentsline{toc}{chapter}{Conclusion}
 
-Here will be conclusion of wholw thesis
+The thesis describes the topic of the data binding used in the UI to tie the model and the view of the user interface.
+The work was oriented to the Dart programming language. 
 
+We explored existing solutions, compared and categorized them and described, why no of them is satisfactory for our conditions. 
+	Therefore we created the new UI library(\tiles) in the Dart programming language, 
+which is component driven (explained in \fullref{sec:existing-component}), 
+independent and fully covered by unittests. 
+
+The tiles library was created with an inspiration from the \facebook \react library wrote in the JavaScript.
+It provides a tool for effective creation of the UI part of the application. 
+The library was created with respect to several aspects:
+\begin{description}
+	\item[Pure Dart library] was fulfilled by usage of no template engine 
+		or other tool describing the UI in the different type of the information.
+	\item[Testability] was the major aspect of the implementation. 
+		We perform several architectural decisions toward the testability of the code using our library like
+		the \textbf{separation} of the rendering logic from the main class \texttt{Component} used by the user of the library
+		and no template usage.
+	\item[Easy to use API] was reached by the separation of the \texttt{Component} class 
+		and by creation of methods for frequently performed tasks.
+\end{description}
+
+As we wrote in the \fullref{chap:oursolution}, the first step of the work on the thesis was 
+to create the port of the \react library into the Dart language. 
+This port was "slow" in some cases, therefore we created mentioned \tiles library.
+The usefulness of it was shown in the \fullref{chap:benchmarks}, which shows that our effort was not wasteful.
+
+One of the most important results of the thesis is the UI \tiles library, which was described in the text of the thesis.

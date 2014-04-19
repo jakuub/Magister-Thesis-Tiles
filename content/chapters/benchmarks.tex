@@ -1,2 +1,22 @@
 \chapter{Benchmarks}\label{chap:benchmarks}
 
+We created the \tiles library because our port of the \react into the Dart language was slow. 
+Natural question arises. Is the \tiles library faster then the \react port into the dart?
+
+\textit{
+	We don't compare the \react library with the \tiles library, we compare the port of it into the dart. 
+	The main problem in the port performance was the communication between the JavaScript \react library and the implementation created in the Dart language.
+}
+
+We measured the time of several distinct scenarios:
+\begin{description}
+	\item[The mass vs. the structure] \hfill \\
+		We will measure the time, needed to render the mass of components in the same level, 
+		and to render the complicated structure with lot of branching.
+	\item[Creating of the virutal DOM vs. rendering into the real one] \hfill \\
+		We measured the time of the construction of the virtual DOM and the render it into the real one. 
+		The measurement is compared between the port and the \tiles library.
+	\item[Clean vs. dirty updates] \hfill \\
+		The last measurement is the comparison of the duration of the updates. 
+		We distinguish two types of updates, clean without any change in the virtual DOM and dirty which changes the virtual DOM.
+\end{description}

@@ -19,9 +19,9 @@
 %------------------------------------------------------------------------------------------------------
 \def\mftitle{Two-way databinding of models and views in Dart}          % nazov diplomovky/bakalarky
 \def\mfthesistype{Diploma thesis}             % typ prace
-\def\mfkeywords{Databinding, Dart, Facebook React, AngularJS, ... }        % proste klucove slova idealne oddelene ciarkou
-\def\mfkeywordsen{Databinding, Dart, Facebook React, AngularJS, ... }      % klucove slova v anglictine EN
-\def\mfkeywordssk{Databinding, Dart, Facebook React, AngularJS, ... }      % klucove slova v slovencine SK
+\def\mfkeywords{Databinding, Dart, Facebook React, User Interface, Component driven views, Template driven views, AngularJS, ... }
+\def\mfkeywordsen{Databinding, Dart, Facebook React, User Interface, Component driven views, Template driven views, AngularJS, ... }
+\def\mfkeywordssk{Databinding, Dart, Facebook React, User Interface, Component driven views, Template driven views, AngularJS, ... }
 \def\mfauthor{Bc. Jakub Uhrík}                            % vase meno a priezvysko
 \def\mfadvisor{RNDr. Tomáš Kulich, PhD.}                                  % cele meno skolitela
 \def\mfplacedate{Bratislava, 2014}                        % mesto a rok
@@ -92,6 +92,14 @@
 \author{\mfauthor}
 \title{\mftitle}
 
+% flatex input: [./content/macros.tex]
+\newcommand{\tiles}[0]{\textbf{\texttt{Tiles}} }
+\newcommand{\react}[0]{\textit{React} }
+\newcommand{\facebook}[0]{Facebook }
+
+% flatex input end: [./content/macros.tex]
+
+%
 \begin{document}
 
 %------------------------------------------------------------------------------------------------------
@@ -222,9 +230,9 @@ Thesis supervisor:&   \mfadvisor \\
 %  sem pridajte svoj originalny text, alebo len prepiste \mfadvisor za vysklonovane meno vaseho veduceho
 %------------------------------------------------------------------------------------------------------
 
-I would like to thank my supervisor \mfadvisor for his guidance,support, and encouragement throughout writing this thesis. 
+I would like to thank to my supervisor \mfadvisor  for his guidance, support and encouragement. 
 
-Special thanks belong to my family for all their support.
+Special thanks belong to my family and loved ones for all their support.
 
 \end{minipage}
 \end{center}
@@ -249,7 +257,20 @@ Special thanks belong to my family for all their support.
 \begin{center}
 \begin{minipage}{1\textwidth}
 \centerline{\large Abstract}
-Abstract in english.
+\setlength{\parskip}{0.2cm}
+The thesis discute the data binding of the model and the view in the user interface of the web application.
+It is specialized to the Dart programming language. 
+
+The thesis explore existing solutions in this topic and compare and categorize them.
+
+The \tiles library was created as a significat part of the work. 
+The requirements, design and performance aspects are discused in the \fullref{chap:oursolution}. 
+
+The \tiles library is \nameref{sec:existing-component} UI library written in dart 
+with the API and approach inspired by the \facebook \nameref{subsec:existing-component-react} library written in the JavaScript.
+
+We also described the \nameref{chap:performance} the library from the theoretic point of view 
+and create \nameref{chap:benchmarks}, which ilustrate the performance in the action.
 %------------------------------------------------------------------------------------------------------
 % sem pridajte abstrakt v anglictine
 %------------------------------------------------------------------------------------------------------
@@ -269,10 +290,23 @@ Abstract in english.
 \begin{center}
 \begin{minipage}{1\textwidth}
 \centerline{\large Abstrakt}
+\setlength{\parskip}{0.2cm}
 %------------------------------------------------------------------------------------------------------
 % sem pridajte abstrakt v slovencine
 %------------------------------------------------------------------------------------------------------
-Abstrakt v slovencine.
+Práca pojednáva otázku previazania modelu a zobrazenia v rácmi používateľského rozhrania webovej aplikácie.
+Je špecializovaná na programovací jazyk Dart.
+
+V práci sú preskúmané existujúce riešenia, ktoré sú nasledne porovnané a kategorizované.
+
+Významnou časťou práce je knižnica v programovacom jazyku Dart nazvaná \tiles.
+Jej východiskové požiadavky, návrh architektúry a výkonnostné aspekty sú popísané v kapitole \nameref{chap:oursolution}.
+
+Knižnica \tiles je komponentová knižnica zameraná na používateľské rozhranie
+s API a princípami inšpirovanými JavaScript-ovou knižnicou \react vytvorenej spoločnosťou \facebook.
+
+Taktiež sme popísali výkonnosť a zložitosť knižnice z teoretického hľadiska 
+a vytvorili "benchmark-y", ktoré ilustrujú výkon knižnice v akcii.
 \\ \\ 
 {\bf Kľúčové slová:} \mfkeywordssk
 \end{minipage}
@@ -306,14 +340,6 @@ Abstrakt v slovencine.
 
 %------------------------------------------------------------------------------------------------------
 % a teraz includneme vsetky kapitoly, realne je to len subor, v ktorom sa incuduju kapitoly postupne
-%------------------------------------------------------------------------------------------------------
-% flatex input: [./content/macros.tex]
-\newcommand{\tiles}[0]{\textbf{\texttt{Tiles}} }
-\newcommand{\react}[0]{\textit{React} }
-\newcommand{\facebook}[0]{Facebook }
-
-% flatex input end: [./content/macros.tex]
-
 %------------------------------------------------------------------------------------------------------
 % flatex input: [./content/chapters/chapters.tex]
 \pagestyle{plain}
@@ -1802,19 +1828,62 @@ markup == '<span class="my-span">Text in the span</span>' // is true
 % flatex input: [content/chapters/benchmarks.tex]
 \chapter{Benchmarks}\label{chap:benchmarks}
 
+We created the \tiles library because our port of the \react into the Dart language was slow. 
+Natural question arises. Is the \tiles library faster then the \react port into the dart?
+
+\textit{
+	We don't compare the \react library with the \tiles library, we compare the port of it into the dart. 
+	The main problem in the port performance was the communication between the JavaScript \react library and the implementation created in the Dart language.
+}
+
+We measured the time of several distinct scenarios:
+\begin{description}
+	\item[The mass vs. the structure] \hfill \\
+		We will measure the time, needed to render the mass of components in the same level, 
+		and to render the complicated structure with lot of branching.
+	\item[Creating of the virutal DOM vs. rendering into the real one] \hfill \\
+		We measured the time of the construction of the virtual DOM and the render it into the real one. 
+		The measurement is compared between the port and the \tiles library.
+	\item[Clean vs. dirty updates] \hfill \\
+		The last measurement is the comparison of the duration of the updates. 
+		We distinguish two types of updates, clean without any change in the virtual DOM and dirty which changes the virtual DOM.
+\end{description}
 
 % flatex input end: [content/chapters/benchmarks.tex]
 
 \pagestyle{plain}
 % flatex input: [content/chapters/conclusion.tex]
-%------------------------------------------------------------------------------------------------------
-%  tak isto ako ufod, toto je zaver. V pripade anglictiny premenujte kapitolu...
-%------------------------------------------------------------------------------------------------------
 \chapter*{Conclusion}\label{chap:conclusion}
 \addcontentsline{toc}{chapter}{Conclusion}
 
-Here will be conclusion of wholw thesis
+The thesis describes the topic of the data binding used in the UI to tie the model and the view of the user interface.
+The work was oriented to the Dart programming language. 
 
+We explored existing solutions, compared and categorized them and described, why no of them is satisfactory for our conditions. 
+	Therefore we created the new UI library(\tiles) in the Dart programming language, 
+which is component driven (explained in \fullref{sec:existing-component}), 
+independent and fully covered by unittests. 
+
+The tiles library was created with an inspiration from the \facebook \react library wrote in the JavaScript.
+It provides a tool for effective creation of the UI part of the application. 
+The library was created with respect to several aspects:
+\begin{description}
+	\item[Pure Dart library] was fulfilled by usage of no template engine 
+		or other tool describing the UI in the different type of the information.
+	\item[Testability] was the major aspect of the implementation. 
+		We perform several architectural decisions toward the testability of the code using our library like
+		the \textbf{separation} of the rendering logic from the main class \texttt{Component} used by the user of the library
+		and no template usage.
+	\item[Easy to use API] was reached by the separation of the \texttt{Component} class 
+		and by creation of methods for frequently performed tasks.
+\end{description}
+
+As we wrote in the \fullref{chap:oursolution}, the first step of the work on the thesis was 
+to create the port of the \react library into the Dart language. 
+This port was "slow" in some cases, therefore we created mentioned \tiles library.
+The usefulness of it was shown in the \fullref{chap:benchmarks}, which shows that our effort was not wasteful.
+
+One of the most important results of the thesis is the UI \tiles library, which was described in the text of the thesis.
 
 % flatex input end: [content/chapters/conclusion.tex]
 
@@ -1838,10 +1907,15 @@ A~Facebook \&~Instagram collaboration.
   INTERFACES}}.
 \newblock \hfill\break{\tt \url{http://facebook.github.io/react/}}.
 
-\bibitem[Goo]{angular}
+\bibitem[Gooa]{angular}
 Google.
 \newblock {\em {\sl AngularJS - HTML enhanced for web apps!}}
 \newblock \hfill\break{\tt \url{http://angularjs.org/}}.
+
+\bibitem[Goob]{dart}
+Google.
+\newblock {\em {\sl Programmer’s Guide(Dart language)}}.
+\newblock \hfill\break{\tt \url{https://www.dartlang.org/docs/}}.
 
 \bibitem[INC]{ember}
 TILDE INC.
