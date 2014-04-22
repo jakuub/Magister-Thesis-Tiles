@@ -31,5 +31,9 @@
 \BOOKMARK [2][-]{subsection.5.4.1}{Batched updates}{section.5.4}% 31
 \BOOKMARK [2][-]{subsection.5.4.2}{Up-down update process}{section.5.4}% 32
 \BOOKMARK [0][-]{chapter.6}{Benchmarks}{}% 33
-\BOOKMARK [0][-]{chapter*.27}{Conclusion}{}% 34
-\BOOKMARK [0][-]{chapter*.28}{Bibliography}{}% 35
+\BOOKMARK [1][-]{section.6.1}{Benchmarking system}{chapter.6}% 34
+\BOOKMARK [1][-]{section.6.2}{Mass versus structure}{chapter.6}% 35
+\BOOKMARK [1][-]{section.6.3}{Clean versus dirty update}{chapter.6}% 36
+\BOOKMARK [1][-]{section.6.4}{Virtual versus real DOM}{chapter.6}% 37
+\BOOKMARK [0][-]{chapter*.33}{Conclusion}{}% 38
+\BOOKMARK [0][-]{chapter*.34}{Bibliography}{}% 39
