@@ -45,12 +45,19 @@ To collect all informations, we created a shell script, which runs the runner wi
 
 \section{Mass versus structure}\label{sec:benchmarks-mass-vs-structure}
 
-	In this benchmark, we compared the render time of the \react port and the \tiles library.
+	From the graph on the \fullref{img:benchmarks-mass-render} we can see, that the \react port is 
 	\begin{figure}[h]
 	\centering  
 		\includegraphics[scale=0.5]{images/benchmarks/m_render.png}
 		\caption{Render of simple structure with one custom component and mass of div components}
 		\label{img:benchmarks-mass-render}
+	\end{figure}
+
+	\begin{figure}[h]
+	\centering  
+		\includegraphics[scale=0.5]{images/benchmarks/m1_render.png}
+		\caption{Render of simple structure with one custom component as a root, mass custom component as a child of the root and 1 div components under each of them}
+		\label{img:benchmarks-mass-1-render}
 	\end{figure}
 
 	\begin{figure}[h]
