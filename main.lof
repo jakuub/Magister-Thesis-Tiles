@@ -9,10 +9,10 @@
 \contentsline {figure}{\numberline {4.5}{\ignorespaces Life cycle of a \texttt {Component}\relax }}{21}{figure.caption.14}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {6.1}{\ignorespaces Render of simple structure with one custom component and mass of div components\relax }}{41}{figure.caption.27}
-\contentsline {figure}{\numberline {6.2}{\ignorespaces Render of simple structure with one custom component as a root, mass custom component as a child of the root and 1 div components under each of them\relax }}{42}{figure.caption.28}
-\contentsline {figure}{\numberline {6.3}{\ignorespaces Render of structure of custom components\relax }}{43}{figure.caption.29}
-\contentsline {figure}{\numberline {6.4}{\ignorespaces Comparison of the render of the same number of leafs in the simple, and complicated structure\relax }}{43}{figure.caption.30}
-\contentsline {figure}{\numberline {6.5}{\ignorespaces Comparison of the clean and dirty update in mass and structure\relax }}{44}{figure.caption.31}
-\contentsline {figure}{\numberline {6.6}{\ignorespaces Comparison of the creation of the virtual DOM and rendering into the real DOM in mass and structure\relax }}{44}{figure.caption.32}
-\contentsline {figure}{\numberline {6.7}{\ignorespaces Comparison of the creation of the virtual DOM and rendering into the real DOM in the structure\relax }}{45}{figure.caption.33}
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Render of simple structure with one custom component and mass of div components\relax }}{42}{figure.caption.27}
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Render of simple structure with one custom component as a root, mass custom component as a child of the root and 1 div components under each of them\relax }}{43}{figure.caption.28}
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Render of the structure of custom components\relax }}{44}{figure.caption.29}
+\contentsline {figure}{\numberline {6.4}{\ignorespaces Comparison of the render of the same number of leafs in the simple, and complicated structure\relax }}{44}{figure.caption.30}
+\contentsline {figure}{\numberline {6.5}{\ignorespaces Comparison of the clean and dirty update in mass and structure\relax }}{45}{figure.caption.31}
+\contentsline {figure}{\numberline {6.6}{\ignorespaces Comparison of the creation of the virtual DOM and rendering into the real DOM in mass and structure\relax }}{45}{figure.caption.32}
+\contentsline {figure}{\numberline {6.7}{\ignorespaces Comparison of the creation of the virtual DOM and rendering into the real DOM in the structure\relax }}{46}{figure.caption.33}

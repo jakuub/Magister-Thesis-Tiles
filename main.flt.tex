@@ -1873,7 +1873,8 @@ To collect all informations, we created a shell script, which runs the runner wi
 
 \section{Mass versus structure}\label{sec:benchmarks-mass-vs-structure}
 
-	In this benchmark, we compared the render time of the \react port and the \tiles library.
+	From the graph on the \fullref{img:benchmarks-mass-render} we can see, that the \react port is faster 
+	in the rendering of the structure composed from one custom component and mass of div components.
 	\begin{figure}[h]
 	\centering  
 		\includegraphics[scale=0.5]{images/benchmarks/m_render.png}
@@ -1881,12 +1882,33 @@ To collect all informations, we created a shell script, which runs the runner wi
 		\label{img:benchmarks-mass-render}
 	\end{figure}
 
+	The graph on the \fullref{img:benchmarks-mass-1-render} shows a big slowdown of the \react port speed with structure 
+	of one custom element root with mass of custom elements as children.
+
+	This difference is caused by in Dart implemented life-cycle methods which are called by the JavaScript.
+	Where mass of divs don't need to call any custom life cycle methods, the mass of custom component need them. 
+	This is also more often scenario, because in the most common case, we want to render the list of some type of data, 
+	and for this type of data, we want to create custom reusable component.
+
+	\begin{figure}[h]
+	\centering  
+		\includegraphics[scale=0.5]{images/benchmarks/m1_render.png}
+		\caption{Render of simple structure with one custom component as a root, mass custom component as a child of the root and 1 div components under each of them}
+		\label{img:benchmarks-mass-1-render}
+	\end{figure}
+
+	On the graph on the \fullref{img:benchmarks-structure-render} we can see the difference between the time of the render of different sizes of the complete binary tree.
+	This graph confirm the fact, that for more complicated structures the \react port is slower than the \tiles library.
+
 	\begin{figure}[h]
 	\centering  
 		\includegraphics[scale=0.5]{images/benchmarks/s_render.png}
-		\caption{Render of structure of custom components}
+		\caption{Render of the structure of custom components}
 		\label{img:benchmarks-structure-render}
 	\end{figure}
+
+	The \fullref{img:benchmarks-mass-vs-structure-render} illustrate the fact, that for the flat structures, 
+	the \react is constantly faster, but for more complicated structures, the \tiles library perform better.
 
 	\begin{figure}[h]
 	\centering  
@@ -1896,6 +1918,11 @@ To collect all informations, we created a shell script, which runs the runner wi
 	\end{figure}
 
 \section{Clean versus dirty update}\label{sec:benchmarks-clean-vs-dirty-update}
+
+	We compared the clean versus dirty update on the "mass versus structure" results. 
+  The performance of the libraries was expected. 
+	In bigger structures, where a bigger part of the complete number of components was represented by custom components, 
+	the \tiles library was recognizable faster than the \react port.
 
 	\begin{figure}[h]
 	\centering  
@@ -1907,12 +1934,25 @@ To collect all informations, we created a shell script, which runs the runner wi
 
 \section{Virtual versus real DOM}\label{sec:benchmarks-clean-vs-dirty-update}
 
+	As the most part of the virtual DOM is constructed inside the \texttt{render} method of custom components, 
+	we decided to measure the time of the virtual DOM rendering in the \react by measuring the time of the render of all created components.
+	We made this decision because we don't have a direct possibility to measure the time of the render of the virtual DOM in the \react port.
+	In the \tiles library, we can measure this time directly, as we can build virtual DOM separately.
+
+	On the \fullref{img:benchmarks-mass-vs-structure-virtual-vs-real} we can see that the creation of the virtual DOM is much more optimal in the tiles library, 
+	as the \react port need to call Dart functions for all life-cycle methods of the custom component.
+	We can also recognize that react can render the existing virtual DOM into the real one more quickly than the \tiles library, 
+	but the computation of the virtual DOM is significant in more complicated structures with bigger ratio of custom components.
+
 	\begin{figure}[h]
 	\centering  
 		\includegraphics[scale=0.5]{images/benchmarks/mvs_render_vs_virtual_.png}
 		\caption{Comparison of the creation of the virtual DOM and rendering into the real DOM in mass and structure}
 		\label{img:benchmarks-mass-vs-structure-virtual-vs-real}
 	\end{figure}
+
+	In the \fullref{img:benchmarks-structure-virtual-vs-real} is shown the comparison of the render of the virtual DOM and the real DOM of the \react port and the \tiles library in complete binary trees. 
+	This comparison also shows that the \tiles library is more efficient than the Dart port of the \react library in thees cases.
 
 	\begin{figure}[h]
 	\centering  
@@ -1921,6 +1961,15 @@ To collect all informations, we created a shell script, which runs the runner wi
 		\label{img:benchmarks-structure-virtual-vs-real}
 	\end{figure}
 
+\section{Conclusion}\label{sec:benchmarks-conclusion}
+
+	Benchmarks confirms the theory, that the low performance of the \react port into the Dart language was cause also by the communication between the JavaScript \react library 
+	and life cycle methods of custom components implemented in Dart language.
+	We further discovered the dependence of the complexity of the virtual DOM structure and the performance ration of the \tiles library and the \react port.
+	This dependence was partly caused by bigger ration of custom components.
+
+	\textit{At the end of the Benchmarks chapter we want to acknowledge once more, that we didn't compare the \react and the \tiles library, but the Dart port of the \react library with the \tiles library.
+	The biggest problem of the Dart port of the \react library was the communication between the Dart and the JavaScript.}
 
 % flatex input end: [content/chapters/benchmarks.tex]
 
@@ -2002,6 +2051,11 @@ Tyler Keating.
 \newblock \hfill\break{\tt
   \url{http://blog.sproutcore.com/the-run-loop-part-1/} and
   \url{http://blog.sproutcore.com/the-run-loop-part-2/}}.
+
+\bibitem[Uhr]{tiles}
+Jakub Uhrik.
+\newblock {\em {\sl The Tiles library source code on github.com}}.
+\newblock \hfill\break{\tt \url{https://github.com/cleandart/tiles}}.
 
 \bibitem[wika]{flexdatabinding}
 Flex~SDK wiki.
