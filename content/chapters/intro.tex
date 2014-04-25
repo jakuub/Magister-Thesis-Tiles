@@ -1,6 +1,35 @@
 \chapter*{Introduction}\label{chap:intro}
 \addcontentsline{toc}{chapter}{Introduction}
 
-As one of the results of this magister thesis is our new databinding library in dart, 
-which is called \tiles. 
-In next  text, we will use only \tiles to mention \textit{our new databinding library in dart}.
+In the November 2014 on the Devoxx conference in Belgium, 
+Google released the \textbf{Dart language} in form of Google Dart SDK 1.0.
+The Dart language has an intention to replace JavaScript as the common language of web development on the open web platform.
+\cite{dartlaunch}
+
+The Dart programming language has possibility of compilation into the JavaScript. 
+It also has own virtual machine which can be standalone or embed into the browser.
+It has advantages like optional typing, 
+well defined dependency management by \textit{pub} command which also enable git dependences and much more.
+
+In the 29th of May 2013 \facebook developers released the \textbf{\react} library as an open-source. 
+The \react library offer different perspective of the UI development in JavaScript applications. 
+It don't use templates, enable declarative thinking in the programming of the UI.
+We will provide deeper overview of the \react library in the \fullref{subsec:existing-component-react} of the \fullref{chap:existing}.
+
+Two independent interesting solutions with lot of advantages incurred. 
+The natural question is if there exist a solution which integrate the \react with the Dart language and combine their advantages.
+We discovered, that there existed no integration yet, therefore we decided to create one. 
+
+The first step was to create the port of the React into the Dart language.
+It turned out, that the port is slow for a great number of custom components. 
+The reason was the communication in the form of life cycle methods 
+between the \react implemented in the JavaScript and the application implemented in Dart language.
+
+That was the reason to create own Dart library with the core idea inspired by the \react library. 
+The Dart library was designed, implemented and tested. 
+The name is \tiles and the source code is open-source hosted on \url{https://github.com/cleandart/tiles}.
+
+In the scope of this work we described the data binding theory, 
+examined existing solutions implementing data binding, 
+designed and described the \tiles library and the performance of it.
+
